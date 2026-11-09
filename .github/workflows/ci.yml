@@ -22,5 +22,5 @@ jobs:
       - run: npm run package:check
       - run: npm run init:data
       - run: npm run import:data -- --input examples/import-bundle.json
-      - run: npm run build -- --scope world --variant social
+      - run: npm run build -- --variant social
       - run: npm run verify
