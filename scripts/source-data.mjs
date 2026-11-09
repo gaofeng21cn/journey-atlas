@@ -9,17 +9,21 @@ import { TABLES, UPDATE_DEFINITIONS } from './schema.mjs';
 // directory selected by dataSource.path in atlas-config.json.
 export async function readAtlasConfig({ root = ROOT, path = process.env.TRAVEL_PASSPORT_CONFIG } = {}) {
   const configPath = resolve(root, path || 'data/atlas-config.json');
-  const config = await readJson(configPath);
+  const config = await readJson(configPath).catch(error => {
+    if (error.code !== 'ENOENT' || path) throw error;
+    return {dataSource:{type:'csv-directory',path:'data/source'},output:join(root,'outputs'),coverage:[]};
+  });
   return { ...config, configPath };
 }
 
 export async function resolveSource({ vault, source, config, root = ROOT } = {}) {
   if (source) return source;
-  config ||= await readAtlasConfig({root});
   if (vault) {
+    config ||= await readAtlasConfig({root});
     const base = resolve(vault);
     return { type: 'obsidian', base, folder: join(base, '50_🌍旅行记录', '53_整理说明'), files: config.obsidianFiles || {} };
   }
+  config ||= await readAtlasConfig({root});
   const dataSource = config.dataSource;
   if (dataSource?.type === 'csv-directory' && dataSource.path) {
     const workspace=resolve(config.referenceRoot||root);
