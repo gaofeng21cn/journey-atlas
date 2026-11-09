@@ -1,0 +1,168 @@
+{
+  "surface_kind": "opl_capability_package_manifest.v2",
+  "package_id": "travel-passport",
+  "display_name": "Journey Atlas",
+  "publisher": "gaofeng21cn",
+  "version": "0.1.1",
+  "source": "first_party_repo_local",
+  "source_repo": "https://github.com/gaofeng21cn/journey-atlas.git",
+  "package_role": "capability_package",
+  "capability_abi": {
+    "id": "travel-passport.v1",
+    "version": "1.0.0",
+    "compatibility_policy": "same_major"
+  },
+  "exports": {
+    "core_skill_ids": [
+      "travel-planning"
+    ],
+    "core_module_ids": [
+      "travel.passport.v1"
+    ],
+    "optional_skill_policy_ref": "skills/travel-planning/SKILL.md",
+    "optional_skills_installed_by_default": false,
+    "default_materialization_policy": "core_skills_only"
+  },
+  "codex_surface": {
+    "plugin_id": "travel-passport",
+    "plugin_source_path": ".",
+    "codex_default_exposure": false,
+    "interaction_mode": "headless_internal",
+    "optional_install_policy": "core_skills_only",
+    "configured_codex_plugin_carrier": {
+      "kind": "codex_plugin_manager",
+      "plugin_selector": "travel-passport@travel-passport",
+      "executor_route": "codex_cli",
+      "marketplace_source": "gaofeng21cn/journey-atlas",
+      "publication_ref": null
+    },
+    "app_contribution_abi": {
+      "schema_version": "opl-package-app-contribution-cli.v1",
+      "transport": "stdin_json_stdout_json",
+      "argv": [
+        "opl",
+        "app",
+        "contribution",
+        "adapter",
+        "--stdin"
+      ],
+      "request_schema": "opl-package-app-contribution-request.v1",
+      "response_schema": "opl-package-app-contribution-response.v1"
+    },
+    "app_contribution_adapter": {
+      "manifest": "app-contribution-adapter.json"
+    }
+  },
+  "app_contributions": {
+    "schema_version": "opl-app-contributions.v1",
+    "views": [
+      {
+        "view_id": "travel.passport.status",
+        "view_type": "service_status",
+        "title_i18n": {
+          "zh-CN": "旅行护照状态",
+          "en-US": "Travel passport status"
+        },
+        "data_ref": "travel.passport.v1#status",
+        "command_ids": [],
+        "empty_state_i18n": {
+          "zh-CN": "尚未读取旅行护照状态",
+          "en-US": "Travel passport status has not been read"
+        }
+      },
+      {
+        "view_id": "travel.passport.overview",
+        "view_type": "artifact_view",
+        "title_i18n": {
+          "zh-CN": "旅行护照总览",
+          "en-US": "Travel passport overview"
+        },
+        "data_ref": "travel.passport.v1#overview",
+        "empty_state_i18n": {
+          "zh-CN": "尚未读取旅行护照总览",
+          "en-US": "Travel passport overview has not been read"
+        }
+      },
+      {
+        "view_id": "travel.passport.annual",
+        "view_type": "artifact_view",
+        "title_i18n": {
+          "zh-CN": "年度旅行回顾",
+          "en-US": "Annual travel review"
+        },
+        "data_ref": "travel.passport.v1#annual",
+        "empty_state_i18n": {
+          "zh-CN": "尚未找到年度旅行卡",
+          "en-US": "No annual travel card is available"
+        }
+      },
+      {
+        "view_id": "travel.passport.regions",
+        "view_type": "artifact_view",
+        "title_i18n": {
+          "zh-CN": "分区旅行护照",
+          "en-US": "Regional travel passports"
+        },
+        "data_ref": "travel.passport.v1#regions",
+        "empty_state_i18n": {
+          "zh-CN": "尚未读取分区旅行护照",
+          "en-US": "Regional travel passports have not been read"
+        }
+      }
+    ],
+    "commands": [],
+    "badges": [],
+    "ui": [
+      {
+        "contribution_id": "travel.passport.status",
+        "slot": "settings.section",
+        "contribution_kind": "view",
+        "trust_tier": "declarative",
+        "scope": "root",
+        "sort_order": 1000,
+        "view_id": "travel.passport.status"
+      },
+      {
+        "contribution_id": "travel.passport.overview",
+        "slot": "settings.section",
+        "contribution_kind": "view",
+        "trust_tier": "declarative",
+        "scope": "root",
+        "sort_order": 1001,
+        "view_id": "travel.passport.overview"
+      },
+      {
+        "contribution_id": "travel.passport.annual",
+        "slot": "settings.section",
+        "contribution_kind": "view",
+        "trust_tier": "declarative",
+        "scope": "root",
+        "sort_order": 1002,
+        "view_id": "travel.passport.annual"
+      },
+      {
+        "contribution_id": "travel.passport.regions",
+        "slot": "settings.section",
+        "contribution_kind": "view",
+        "trust_tier": "declarative",
+        "scope": "root",
+        "sort_order": 1003,
+        "view_id": "travel.passport.regions"
+      }
+    ]
+  },
+  "content_lock": {
+    "algorithm": "sha256",
+    "canonicalization": "ordered_path_length_file_length_bytes",
+    "paths": [
+      ".codex-plugin/plugin.json",
+      "app-contribution-adapter.json",
+      "app-contribution.mjs",
+      "docs/架构与数据边界.md",
+      "docs/维护流程.md",
+      "plugin.json",
+      "skills/travel-planning/SKILL.md"
+    ],
+    "digest": "sha256:368f87bfbc32d858bf62f7cedbea65db36e1463c8c0195568f62e0ff22ec7458"
+  }
+}

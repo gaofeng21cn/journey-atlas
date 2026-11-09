@@ -1,0 +1,37 @@
+node_modules/
+outputs/
+output/
+.playwright-cli/
+data/travel.json
+data/source/
+data/profile.json
+data/annual-config.json
+data/atlas.json
+data/atlas-config.json
+data/geocode-cache.json
+data/history/
+data/airports.json
+inputs/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Personal exports, evidence snapshots and generated private material.
+# Generic templates belong in examples/ or docs/ and may be committed.
+private/
+evidence/
+site-dist/
+data/site-cache/
+data/open-geography/
+data/open-geography-report.json
+
+# Optional city layers are downloaded per workspace and carry their own terms.
+data/*-context.geojson
+data/tokyo-wards.geojson
+data/kyoto-wards.geojson
+data/hong-kong-districts.geojson
+data/singapore-planning.geojson
+data/new-york-boroughs.geojson
+data/manhattan-districts.geojson
+data/guangdong-cities.geojson
+data/guangzhou-districts.geojson

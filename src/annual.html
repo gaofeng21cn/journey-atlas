@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=1120"><title>{{YEAR}} · 在路上</title><style>{{CSS}}</style></head>
+<body><article class="poster" id="poster"><div class="paper">
+<svg class="security" aria-hidden="true"><defs><pattern id="annual-waves" width="240" height="34" patternUnits="userSpaceOnUse"><path d="M-120 17Q-60 0 0 17T120 17T240 17T360 17" fill="none" stroke="#9db4a1" stroke-width=".65"/></pattern></defs><rect width="100%" height="100%" fill="url(#annual-waves)"/></svg>
+<header class="heading"><div class="year">{{YEAR}}</div><div class="title"><h1>在路上</h1><p>MY TRAVEL YEAR</p></div><div class="period">{{PERIOD}}<span>这一年的足迹</span></div></header>
+<figure class="map-figure">{{MAP}}<figcaption class="map-key"><span class="destinations">{{COUNTRY_NAMES}}</span><span><i class="key-dot"></i>年度首次到访</span></figcaption></figure>
+<section class="summary" aria-label="年度旅行统计"><div class="distance-row"><div><div class="distance-label">这一年，走过</div><div class="distance-value"><strong>{{KM}}</strong><span>公里</span></div></div><div class="earth"><b>{{EARTH}}</b><span>圈地球</span><small>沿赤道环绕</small></div></div><div class="supporting"><span><strong>{{COUNTRIES}}</strong>国家与地区</span><span><strong>{{CITIES}}</strong>座城市</span><span class="flight-time">累计飞行<b>{{FLIGHT_HOURS}} 小时</b></span></div></section>
+<section class="stories" aria-label="年度旅行亮点"><div class="story new"><span class="story-label">{{NEW_LABEL}}</span><h2>{{NEW_TITLE}}</h2><p>{{NEW_BODY}}</p><small>{{NEW_FOOT}}</small></div><div class="story"><span class="story-label">今年走得最远</span><h2>{{FARTHEST}}</h2><p class="distance-to">{{FAR_KM}}<span>公里</span></p><p class="distance-note">离{{BASE}}的直线距离</p></div><div class="story"><span class="story-label">这一年的特别时刻</span><h2>{{MEMORY_TITLE}}</h2><p>{{MEMORY_BODY}}</p><small>{{MEMORY_FOOT}}</small></div></section>
+<footer class="machine"><span>{{MRZ_1}}</span><span>{{MRZ_2}}</span></footer>
+</div></article></body></html>

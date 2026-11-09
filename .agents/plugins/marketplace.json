@@ -1,0 +1,20 @@
+{
+  "name": "travel-passport",
+  "interface": {
+    "displayName": "Journey Atlas"
+  },
+  "plugins": [
+    {
+      "name": "travel-passport",
+      "source": {
+        "source": "local",
+        "path": "./plugins/travel-passport"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "schema_version": "opl-package-app-contribution-adapter.v1",
+  "reads": {
+    "travel.passport.v1#status": {
+      "kind": "command",
+      "cwd": "package",
+      "argv": ["node", "./app-contribution.mjs"],
+      "stdin": "request_json",
+      "passthrough": true,
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    "travel.passport.v1#overview": {
+      "kind": "command",
+      "cwd": "package",
+      "argv": ["node", "./app-contribution.mjs"],
+      "stdin": "request_json",
+      "passthrough": true,
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    "travel.passport.v1#annual": {
+      "kind": "command",
+      "cwd": "package",
+      "argv": ["node", "./app-contribution.mjs"],
+      "stdin": "request_json",
+      "passthrough": true,
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "year": {"type": "integer", "minimum": 2000, "maximum": 2100}
+        },
+        "additionalProperties": false
+      }
+    },
+    "travel.passport.v1#regions": {
+      "kind": "command",
+      "cwd": "package",
+      "argv": ["node", "./app-contribution.mjs"],
+      "stdin": "request_json",
+      "passthrough": true,
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  },
+  "actions": {}
+}

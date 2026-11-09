@@ -1,0 +1,37 @@
+{
+  "name": "travel-passport",
+  "version": "0.1.1",
+  "description": "Review global and regional travel passports, annual travel cards, output artifacts, and build readiness from the owner workspace.",
+  "author": {
+    "name": "Journey Atlas contributors"
+  },
+  "repository": "https://github.com/gaofeng21cn/journey-atlas",
+  "license": "MIT",
+  "keywords": [
+    "travel",
+    "passport",
+    "maps",
+    "opl"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Journey Atlas",
+    "shortDescription": "Browse travel passport summaries and outputs.",
+    "longDescription": "Review global and regional travel passport summaries, annual cards, existing image outputs, and build quality through the shared OPL App without moving private travel facts into a second store.",
+    "developerName": "Journey Atlas",
+    "category": "Productivity",
+    "capabilities": [
+      "Global travel overview",
+      "Annual travel review",
+      "Regional passport catalog",
+      "Output artifacts",
+      "Quality gate"
+    ],
+    "defaultPrompt": [
+      "Show my global travel passport.",
+      "Show my 2026 annual travel review.",
+      "List my regional travel passports by travel intensity.",
+      "Explain what still blocks a fresh travel passport build."
+    ]
+  }
+}
