@@ -141,7 +141,7 @@ export async function updateAtlas({input,vault,dryRun=false,noRender=false,outpu
   if(!Array.isArray(withdrawals)||withdrawals.some(w=>!w?.id||typeof w.reason!=='string'||!w.reason.trim()))throw new Error('证据撤回须逐条写出交通编号与核实理由');
   validateContinuityDelta(loaded.atlas,after.atlas,{withdrawnRoutes:withdrawals.map(w=>w.id)});
   const cityDetail=await loadCityDetails(loaded.folder,after.atlas,Object.fromEntries(Object.entries(tables).filter(([k])=>k.startsWith('city')).map(([k,t])=>[k,t.rows])),source);
-  await validateLinks(loaded.vault,Object.values(tables).flatMap(t=>t.rows),{sourceType:source.type});
+  await validateLinks(loaded.vault,Object.values(tables).flatMap(t=>t.rows),{source});
   const report={dryRun,input:inputRef,output,changes:summary,evidenceWithdrawals:withdrawals,before:loaded.atlas.meta,after:after.atlas.meta,
     layers:{places:after.atlas.locationLayer.summary,journeys:after.atlas.journeyLayer.summary,cities:cityDetail.report},
     changedJourneys:after.atlas.journeySummaries.filter(j=>{

@@ -1,3 +1,4 @@
+import {sourcePath} from './source-data.mjs';
 import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
@@ -8,7 +9,6 @@ import {buildManagedLinkRows} from './managed-links.mjs';
 import {greatCircleKm,canonicalName} from './travel-layers.mjs';
 import {deriveVisitInstances,visitInstanceRows,readVisitInstances,mergeReviewedVisitRows} from './visit-instances.mjs';
 import {privatePatchOutput} from './infer-links.mjs';
-import {sourcePath} from './source-data.mjs';
 
 // Continue after gap management. Decisions describe precisely what is inferred,
 // not a claim of an exact road, vehicle, day or unrecorded sightseeing stop.

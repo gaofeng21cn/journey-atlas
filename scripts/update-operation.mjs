@@ -1,6 +1,7 @@
 import {createHash,randomUUID} from 'node:crypto';
 import {readFile,writeFile,mkdir,rename,unlink} from 'node:fs/promises';
-import {join,resolve} from 'node:path';
+import {dirname,join,relative,resolve} from 'node:path';
+import {sourcePath,boundedSourcePath,assertDistinctSourceFiles} from './source-data.mjs';
 import {ROOT} from './data.mjs';
 import {TABLES,UPDATE_DEFINITIONS} from './schema.mjs';
 import {sourceFile} from './source-data.mjs';
@@ -17,8 +18,9 @@ const receiptPath=(id,root=ROOT)=>{
 const sourceNames=[...new Set([...Object.values(UPDATE_DEFINITIONS).map(d=>d.file),TABLES.cityJourneys,TABLES.cityEvidence,TABLES.visitCandidates,'全旅程数据点-定位证据.json'])].sort();
 
 // This revision covers the maintained tables, not generated map files.
-export async function updateSourceSnapshot(folder,source){
-  const files=await Promise.all(sourceNames.map(async file=>({file,sha256:hash(await read(join(folder,source?.type==='csv-directory'?sourceFile(source,file):file)))})));
+export async function updateSourceSnapshot(folder,source={type:'obsidian',folder}){
+  assertDistinctSourceFiles(source,sourceNames);
+  const files=await Promise.all(sourceNames.map(async file=>({file,sha256:hash(await read(sourcePath(source,file)))})));
   return {revision:digest(JSON.stringify(files)),files};
 }
 export function requireSourceRevision(snapshot,expected){
@@ -33,7 +35,7 @@ async function saveReceipt(receipt,path){
 export async function inspectUpdate(id,{root=ROOT}={}){
   const path=receiptPath(id,root);
   const receipt=JSON.parse(await readFile(path,'utf8'));
-  const files=await Promise.all(receipt.files.map(async item=>({...item,current:hash(await read(join(receipt.sourceFolder,item.sourcePath||item.file)))})));
+  const files=await Promise.all(receipt.files.map(async item=>({...item,current:hash(await read(boundedSourcePath(receipt.sourceFolder,item.sourcePath||item.file)))})));
   const allBefore=files.every(f=>f.current===f.before),allAfter=files.every(f=>f.current===f.after);
   const sourceState=allAfter?'matches_applied':allBefore?'matches_before':'diverged';
   return {...receipt,receipt:path,readback:{sourceState,files},
@@ -42,9 +44,10 @@ export async function inspectUpdate(id,{root=ROOT}={}){
       receipt.state==='source_applied'?'inspect_build':receipt.state==='failed'?'review_error':'reconcile'};
 }
 
-export async function applySourceUpdate({folder,source,snapshot,changes,report,dryRun=false,operationId=randomUUID(),kind='atlas',root=ROOT}){
+export async function applySourceUpdate({folder,source={type:'obsidian',folder},snapshot,changes,report,dryRun=false,operationId=randomUUID(),kind='atlas',root=ROOT}){
+  folder=boundedSourcePath(folder,'.');
   const current=await updateSourceSnapshot(folder,source);requireSourceRevision(current,snapshot.revision);
-  const files=changes.map(t=>({file:t.file,sourcePath:source?.type==='csv-directory'?sourceFile(source,t.file):t.file,before:hash(t.original===null?null:Buffer.from(t.original)),after:digest(t.next)}));
+  const files=changes.map(t=>({file:t.file,sourcePath:relative(resolve(source.folder),sourcePath(source,t.file)),before:hash(t.original===null?null:Buffer.from(t.original)),after:digest(t.next)}));
   const sourceMeta={before:snapshot.revision,after:digest(JSON.stringify(snapshot.files.map(f=>({file:f.file,sha256:files.find(c=>c.file===f.file)?.after??f.sha256}))))};
   if(dryRun)return {...report,schemaVersion:'travel-passport.update.v1',ok:true,state:'preview',source:sourceMeta,changedFiles:files.map(f=>f.file),operationId:null,receipt:null};
   const path=receiptPath(operationId,root),startedAt=new Date().toISOString();
@@ -57,12 +60,12 @@ export async function applySourceUpdate({folder,source,snapshot,changes,report,d
   try{
     if(backup)await mkdir(backup,{recursive:true});
     for(const t of changes){
-      const actual=source?.type==='csv-directory'?sourceFile(source,t.file):t.file;
-      if(hash(await read(join(folder,actual)))!==files.find(f=>f.file===t.file).before)throw errorWith('STALE_SOURCE','源表并发修改，停止更新：'+t.file);
-      if(t.original!==null)await writeFile(join(backup,actual),t.original);
+      if(hash(await read(sourcePath(source,t.file)))!==files.find(f=>f.file===t.file).before)throw errorWith('STALE_SOURCE','源表并发修改，停止更新：'+t.file);
+      if(t.original!==null){const saved=join(backup,t.file);await mkdir(dirname(saved),{recursive:true});await writeFile(saved,t.original);}
     }
     for(const t of changes){
-      const target=join(folder,source?.type==='csv-directory'?sourceFile(source,t.file):t.file),temp=target+'.'+process.pid+'.tmp';temporary.push(temp);
+      const target=sourcePath(source,t.file),temp=target+'.'+process.pid+'.tmp';temporary.push(temp);
+      await mkdir(dirname(target),{recursive:true});
       await writeFile(temp,t.next);
       if(hash(await read(target))!==files.find(f=>f.file===t.file).before)throw errorWith('STALE_SOURCE','源表并发修改，停止更新：'+t.file);
       await rename(temp,target);written.push(t);
@@ -74,7 +77,7 @@ export async function applySourceUpdate({folder,source,snapshot,changes,report,d
     // Only restore this operation's bytes; a later writer retains ownership.
     const rollbackErrors=[];
     for(const t of written)try{
-      const target=join(folder,source?.type==='csv-directory'?sourceFile(source,t.file):t.file);
+      const target=sourcePath(source,t.file);
       if(hash(await read(target))===digest(t.next)){if(t.original===null)await unlink(target);else await writeFile(target,t.original);}
     }catch(rollbackError){rollbackErrors.push(rollbackError.message);}
     receipt={...receipt,ok:false,state:'outcome_unknown',error:{code:error.code||'UPDATE_FAILED',message:error.message},rollbackErrors,build:{state:'not_started'}};

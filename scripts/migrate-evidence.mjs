@@ -1,3 +1,4 @@
+import {sourcePath} from './source-data.mjs';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
 import {parseArgs} from 'node:util';
@@ -8,7 +9,6 @@ import {UPDATE_DEFINITIONS,EVIDENCE_HEADERS,SCHEMA_VERSION} from './schema.mjs';
 import {mergeRows,splitPlacePatches} from './update-atlas.mjs';
 import {archiveBoundaryRows,visitInstanceSummary,readVisitInstances} from './visit-instances.mjs';
 import {buildManagedLinkRows} from './managed-links.mjs';
-import {sourcePath} from './source-data.mjs';
 
 const placeKeys=['japanPlaces','regionPlaces','cityPlaces'];
 const moveKeys=['ground','cityMoves'];

@@ -23,6 +23,8 @@ npm run verify
 
 使用 Obsidian 时，在私有 `data/atlas-config.json` 设置 `vault`；使用通用本地源时设置 `dataSource.path`。两种入口都归一到同一套 schema 和派生流程。
 
+已有布局通过 `dataSource.files`、`tableDirectory` 和 `referenceRoots` 显式绑定；读取、更新、回滚、回执和指纹必须复用 `source-data.mjs` 的实际路径解析，不另拼固定表名。不要为接入工具复制一套个人知识源。
+
 ## 变更边界
 
 `scripts/schema.mjs` 拥有字段契约，`scripts/source-data.mjs` 拥有源表初始化和导入，`scripts/atlas-data.mjs` 负责只读装载，`scripts/update-atlas.mjs` 是唯一正式写入入口，`src/` 和 `scripts/render-*.mjs` 只负责呈现。不要在渲染器中写入维护源，也不要把个人适配写进通用模块。

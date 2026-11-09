@@ -98,9 +98,9 @@ async function main(){
   const candidates=parseCsv(await readFile(sourcePath(source,TABLES.visitCandidates),'utf8'));
   const audit=createContinuityAudit(atlas,candidates);
   if(command==='check'){
-    await validateLinks(vault,Object.values(sourceRows).flat(),{sourceType:source.type});
+    await validateLinks(vault,Object.values(sourceRows).flat(),{source});
     await loadCityDetails(folder,atlas,{},source);
-    for(const name of CITY_FILES.slice(0,2))try{await validateLinks(vault,parseCsv(await readFile(sourcePath(source,name),'utf8')),{sourceType:source.type});}catch(e){if(e.code!=='ENOENT')throw e;}
+    for(const name of CITY_FILES.slice(0,2))try{await validateLinks(vault,parseCsv(await readFile(sourcePath(source,name),'utf8')),{source});}catch(e){if(e.code!=='ENOENT')throw e;}
     if(audit.summary.structuralErrors)throw new Error('数据结构仍有未管理缺口或引用/时间矛盾：'+JSON.stringify(audit.summary));
   }
   if(command==='trace'){if(!values.id)throw new Error('trace需要 --id');console.log(JSON.stringify(traceAtlasRecord(atlas,values.id),null,2));return;}

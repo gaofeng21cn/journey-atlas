@@ -160,9 +160,10 @@
       "app-contribution.mjs",
       "docs/架构与数据边界.md",
       "docs/维护流程.md",
+      "docs/输入目录约定.md",
       "plugin.json",
       "skills/travel-planning/SKILL.md"
     ],
-    "digest": "sha256:368f87bfbc32d858bf62f7cedbea65db36e1463c8c0195568f62e0ff22ec7458"
+    "digest": "sha256:2a4635ce994630fe9d11eb1e23f7eb4cd4c5992cdde01f328208248d3f44a28c"
   }
 }

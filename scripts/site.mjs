@@ -6,6 +6,7 @@ import {pathToFileURL} from 'node:url';
 import {parseArgs} from 'node:util';
 import {build} from 'esbuild';
 import {ROOT,readJson} from './data.mjs';
+import {readAtlasConfig} from './source-data.mjs';
 import {prepareSiteData} from './site-data.mjs';
 import {createScopeEngine} from '../src/scope-model.mjs';
 import {passportSvg} from '../src/site-map.mjs';
@@ -13,7 +14,6 @@ import {travelTime} from '../src/transport-time.mjs';
 import {csv} from './csv.mjs';
 import {passportAsset,prepareAsset} from './output-paths.mjs';
 import {writeCityReconstructions} from './city-reconstruction-output.mjs';
-import {readAtlasConfig} from './source-data.mjs';
 
 export async function buildSite({vault,output,atlas}={}) {
   const started=performance.now(),config=await readAtlasConfig();

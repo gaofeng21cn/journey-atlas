@@ -1,5 +1,6 @@
-import { mkdir, readFile, writeFile, rm, rename } from 'node:fs/promises';
-import { dirname, isAbsolute, join, resolve } from 'node:path';
+import { lstatSync, realpathSync } from 'node:fs';
+import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
+import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { csv, parseCsv } from './csv.mjs';
 import { ROOT, readJson } from './data.mjs';
 import { TABLES, UPDATE_DEFINITIONS } from './schema.mjs';
@@ -11,30 +12,53 @@ export async function readAtlasConfig({ root = ROOT, path = process.env.TRAVEL_P
   const configPath = resolve(root, path || 'data/atlas-config.json');
   const config = await readJson(configPath).catch(error => {
     if (error.code !== 'ENOENT' || path) throw error;
-    return {dataSource:{type:'csv-directory',path:'data/source'},output:join(root,'outputs'),coverage:[]};
+    return { dataSource: { type: 'csv-directory', path: 'data/source' }, output: join(root, 'outputs'), coverage: [] };
   });
   return { ...config, configPath };
 }
 
-export async function resolveSource({ vault, source, config, root = ROOT } = {}) {
-  if (source) return source;
-  if (vault) {
-    config ||= await readAtlasConfig({root});
-    const base = resolve(vault);
-    return { type: 'obsidian', base, folder: join(base, '50_🌍旅行记录', '53_整理说明'), files: config.obsidianFiles || {} };
-  }
+function relativeName(name) {
+  if(typeof name!=='string'||!name.trim()||isAbsolute(name)||/^[A-Za-z]:/.test(name)||name.includes('\\')||name.split('/').includes('..'))throw new Error(`来源相对路径无效：${name}`);
+  return name;
+}
+function within(base,target){const rel=relative(base,target);return rel!=='..'&&!rel.startsWith('..'+sep)&&!isAbsolute(rel);}
+function physicalPath(path){
+  try{return realpathSync(path);}
+  catch(error){if(error.code!=='ENOENT')throw error;try{if(lstatSync(path).isSymbolicLink())throw new Error('来源路径不能使用失效符号链接：'+path);}catch(check){if(check.code!=='ENOENT')throw check;}const parent=dirname(path);if(parent===path)throw error;return join(physicalPath(parent),relative(parent,path));}
+}
+// Optional files may not exist; validate their real parent too, so symlinks
+// cannot redirect reads, writes, rollback or receipt inspection outside the root.
+export function boundedSourcePath(base,name){
+  relativeName(name);const lexicalBase=resolve(base),target=resolve(base,name),physicalBase=physicalPath(lexicalBase),physicalTarget=physicalPath(target);
+  if(!within(physicalBase,physicalTarget))throw new Error('来源路径不能越出配置根目录：'+name);
+  return target;
+}
+export async function resolveSource({vault,source,config,root=ROOT}={}){
+  if(source)return source;
   config ||= await readAtlasConfig({root});
-  const dataSource = config.dataSource;
-  if (dataSource?.type === 'csv-directory' && dataSource.path) {
-    const workspace=resolve(config.referenceRoot||root);
-    const base = isAbsolute(dataSource.path) ? dataSource.path : resolve(workspace, dataSource.path);
-    return { type: 'csv-directory', base: workspace, folder: resolve(base), path: resolve(base), files: dataSource.files || {} };
-  }
-  if (config.vault) {
-    const base = resolve(config.vault);
-    return { type: 'obsidian', base, folder: join(base, '50_🌍旅行记录', '53_整理说明'), files: config.obsidianFiles || {} };
-  }
-  throw new Error('未配置数据源：请在 data/atlas-config.json 设置 dataSource.path，或提供 vault');
+  const selected=config.dataSource;
+  if(selected&&!['csv-directory','obsidian'].includes(selected.type))throw new Error('未知 dataSource.type');
+  let type,base,folder,files,referenceRoots;
+  if(vault||!selected&&config.vault||selected?.type==='obsidian'){
+    type='obsidian';base=resolve(vault||selected?.path||config.vault);
+    const layout=selected?.type==='obsidian'?selected:{};
+    folder=boundedSourcePath(base,layout.tableDirectory||'50_🌍旅行记录/53_整理说明');
+    files=layout.files||config.obsidianFiles||{};referenceRoots=layout.referenceRoots||['50_🌍旅行记录'];
+  }else if(selected?.type==='csv-directory'&&selected.path){
+    type='csv-directory';base=resolve(root,config.referenceRoot||root);
+    folder=resolve(base,selected.path);physicalPath(folder);files=selected.files||{};referenceRoots=selected.referenceRoots||['.'];
+  }else throw new Error('未配置数据源：请设置 dataSource.path，或提供 vault');
+  if(!files||typeof files!=='object'||Array.isArray(files))throw new Error('来源 files 必须是文件映射');
+  for(const name of Object.values(files))relativeName(name);
+  if(!Array.isArray(referenceRoots)||!referenceRoots.length)throw new Error('referenceRoots 必须声明允许的正文相对目录');
+  const referencePaths=referenceRoots.map(name=>boundedSourcePath(base,name));
+  // Inventory only the source and declared reference areas. An implicit portable
+  // '.' reference fallback must not expand storage scans to the entire workspace.
+  const roots=[...new Set([folder,...(type==='obsidian'||selected?.referenceRoots?referencePaths:[])].map(physicalPath))];
+  const storageRoots=roots.filter(path=>!roots.some(other=>other!==path&&within(other,path)));
+  const result={type,base,folder,path:folder,files,referenceRoots,storageRoots};
+  assertDistinctSourceFiles(result,[...Object.values(TABLES),'全旅程数据点-定位证据.json']);
+  return result;
 }
 
 const PORTABLE_FILES = Object.freeze({
@@ -44,14 +68,21 @@ const PORTABLE_FILES = Object.freeze({
   [TABLES.cityMoves]: 'city-moves.csv', [TABLES.cityJourneys]: 'city-journeys.json', [TABLES.cityEvidence]: 'city-evidence.json',
   ['全旅程数据点-定位证据.json']: 'global-evidence.json',
 });
-export function sourceFile(source, file) {
-  if(source.type==='obsidian')return source.files?.[file]||file;
-  if (source.type !== 'csv-directory') return file;
-  const mapped = source.fileMap?.[file] || (!Array.isArray(source.files) && source.files?.[file]) || PORTABLE_FILES[file] || file;
-  if (!mapped || isAbsolute(mapped) || mapped.split(/[\\/]/).includes('..')) throw new Error(`数据源文件路径无效：${file}`);
-  return mapped;
+export function sourceFile(source,file){
+  return relativeName(source.fileMap?.[file]||(!Array.isArray(source.files)&&source.files?.[file])||(source.type==='csv-directory'?PORTABLE_FILES[file]:null)||file);
 }
-export const sourcePath = (source, file) => join(source.folder, sourceFile(source, file));
+export const sourcePath=(source,file)=>boundedSourcePath(source.folder,sourceFile(source,file));
+export function sourceReferencePath(source,link){
+  const target=boundedSourcePath(source.base,link),physicalTarget=physicalPath(target),allowed=source.referenceRoots||(source.type==='obsidian'?['50_🌍旅行记录']:['.']);
+  if(!allowed.some(name=>within(physicalPath(boundedSourcePath(source.base,name)),physicalTarget)))throw new Error('正文回链须位于允许的来源目录：'+link);
+  return target;
+}
+
+export function assertDistinctSourceFiles(source,names){
+  const paths=new Map();
+  for(const file of new Set(names)){const target=physicalPath(sourcePath(source,file));if(paths.has(target))throw new Error('源表不能映射到同一文件：'+paths.get(target)+' / '+file);paths.set(target,file);}
+}
+
 
 const csvDefinitions = Object.freeze(Object.fromEntries(Object.entries(UPDATE_DEFINITIONS)
   .filter(([, def]) => def.file.endsWith('.csv'))));

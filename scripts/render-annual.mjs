@@ -1,4 +1,4 @@
-import {readAtlasConfig} from './source-data.mjs';
+import {readAtlasConfig,resolveSource} from './source-data.mjs';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
@@ -18,8 +18,9 @@ export async function annualConfig(){return readJson(join(ROOT,'data/annual-conf
 
 export async function renderAnnual({year,asOf,output,vault,atlas}={}){
   const config=await readAtlasConfig(),curation=(await annualConfig()).years?.[year]||{};
-  output ||= config.output;vault ||= config.vault;
-  atlas ||= (await loadAtlas(vault)).atlas;
+  const source=await resolveSource({vault,config});
+  output ||= config.output;
+  atlas ||= (await loadAtlas(undefined,{}, {source})).atlas;
   const basePlaceId=curation.basePlaceId||atlas.journeyLayer.journeys.filter(j=>j.date.startsWith(String(year)))
     .map(j=>j.baseId).filter(Boolean).sort((a,b)=>atlas.journeyLayer.journeys.filter(j=>j.baseId===b).length-atlas.journeyLayer.journeys.filter(j=>j.baseId===a).length)[0];
   const view=annualView(atlas,{year,asOf:asOf||curation.asOf||`${year}-12-31`,basePlaceId,placeGroups:curation.placeGroups||[]});
@@ -27,7 +28,7 @@ export async function renderAnnual({year,asOf,output,vault,atlas}={}){
   const memory=curation.memory;
   if(memory){
     if(!view.places.some(p=>p.id===memory.placeId))throw new Error('年度记忆须引用本年度实际到访地点');
-    await validateLinks(vault,[{'关联正文':memory.source}]);
+    await validateLinks(source.base,[{'关联正文':memory.source}],{source});
   }
   const dotText=await readFile(join(ROOT,'src/world-dots.js'),'utf8'),dots=JSON.parse(dotText.slice(dotText.indexOf('=')+1).trim().replace(/;$/,''));
   const labels=curation.mapLabels||[{placeId:view.base.id,dx:-30,dy:45},{placeId:view.farthest.id,dx:0,dy:-26,caption:'年度最远'}];

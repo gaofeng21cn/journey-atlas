@@ -8,6 +8,7 @@ import {loadAtlas} from '../scripts/atlas-data.mjs';
 import {sourceManifest} from '../scripts/manifest.mjs';
 import {execFileSync} from 'node:child_process';
 import {ROOT} from '../scripts/data.mjs';
+import {TABLES} from '../scripts/schema.mjs';
 
 test('fresh checkout uses public defaults and explicit vault without a private config', async () => {
   const root=await mkdtemp(join(tmpdir(),'journey-config-'));
@@ -34,8 +35,8 @@ test('portable source initializer creates a schema-only bundle without an Obsidi
     const {atlas}=await loadAtlas(undefined,{}, {source,config});
     assert.equal(atlas.meta.totalKm,0);assert.equal(atlas.routes.length,0);
     const manifest=await sourceManifest(source.folder,undefined,root,source);
-    assert.ok(manifest.some(item=>item.file==='source/flights.csv'));
-    assert.ok(manifest.some(item=>item.file==='source/movements.csv'));
+    assert.ok(manifest.some(item=>item.file==='vault/'+TABLES.flightArchive));
+    assert.ok(manifest.some(item=>item.file==='vault/'+TABLES.ground));
   } finally { await rm(root, { recursive: true, force: true }); }
 });
 

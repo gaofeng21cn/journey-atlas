@@ -245,8 +245,8 @@ export function projectMobility(reconstruction,config,geometry,places=[]){
       distanceRange:[0,1].map(i=>+internal.reduce((s,m)=>s+m.distanceRange[i],0).toFixed(2)),durationRange:[0,1].map(i=>+internal.reduce((s,m)=>s+m.durationRange[i],0).toFixed(2))}};
 }
 
-export async function loadGlobalMobility(folder,atlas,source){
-  let evidence;try{evidence=JSON.parse(await readFile(sourcePath(source||{type:'obsidian',folder},GLOBAL_EVIDENCE_FILE),'utf8'));}catch(e){if(e.code==='ENOENT')return null;throw e;}
+export async function loadGlobalMobility(folder,atlas,source={type:'obsidian',folder}){
+  let evidence;try{evidence=JSON.parse(await readFile(sourcePath(source,GLOBAL_EVIDENCE_FILE),'utf8'));}catch(e){if(e.code==='ENOENT')return null;throw e;}
   if(!evidence.tracks?.length&&!evidence.photoPoints?.length&&!evidence.stays?.length)return null;
   const resolveNode=await globalNodeResolver(atlas,evidence),references=atlas.routes.filter(r=>r.include!==false&&!r.structuralLink&&r.countDistance!==false&&!['计划','计划航班','待飞','排除'].includes(r.status));
   const canConnect=(a,b,window)=>{

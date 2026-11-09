@@ -1,6 +1,7 @@
 import {readFile,stat} from 'node:fs/promises';
 import {relative,resolve,sep} from 'node:path';
 import {ROOT} from './data.mjs';
+import {sourceReferencePath} from './source-data.mjs';
 
 // Only explicit app-owned file references are resolved here. Ticket identifiers,
 // photo UUIDs and prose citations retain their own domain meaning.
@@ -16,11 +17,11 @@ export function referencedEvidenceFiles(rows,{root=ROOT}={}){
   return [...files].sort();
 }
 
-export async function validateLinks(vault,rows,{root=ROOT,sourceType='obsidian'}={}){
+export async function validateLinks(vault,rows,{root=ROOT,source}={}){
+  source ||= {type:'obsidian',base:resolve(vault)};
   const links=new Set(rows.flatMap(r=>String(r['关联正文']||'').split('；').filter(Boolean)));
   for(const link of links){
-    const path=resolve(vault,link),rel=relative(vault,path);
-    if(rel==='..'||rel.startsWith('..'+sep)||sourceType==='obsidian'&&!rel.startsWith('50_🌍旅行记录'+sep))throw new Error(sourceType==='obsidian'?'正文回链须位于旅行区：'+link:'正文回链须位于资料根目录：'+link);
+    const path=sourceReferencePath(source,link);
     await readFile(path).catch(()=>{throw new Error('正文回链不存在：'+link);});
   }
   for(const name of referencedEvidenceFiles(rows,{root})){

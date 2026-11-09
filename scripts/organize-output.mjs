@@ -1,3 +1,4 @@
+import {readAtlasConfig} from './source-data.mjs';
 import {readFile,readdir,writeFile,rmdir,mkdtemp,rm} from 'node:fs/promises';
 import {join,relative} from 'node:path';
 import {tmpdir} from 'node:os';
@@ -5,7 +6,7 @@ import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {ROOT} from './data.mjs';
 import {passportAsset,writeOutputGuide} from './output-paths.mjs';
-const config=JSON.parse(await readFile(join(ROOT,'data/atlas-config.json'))),cities=JSON.parse(await readFile(join(ROOT,'data/city-catalog.json'))),regions=JSON.parse(await readFile(join(ROOT,'data/region-catalog.json')));
+const config=await readAtlasConfig(),cities=JSON.parse(await readFile(join(ROOT,'data/city-catalog.json'))),regions=JSON.parse(await readFile(join(ROOT,'data/region-catalog.json')));
 const output=config.output,aliases=new Map();
 for(const variant of ['分享','个人']){
   for(const [label,kind,name]of [['全球飞行護照','flight','全球'],['全球飞行护照','flight','全球'],['全球旅行护照','world','全球'],['日本旅行护照','region','日本'],...Object.values(regions).map(c=>[c.name+'旅行护照','region',c.name])])aliases.set(label+'-'+variant,{kind,name,variant});

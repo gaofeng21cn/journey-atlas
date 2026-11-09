@@ -5,7 +5,7 @@ import { SCHEMA_VERSION, TABLES, OPTIONAL_SOURCE_FILES } from './schema.mjs';
 import {ROOT} from './data.mjs';
 import {parseCsv} from './csv.mjs';
 import {referencedEvidenceFiles} from './source-references.mjs';
-import {sourceFile} from './source-data.mjs';
+import {sourcePath,readAtlasConfig} from './source-data.mjs';
 
 export const MANIFEST = '旅行护照构建清单.json';
 
@@ -34,8 +34,7 @@ const PUBLIC_DATA_FILES = Object.freeze([
   'data/scope-hierarchy.json',
 ]);
 
-async function fileInfo(folder, name) {
-  const path = join(folder, name);
+async function fileInfo(folder, name, path = join(folder,name)) {
   const [bytes, fileStat] = await Promise.all([readFile(path), stat(path)]);
   return {
     file: name,
@@ -45,17 +44,10 @@ async function fileInfo(folder, name) {
   };
 }
 
-async function sourceFileInfo(folder, name, source) {
-  const actual=source?sourceFile(source,name):name;
-  return {...await fileInfo(folder,actual),sourcePath:actual};
-}
-
-export async function sourceManifest(folder, names = SOURCE_FILES, root=ROOT, source) {
-  const portable=source?.type==='csv-directory',prefix=portable?'source':'vault';
-  const info=async name=>({...await sourceFileInfo(folder,name,source),file:`${prefix}/${source?sourceFile(source,name):name}`});
-  const required=await Promise.all(names.map(info));
-  for(const name of [...OPTIONAL_SOURCE_FILES,TABLES.visits,'全旅程数据点-定位证据.json']){try{required.push(await info(name));}catch(e){if(e.code!=='ENOENT')throw e;}}
-  const rows=(await Promise.all(required.filter(item=>item.file.endsWith('.csv')).map(item=>readFile(join(folder,item.sourcePath||item.file.slice(prefix.length+1)),'utf8').then(parseCsv)))).flat();
+export async function sourceManifest(folder, names = SOURCE_FILES, root=ROOT, source={type:'obsidian',folder}) {
+  const required=await Promise.all(names.map(async name => ({...await fileInfo(folder,name,sourcePath(source,name)), file: `vault/${name}`})));
+  for(const name of [...OPTIONAL_SOURCE_FILES,TABLES.visits,'全旅程数据点-定位证据.json']){try{required.push({...await fileInfo(folder,name,sourcePath(source,name)),file:`vault/${name}`});}catch(e){if(e.code!=='ENOENT')throw e;}}
+  const rows=(await Promise.all(required.filter(item=>item.file.endsWith('.csv')).map(item=>readFile(sourcePath(source,item.file.slice('vault/'.length)),'utf8').then(parseCsv)))).flat();
   for(const name of referencedEvidenceFiles(rows,{root}))required.push({...await fileInfo(root,name),file:`app/${name}`});
   return required;
 }
@@ -79,7 +71,7 @@ export async function runtimeManifest(root) {
   // maps just like a change to the public city catalogue.
   try{await stat(join(root,'data/geocode-cache.json'));names.push('data/geocode-cache.json');}catch(e){if(e.code!=='ENOENT')throw e;}
   try{await stat(join(root,'data/annual-config.json'));names.push('data/annual-config.json');}catch(e){if(e.code!=='ENOENT')throw e;}
-  return Promise.all(names.map(async name => ({...await fileInfo(root,name),file:`app/${name}`})));
+  return Promise.all(names.map(async name => ({...await fileInfo(root,name,name==='data/atlas-config.json'?(await readAtlasConfig({root})).configPath:join(root,name)),file:`app/${name}`})));
 }
 
 export function manifestFrom({ sources, atlas, outputFiles = [] }) {

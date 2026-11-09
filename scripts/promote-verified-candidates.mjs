@@ -10,11 +10,10 @@ export {promotionDecision} from './visit-evidence.mjs';
 
 const root = process.cwd();
 const {values}=parseArgs({options:{write:{type:'boolean',default:false}}});
-const cfg = await readAtlasConfig({root});
-const source = await resolveSource({config: cfg, root});
-const folder = source.folder;
-const regionPath = sourcePath(source, '地区旅行数据点-地点.csv');
-const candidatePath = sourcePath(source, TABLES.visitCandidates);
+const cfg = await readAtlasConfig();
+const selectedSource=await resolveSource({config:cfg});
+const regionPath = sourcePath(selectedSource,TABLES.regionPlaces);
+const candidatePath = sourcePath(selectedSource,TABLES.visitCandidates);
 const [regionText, candidateText] = await Promise.all([readFile(regionPath, 'utf8'), readFile(candidatePath, 'utf8')]);
 const regions = parseCsv(regionText), candidates = parseCsv(candidateText);
 const regionNames = new Set(regions.map(r => `${r['国家地区']}|${r['城市/地点']}`));
@@ -49,7 +48,7 @@ for (const c of targets) {
   const name = c['到访城市/地点'], g = await geocode(name, c['国家地区']);
   if (!g || !Number.isFinite(g.lat) || !Number.isFinite(g.lon)) { unresolved.push({ name, country: c['国家地区'] }); continue; }
   const date = c['最早证据日'] || c['最晚证据日'] || '';
-  const source = c['关联正文'] || 'source-not-specified';
+  const source = c['关联正文'] || '';
   const row = {
     '地点编号': c['地点编号'], '国家地区': c['国家地区'], '国家代码': c['国家代码'] || '', '一级区域代码': c['一级区域代码'] || '',
     '城市/地点': name, '到访状态': '已到访', '核定依据': `${c['核定依据']||c['证据']}；已在候选表明确核定地面到访`,

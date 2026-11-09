@@ -51,7 +51,7 @@ export async function renderAtlas({vault,source,output,variant='all',scope='all'
   const areas=['world','japan',...Object.keys(catalog)];
   if(!['all',...areas].includes(scope))throw new Error('--scope 应为 all 或 '+areas.join('、'));
   const selected=scope==='all'?areas:[scope];
-  const atlas=await refreshAtlas({vault:source?.type==='obsidian'?vault:undefined,source,output,syncVault});
+  const atlas=await refreshAtlas({vault,source,output,syncVault});
   const htmlDir=join(output,'html'), checksDir=join(output,'checks');
   await Promise.all([mkdir(output,{recursive:true}),mkdir(htmlDir,{recursive:true}),mkdir(checksDir,{recursive:true})]);
   const [css,extra,worldTemplate,japanTemplate,dots,worldScript,topology]=await Promise.all([

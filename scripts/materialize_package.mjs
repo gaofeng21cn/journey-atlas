@@ -45,7 +45,7 @@ if (!check) {
     ['app-contribution.mjs', 'app-contribution.mjs'],
   ]) await cp(path.join(ROOT, source), path.join(CARRIER, target));
   await mkdir(path.join(CARRIER, 'docs'), { recursive: true });
-  for (const name of ['架构与数据边界.md', '维护流程.md']) {
+  for (const name of ['架构与数据边界.md', '维护流程.md', '输入目录约定.md']) {
     await cp(path.join(ROOT, 'docs', name), path.join(CARRIER, 'docs', name));
   }
   await cp(

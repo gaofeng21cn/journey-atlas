@@ -31,6 +31,8 @@ npm test
 
 也可以把一次导入交给 Agent：`scripts/source-data.mjs` 的 `importSourceBundle()` 接受版本化 JSON，按稳定编号合并到用户自己的 `data/source/`，遇到重复编号或未知字段会停止，不覆盖原始文件。Obsidian 是可选连接器；在 `data/atlas-config.json` 中设置 `vault` 或 `dataSource` 即可切换。
 
+已有维护表可通过 `dataSource.files` 和 `referenceRoots` 直接绑定；Obsidian 支持自定义 `tableDirectory`。无需复制已有表和正文，读取、更新、回滚与构建沿用同一来源配置，详见 [输入目录约定](docs/输入目录约定.md)。
+
 导入文件使用 `version: 1` bundle，支持 `coverage`、`flightArchive`、`ground`、`japanPlaces`、`regionPlaces`、`journeys`、`visits` 和城市细节字段；行字段沿用 `scripts/schema.mjs`。地图行政区默认来自 Natural Earth Public Domain。需要细分边界时，可执行 `npm run geography:check` 预览映射，再用 `node scripts/prepare-open-geography.mjs --output data/site-cache/open-geography` 生成日本、瑞士和中国的可替换公开边界；城市行政区与道路图层按需运行 `node scripts/fetch-city-geography.mjs <city-id>`，资源会遵循各自来源许可留在本地。
 
 ## 数据边界
