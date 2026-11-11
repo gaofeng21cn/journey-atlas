@@ -4,7 +4,7 @@ import { existsSync, readFileSync, realpathSync } from 'node:fs';
 import { mkdir, rmdir } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 
 export const packageRoot = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
@@ -48,7 +48,7 @@ export async function setupRuntime({ browser = false } = {}) {
     } finally { await rmdir(lock); }
   }
   if (browser && !process.env.PASSPORT_BROWSER_CHANNEL && !existsSync('/Applications/Google Chrome.app')) {
-    const { chromium } = await import(pathToFileURL(require.resolve('playwright')).href);
+    const { chromium } = require('playwright');
     if (!existsSync(chromium.executablePath())) {
       await run(process.execPath, [join(packageRoot, 'node_modules/playwright/cli.js'), 'install', 'chromium'], { setup: true });
     }

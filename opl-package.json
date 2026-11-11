@@ -309,7 +309,7 @@
       "src/transport-time.mjs",
       "src/world-dots.js"
     ],
-    "digest": "sha256:08e45bd40d86fc55a9e06b5ecf616b0744ab296c1e955169ce6e2cfb7019c0d6"
+    "digest": "sha256:6c737faa104bcca07f2c1214100264d3b14b20e6e601b8aecc10511d462ad575"
   },
   "visibility": "public",
   "description": "Agent-native travel atlas using user-owned travel records and Obsidian sources.",
