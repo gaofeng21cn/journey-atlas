@@ -2,7 +2,23 @@
 
 Journey Atlas 是一个本地优先的旅行数据可视化工具：把地点、行程和交通组成一份有向旅行账本，生成 Flighty 风格的旅行护照 PNG/SVG、可交互的多尺度地图，以及可供 Agent 读取的 OPL App 贡献视图。
 
-项目的内部兼容 ID 仍为 `travel-passport`，公开项目名和仓库名为 `journey-atlas`。个人旅行事实、照片、GPS、票据和 Obsidian 路径不在仓库中；它们只在使用者自己的工作区保存。
+Journey Atlas 是 OPL MiniApp，产品类型为应用。稳定 Package ID 为 `travel-passport`，公开项目名和仓库名为 `journey-atlas`。个人旅行事实、照片、GPS、票据和 Obsidian 路径不在发行包中；它们只在使用者自己的工作区保存。
+
+## 安装与管理
+
+在 OPL 软件中心搜索 **Journey Atlas**，使用默认正式版安装、更新或卸载。公开来源为 `ghcr.io/gaofeng21cn/one-person-lab-packages/travel-passport:latest-stable`，安装和版本切换由现有 Package carrier 管理。软件源中的可用版本以已发布制品为准。
+
+发行包包含执行代码、公共地图、锁定依赖清单和共享 UI adapter。CLI 从选定安装执行，`--workspace` 只指定私人数据，不执行该目录里的程序：
+
+```sh
+node <安装目录>/journey-atlas.mjs version
+node <安装目录>/journey-atlas.mjs --workspace <私人工作区> init
+node <安装目录>/journey-atlas.mjs --workspace <私人工作区> import --input <用户资料.json>
+node <安装目录>/journey-atlas.mjs --workspace <私人工作区> status --json
+node <安装目录>/journey-atlas.mjs --workspace <私人工作区> site build
+```
+
+首次 CLI 调用会使用 `npm ci --ignore-scripts` 安装锁定依赖。共享视图的读取始终只读；缺少依赖时显示“初始化运行环境”，经确认后调用同一 setup。PNG 导出复用已有 Chrome 或 Playwright Chromium，需要时使用 Playwright 原生安装入口。更新和卸载只处理软件安装，保留工作区、Obsidian、输出、备份和操作回执。详见 [安装与共享基座](docs/安装与共享基座.md)。
 
 ## 快速开始
 
@@ -54,7 +70,7 @@ PNG/SVG 导出使用浅纸纹、蓝色上下边缘、点阵和方向弧线；网
 
 ## Agent 原生入口
 
-项目包含 OPL capability package 和标准 app contribution adapter。Agent 可以读取：
+项目复用 OPL Package 载体和标准 app contribution adapter；技术加载角色 `capability_package` 不改变应用类型。Agent 可以读取：
 
 - `travel.passport.v1#status`：构建与质量状态；
 - `travel.passport.v1#overview`：全球摘要及可用产物；

@@ -3,7 +3,7 @@ import {createHash} from 'node:crypto';
 import { join,resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
-import { ROOT,readJson } from './data.mjs';
+import { ROOT,readJson ,WORKSPACE_ROOT} from './data.mjs';
 import { parseCsv,csv,loadAtlas,refreshAtlas } from './atlas-data.mjs';
 import { REGION_PLACES } from './region-data.mjs';
 import { renderAtlas } from './render-atlas.mjs';
@@ -100,7 +100,7 @@ export async function updateAtlas({input,vault,dryRun=false,noRender=false,outpu
   if(expectedInputSha256&&inputRef.sha256!==expectedInputSha256)throw Object.assign(new Error('更新补丁已变化，请重新预览'),{code:'STALE_INPUT'});
   const config=await readAtlasConfig();
   const source=await resolveSource({vault,config});
-  vault=source.base;output=resolve(output||config.output||join(ROOT,'outputs'));
+  vault=source.base;output=resolve(output||config.output||join(WORKSPACE_ROOT,'outputs'));
   const snapshot=await updateSourceSnapshot(source.folder,source);
   requireSourceRevision(snapshot,expectedSourceRevision);
   if(patch.cityJourneys||patch.cityEvidence){

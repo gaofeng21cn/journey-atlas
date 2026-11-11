@@ -13,9 +13,27 @@ For an MCP App review, read `travel.passport.v1#status`, `#overview`, `#annual`,
 build freshness, quality gate, evidence boundaries, and aggregate counts without
 placing private route contents in the Package repository.
 Open the shared OPL MCP App with the registered Journey Atlas `workspace_path`.
-The installed carrier uses that binding to invoke the owner workspace's status
-command; it never packages private travel data. With no workspace selected, the
-view asks for its path.
+The installed carrier uses that binding only for data. All code runs from the
+active installed Package, never from scripts or package.json in the workspace.
+With no configured workspace, the view asks for its path. If runtime dependencies
+are missing, the read stays read-only and offers the confirmed runtime setup.
+
+For installed use, run `node <package-root>/journey-atlas.mjs --workspace <path>
+<command>` with `init`, `import`, `status`, `check`, `trace`, `update`, `receipt`,
+`build`, `site`, `annual`, or `verify`. `version` reads the actual installed
+identity; `setup` installs locked npm dependencies without package scripts. The
+first CLI business command uses the same setup automatically. `site build`
+generates the interactive offline UI; `status --json` supplies Agent readback.
+Package code and dependencies stay in the carrier; configuration, source tables,
+outputs, backups, and receipts stay in the external workspace across updates and
+uninstall. Read [installation and shared foundation](../../docs/安装与共享基座.md).
+
+Use already authorized OPL knowledge sources first, especially Obsidian. Read a
+known source through `opl knowledge read-source` and use Framework dependency
+verification and action revalidation before consuming it. Bind source tables and
+allowed reference roots in the private workspace configuration; do not clone the
+knowledge store. No account is required for local use. Future network import must
+use OPL Connect references rather than store credentials in this Package.
 
 ## First import
 
@@ -26,7 +44,7 @@ preserve stable record IDs, evidence references, date precision, and numerical
 provenance. Read existing configuration before initializing; never import the
 fictional example into an existing personal workspace.
 
-For a fresh checkout, run `npm ci`, `npm run init:data`, then
+For an explicit development checkout, run `npm ci`, `npm run init:data`, then
 `npm run import:data -- --input <user-bundle.json>`. Continue through
 `npm run check:data`, `npm run build`, and `npm run verify`. The CSV directory
 is the default source; Obsidian is optional. New evidence updates existing IDs

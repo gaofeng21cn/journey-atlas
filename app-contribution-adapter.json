@@ -4,7 +4,10 @@
     "travel.passport.v1#status": {
       "kind": "command",
       "cwd": "package",
-      "argv": ["node", "./app-contribution.mjs"],
+      "argv": [
+        "node",
+        "./app-contribution.mjs"
+      ],
       "stdin": "request_json",
       "passthrough": true,
       "input_schema": {
@@ -16,7 +19,10 @@
     "travel.passport.v1#overview": {
       "kind": "command",
       "cwd": "package",
-      "argv": ["node", "./app-contribution.mjs"],
+      "argv": [
+        "node",
+        "./app-contribution.mjs"
+      ],
       "stdin": "request_json",
       "passthrough": true,
       "input_schema": {
@@ -28,13 +34,20 @@
     "travel.passport.v1#annual": {
       "kind": "command",
       "cwd": "package",
-      "argv": ["node", "./app-contribution.mjs"],
+      "argv": [
+        "node",
+        "./app-contribution.mjs"
+      ],
       "stdin": "request_json",
       "passthrough": true,
       "input_schema": {
         "type": "object",
         "properties": {
-          "year": {"type": "integer", "minimum": 2000, "maximum": 2100}
+          "year": {
+            "type": "integer",
+            "minimum": 2000,
+            "maximum": 2100
+          }
         },
         "additionalProperties": false
       }
@@ -42,7 +55,10 @@
     "travel.passport.v1#regions": {
       "kind": "command",
       "cwd": "package",
-      "argv": ["node", "./app-contribution.mjs"],
+      "argv": [
+        "node",
+        "./app-contribution.mjs"
+      ],
       "stdin": "request_json",
       "passthrough": true,
       "input_schema": {
@@ -52,5 +68,21 @@
       }
     }
   },
-  "actions": {}
+  "actions": {
+    "travel.passport.v1#runtime.setup": {
+      "kind": "command",
+      "cwd": "package",
+      "argv": [
+        "node",
+        "./app-contribution.mjs"
+      ],
+      "stdin": "request_json",
+      "passthrough": true,
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  }
 }

@@ -4,7 +4,7 @@ import {join,relative} from 'node:path';
 import {tmpdir} from 'node:os';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
-import {ROOT} from './data.mjs';
+import {ROOT,WORKSPACE_ROOT} from './data.mjs';
 import {passportAsset,writeOutputGuide} from './output-paths.mjs';
 const config=await readAtlasConfig(),cities=JSON.parse(await readFile(join(ROOT,'data/city-catalog.json'))),regions=JSON.parse(await readFile(join(ROOT,'data/region-catalog.json')));
 const output=config.output,aliases=new Map();
@@ -38,7 +38,7 @@ for(const c of cities)for(const entry of c.entryScopes||[]){
 const unique=[...new Map(pending.map(p=>[p.source,p])).values()];
 if(!process.argv.includes('--apply')){console.log(JSON.stringify({files:unique.length,action:'旧输出经逐文件校验后压缩进private/history；当前替代文件已生成'},null,2));}
 else if(unique.length){
-  const archive=join(ROOT,'private/history','output-'+new Date().toISOString().replace(/[:.]/g,'-')+'.zip');
+  const archive=join(WORKSPACE_ROOT,'private/history','output-'+new Date().toISOString().replace(/[:.]/g,'-')+'.zip');
   const scratch=await mkdtemp(join(tmpdir(),'travel-archive-'));
   try{
     const plan=join(scratch,'plan.json');

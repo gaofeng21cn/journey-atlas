@@ -4,15 +4,15 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 import { chromium } from 'playwright';
-import { ROOT, readJson } from './data.mjs';
+import { ROOT, readJson ,WORKSPACE_ROOT} from './data.mjs';
 
 // Generic offline browser acceptance. It deliberately discovers the scopes and
 // places in the current user's data instead of naming a person's cities.
 const { values } = parseArgs({ options: { output: { type: 'string' }, checks: { type: 'string' } } });
 const config = await readAtlasConfig();
-const configuredOutput = config.output ? (new URL(config.output, pathToFileURL(ROOT + '/')).pathname) : join(ROOT, 'outputs');
+const configuredOutput = config.output ? (new URL(config.output, pathToFileURL(ROOT + '/')).pathname) : join(WORKSPACE_ROOT, 'outputs');
 const output = resolve(values.output || join(configuredOutput, 'site'));
-const checksDir = resolve(values.checks || join(ROOT, 'private/runtime/browser-checks'));
+const checksDir = resolve(values.checks || join(WORKSPACE_ROOT, 'private/runtime/browser-checks'));
 await stat(join(output, 'index.html')).catch(error => { if (error.code === 'ENOENT') throw new Error('网站尚未构建；先运行 npm run site:build'); throw error; });
 await mkdir(checksDir, { recursive: true });
 const browser = await chromium.launch({ channel: 'chrome', headless: true }).catch(() => chromium.launch({ headless: true }));

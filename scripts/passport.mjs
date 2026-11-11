@@ -5,7 +5,7 @@ import {reconstructionProgress} from './reconstruction-progress.mjs';
 import {resolve,join} from 'node:path';
 import {readFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
-import {readJson,ROOT} from './data.mjs';
+import {readJson,ROOT,WORKSPACE_ROOT} from './data.mjs';
 import {TABLES} from './schema.mjs';
 import {loadAtlas,parseCsv} from './atlas-data.mjs';
 import {updateAtlas} from './update-atlas.mjs';
@@ -110,7 +110,7 @@ async function main(){
     return;
   }
   const runtimeConfig=await readAtlasConfig();
-  const outputDir=runtimeConfig.output||join(ROOT,'outputs');
+  const outputDir=runtimeConfig.output||join(WORKSPACE_ROOT,'outputs');
   const freshness=await compareManifest(manifestPath(outputDir),folder,ROOT,undefined,source);
   const report=passportSummary(atlas);
   report.build={state:freshness.state,changed:freshness.changed,lastGeneratedAt:freshness.manifest?.generatedAt||null,lastRenderedAt:freshness.manifest?.render?.generatedAt||null};

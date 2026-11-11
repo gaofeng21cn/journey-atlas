@@ -1,6 +1,6 @@
 import {lstat,readdir} from 'node:fs/promises';
 import {join,dirname} from 'node:path';
-import {ROOT,readJson} from './data.mjs';
+import {ROOT,readJson,WORKSPACE_ROOT} from './data.mjs';
 import {resolveSource,readAtlasConfig} from './source-data.mjs';
 
 // Read-only physical inventory. Nested areas are shown separately, never
@@ -19,9 +19,9 @@ async function measure(value){
   for(const path of paths)await walk(path);return result;
 }
 const config=await readAtlasConfig(),source=await resolveSource({config});
-const areas={app:ROOT,vault:source.storageRoots,output:config.output||join(ROOT,'outputs'),
-  history:join(ROOT,'private/history'),runtime:join(ROOT,'private/runtime'),rollback:join(ROOT,'data/history')};
-try{areas.sourceWorkbench=dirname((await readJson(join(ROOT,'inputs/global-sources.json'))).photosPath);}catch(e){if(e.code!=='ENOENT')throw e;}
+const areas={app:ROOT,vault:source.storageRoots,output:config.output||join(WORKSPACE_ROOT,'outputs'),
+  history:join(WORKSPACE_ROOT,'private/history'),runtime:join(WORKSPACE_ROOT,'private/runtime'),rollback:join(WORKSPACE_ROOT,'data/history')};
+try{areas.sourceWorkbench=dirname((await readJson(join(WORKSPACE_ROOT,'inputs/global-sources.json'))).photosPath);}catch(e){if(e.code!=='ENOENT')throw e;}
 const usage=Object.fromEntries(await Promise.all(Object.entries(areas).map(async([key,path])=>[key,await measure(path)])));
 const budgets={history:256*1024*1024,runtime:64*1024*1024};
 const overBudget=Object.entries(budgets).filter(([key,limit])=>usage[key].allocatedBytes>limit)

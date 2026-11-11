@@ -1,6 +1,6 @@
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {join} from 'node:path';
-import {ROOT} from './data.mjs';
+import {ROOT,WORKSPACE_ROOT} from './data.mjs';
 import {displayGeometry} from './display-geometry.mjs';
 import {spawnSync} from 'node:child_process';
 import {vectorContext} from './vector-context.mjs';
@@ -45,7 +45,7 @@ for(const c of configs.filter(c=>!selected.length||selected.includes(c.id))){
   }else if(c.contextProvider==='osm-pbf'){
     const file=join(cache,(c.contextCacheId||c.id)+'.osm.pbf');
     try{await readFile(file);}catch{const r=await fetch(c.contextPbfUrl,{signal:AbortSignal.timeout(120000)});if(!r.ok)throw new Error('公共路网下载失败：'+r.status);await writeFile(file,new Uint8Array(await r.arrayBuffer()));}
-    const result=spawnSync(process.env.TRAVEL_PYTHON||join(ROOT,'private/python/bin/python'),[join(ROOT,'scripts/extract-city-context.py'),file,join(ROOT,'data',c.contextFile),JSON.stringify(c.focusBounds||c.bounds)],{encoding:'utf8'});
+    const result=spawnSync(process.env.TRAVEL_PYTHON||join(WORKSPACE_ROOT,'private/python/bin/python'),[join(ROOT,'scripts/extract-city-context.py'),file,join(ROOT,'data',c.contextFile),JSON.stringify(c.focusBounds||c.bounds)],{encoding:'utf8'});
     if(result.status!==0)throw new Error(result.stderr||result.error?.message||'公共路网提取失败');console.log(result.stdout.trim());continue;
   }else if(c.contextProvider==='osm'){
     const file=join(cache,c.id+'-osm.json');let osm;

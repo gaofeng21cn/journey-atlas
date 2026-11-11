@@ -5,7 +5,7 @@ import {createServer} from 'node:http';
 import {pathToFileURL} from 'node:url';
 import {parseArgs} from 'node:util';
 import {build} from 'esbuild';
-import {ROOT,readJson} from './data.mjs';
+import {ROOT,readJson,WORKSPACE_ROOT} from './data.mjs';
 import {readAtlasConfig} from './source-data.mjs';
 import {prepareSiteData} from './site-data.mjs';
 import {createScopeEngine} from '../src/scope-model.mjs';
@@ -17,8 +17,8 @@ import {writeCityReconstructions} from './city-reconstruction-output.mjs';
 
 export async function buildSite({vault,output,atlas}={}) {
   const started=performance.now(),config=await readAtlasConfig();
-  output=resolve(output||join(config.output||join(ROOT,'outputs'),'site'));
-  const reconstructionOutput=output===resolve(join(config.output||join(ROOT,'outputs'),'site'))?join(output,'..','data'):join(output,'data');
+  output=resolve(output||join(config.output||join(WORKSPACE_ROOT,'outputs'),'site'));
+  const reconstructionOutput=output===resolve(join(config.output||join(WORKSPACE_ROOT,'outputs'),'site'))?join(output,'..','data'):join(output,'data');
   const [data,template,css,bundle]=await Promise.all([
     prepareSiteData({vault,atlas,onCityDetails:detail=>writeCityReconstructions(detail,reconstructionOutput)}),readFile(join(ROOT,'src/site.html'),'utf8'),readFile(join(ROOT,'src/site.css'),'utf8'),
     build({entryPoints:[join(ROOT,'src/site-app.mjs')],bundle:true,write:false,minify:true,format:'iife',target:'es2022'})]);

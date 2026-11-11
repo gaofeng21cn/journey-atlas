@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{PAGE_TITLE}}</title>
+    <link rel="stylesheet" href="./poster.css" />
+  </head>
+  <body>
+    <article class="poster" id="poster">
+      <div class="paper">
+        <svg class="security" aria-hidden="true" width="100%" height="100%">
+          <defs><pattern id="waves" width="200" height="28" patternUnits="userSpaceOnUse"><path d="M-100 14 Q-50 -3 0 14 T100 14 T200 14 T300 14" fill="none" stroke="#94ad9f" stroke-width=".8" /></pattern></defs>
+          <rect width="100%" height="100%" fill="url(#waves)" />
+        </svg>
+        <header class="topline"><span>✈ &nbsp; {{TOPLINE}}</span><span data-stat="years"></span></header>
+        <section class="map-plate" aria-label="世界航线与到访国家地图">
+          <svg id="mapSvg" viewBox="0 -56 1000 480" role="img" aria-label="到访国家以青绿色点阵呈现，航线以棕色弧线呈现">
+            <g id="mapDots"></g><g id="mapArcs"></g><g id="mapNodes"></g>
+          </svg>
+        </section>
+        <section class="stamps" aria-label="到访国家与地区"><ul id="stamps"></ul></section>
+        <section class="passport">
+          <div class="passport__heading">
+            <div><h1>我的旅行护照</h1><p>MY TRAVEL PASSPORT</p></div>
+            <div class="passport__owner">{{OWNER}}<svg class="passport__symbol" viewBox="0 0 80 64" aria-hidden="true"><rect x="3" y="10" width="74" height="44" rx="3" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="40" cy="32" r="14" fill="none" stroke="currentColor" stroke-width="3"/><path d="M3 32H26M54 32H77" stroke="currentColor" stroke-width="3"/></svg></div>
+          </div>
+          <div class="hero">
+            <div class="hero-distance"><span class="hero-distance__label">累计飞行里程 <i>Distance flown</i></span><div class="hero-distance__number"><strong data-stat="distance"></strong><span>公里</span></div></div>
+            <div class="earth-stat"><b data-stat="earth"></b><span>圈地球</span><small>沿赤道环绕</small></div>
+          </div>
+          <div class="metrics">
+            <div class="flight-time"><span class="metric-label">累计飞行时长 <i>Flight time</i></span><div class="time-number"><b data-stat="totalHours"></b><span>小时</span></div></div>
+            <div class="journey-stats">
+              <div><b class="metric-number" data-stat="flights"></b><span class="metric-label">段航程 <i>Flights</i></span></div>
+              <div><b class="metric-number" data-stat="countries"></b><span class="metric-label">国家与地区 <i>Countries</i></span></div>
+              <div><b class="metric-number" data-stat="cities"></b><span class="metric-label">城市 / 地点 <i>Places</i></span></div>
+            </div>
+            <div class="network-stats"><span><b data-stat="airports"></b> 座机场 <i>Airports</i></span><span><b data-stat="airlines"></b> 家航司 <i>Airlines</i></span></div>
+          </div>
+        </section>
+        <footer class="machine"><span>{{MACHINE_NAME}}MY&lt;TRAVEL&lt;PASSPORT&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span><span id="machineStats"></span></footer>
+      </div>
+    </article>
+    <script src="./world-dots.js"></script><script src="./data.js"></script><script src="./poster.js"></script>
+  </body>
+</html>

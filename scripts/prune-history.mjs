@@ -15,9 +15,9 @@ import {join} from 'node:path';
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {parseArgs} from 'node:util';
-import {ROOT} from './data.mjs';
+import {WORKSPACE_ROOT} from './data.mjs';
 
-const HISTORY = join(ROOT, 'data/history');
+const HISTORY = join(WORKSPACE_ROOT, 'data/history');
 export const HISTORY_KEEP=12;
 // <ISO-with-dashes>-<kind>; the kinds are the ones the three writers emit.
 const BACKUP = /^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z-(atlas|cities|global-observations|city-detail|node-continuity|formal-node-edges|promote-candidates|sea-2012|layers)$/;
