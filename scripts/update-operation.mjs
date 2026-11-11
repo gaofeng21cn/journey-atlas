@@ -2,7 +2,7 @@ import {createHash,randomUUID} from 'node:crypto';
 import {readFile,writeFile,mkdir,rename,unlink} from 'node:fs/promises';
 import {dirname,join,relative,resolve} from 'node:path';
 import {sourcePath,boundedSourcePath,assertDistinctSourceFiles} from './source-data.mjs';
-import {ROOT} from './data.mjs';
+import {WORKSPACE_ROOT} from './data.mjs';
 import {TABLES,UPDATE_DEFINITIONS} from './schema.mjs';
 import {sourceFile} from './source-data.mjs';
 import {maintainHistory} from './prune-history.mjs';
@@ -11,7 +11,7 @@ const digest=value=>createHash('sha256').update(value).digest('hex');
 const read=path=>readFile(path).catch(error=>{if(error.code==='ENOENT')return null;throw error;});
 const hash=bytes=>bytes===null?null:digest(bytes);
 const errorWith=(code,message)=>Object.assign(new Error(message),{code});
-const receiptPath=(id,root=ROOT)=>{
+const receiptPath=(id,root=WORKSPACE_ROOT)=>{
   if(!/^[A-Za-z0-9][A-Za-z0-9_-]{0,95}$/.test(id||''))throw errorWith('INVALID_OPERATION_ID','更新 operation ID 无效');
   return join(root,'private/evidence/updates',id+'.json');
 };
@@ -32,7 +32,7 @@ async function saveReceipt(receipt,path){
   finally{await unlink(temporary).catch(()=>{});}
 }
 
-export async function inspectUpdate(id,{root=ROOT}={}){
+export async function inspectUpdate(id,{root=WORKSPACE_ROOT}={}){
   const path=receiptPath(id,root);
   const receipt=JSON.parse(await readFile(path,'utf8'));
   const files=await Promise.all(receipt.files.map(async item=>({...item,current:hash(await read(boundedSourcePath(receipt.sourceFolder,item.sourcePath||item.file)))})));
@@ -44,7 +44,7 @@ export async function inspectUpdate(id,{root=ROOT}={}){
       receipt.state==='source_applied'?'inspect_build':receipt.state==='failed'?'review_error':'reconcile'};
 }
 
-export async function applySourceUpdate({folder,source={type:'obsidian',folder},snapshot,changes,report,dryRun=false,operationId=randomUUID(),kind='atlas',root=ROOT}){
+export async function applySourceUpdate({folder,source={type:'obsidian',folder},snapshot,changes,report,dryRun=false,operationId=randomUUID(),kind='atlas',root=WORKSPACE_ROOT}){
   folder=boundedSourcePath(folder,'.');
   const current=await updateSourceSnapshot(folder,source);requireSourceRevision(current,snapshot.revision);
   const files=changes.map(t=>({file:t.file,sourcePath:relative(resolve(source.folder),sourcePath(source,t.file)),before:hash(t.original===null?null:Buffer.from(t.original)),after:digest(t.next)}));
@@ -89,7 +89,7 @@ export async function applySourceUpdate({folder,source={type:'obsidian',folder},
     }catch(receiptError){receipt.receiptError=receiptError.message;}
     throw Object.assign(error,{updateResult:receipt});
   }finally{for(const p of temporary)await unlink(p).catch(()=>{});}
-  if(root===ROOT)await maintainHistory();
+  if(root===WORKSPACE_ROOT)await maintainHistory();
   return receipt;
 }
 

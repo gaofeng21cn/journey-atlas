@@ -1,0 +1,78 @@
+/* Shared art direction with the accepted flight passport. */
+.all-journeys .map__arc{stroke-width:1.15;opacity:.5}
+.all-journeys .map__arc--long{stroke-width:1.75;opacity:.78}
+.all-journeys .map__arc--ground{stroke:#6b8e77;stroke-width:1.05;opacity:.42}
+.all-journeys .network-stats{gap:24px}
+.all-journeys .network-stats span{white-space:nowrap}
+.all-journeys .network-stats b{font-size:21px}
+.all-journeys .journey-stats .metric-number{font-size:45px}
+.all-journeys .map-node{stroke-width:.6}
+.japan-map-plate{height:625px;flex-shrink:0;margin:0 -32px;position:relative}
+.japan-poster:not(.regional-poster) .japan-map-plate{height:592px}
+.all-journeys .map-plate{height:470px}
+.japan-map-plate svg{width:100%;height:100%;display:block}
+.prefecture{fill:#b4cfdf;fill-opacity:.12;stroke:#8db5c1;stroke-width:.8;stroke-linejoin:round}
+.prefecture.visited{fill:#49aaa1;fill-opacity:.14;stroke:#70aaa6}
+.jp-dot{fill:#a4c7d6;opacity:.8}
+.jp-dot.visited{fill:#3da69e;opacity:.94}
+.jp-route{fill:none;stroke:#aa682f;stroke-width:1.65;opacity:.74;stroke-linecap:round;stroke-linejoin:round}
+.jp-route.air{stroke-width:1.6;opacity:.7}
+.jp-route.structural{stroke:#a3b4ad;stroke-width:1;stroke-dasharray:3 6;opacity:.32}
+.jp-place{fill:#dc6b58;stroke:#8b4838;stroke-width:.5}
+.jp-leader{fill:none;stroke:#94a39d;stroke-width:.7}
+.jp-leader[data-label-adjusted]{stroke:#678389;stroke-width:1;opacity:.85}
+.jp-label{font-size:16px;font-weight:500;fill:#4b6574;paint-order:stroke;stroke:#f7f8ef;stroke-width:4;stroke-linejoin:round}
+.jp-inset-title{font-size:17px;fill:#577b88;letter-spacing:2px}
+.jp-route.edge{stroke:#b99b83;stroke-width:1.25;stroke-dasharray:5 5;opacity:.48}
+.jp-route.edge.air{stroke:#b28768;stroke-width:1.35;stroke-dasharray:5 5;opacity:.52}
+.jp-edge-dot{fill:#f7f8ef;stroke:#aa682f;stroke-width:1.7}
+.jp-edge-label-bg{display:none}
+.jp-edge-label{font-size:14px;fill:#897765;letter-spacing:.35px;font-weight:600}
+.inset-rule{stroke:#b0c6c5;stroke-width:1;fill:none;stroke-dasharray:4 5}
+.map-source{font-size:12px;fill:#73898b;letter-spacing:.1px}
+.map-caption{position:absolute;left:38px;top:54px;color:var(--blue)}
+.map-caption>span{font-size:32px;letter-spacing:8px;font-weight:500}
+.map-caption small{display:block;font-size:13px;letter-spacing:3px;margin-top:12px;color:#728c92}
+.region-stamps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px 24px;margin:0 0 26px}
+.pref-group h2{font-size:14px;letter-spacing:2px;color:#748c91;font-weight:500;margin:0 0 7px}
+.pref-group p{margin:0;font-size:16px;line-height:1.65;font-weight:500;color:#466776}
+.japan-poster .passport{padding-top:24px}
+.japan-poster h1{font-size:43px;letter-spacing:3px}
+.japan-poster .passport__heading p{font-size:17px}
+.japan-hero{margin:19px 0 20px;grid-template-columns:1fr 230px}
+.prefecture-number{display:flex;align-items:baseline;gap:22px}
+.prefecture-number strong{font-size:127px;letter-spacing:-5px;line-height:1;font-weight:650;color:var(--ink)}
+.prefecture-number>span{font-size:49px;color:#7b95a3;letter-spacing:-1px}
+.japan-hero .earth-stat{padding-left:30px;gap:6px}
+.japan-hero .earth-stat>b{font-size:62px}
+.japan-hero .earth-stat b small{font-size:25px;margin-left:5px}
+.coverage-line{height:4px;background:#d3dfd8;margin-top:5px;border-radius:4px;width:150px;overflow:hidden}
+.coverage-line i{display:block;height:100%;background:#49aaa1}
+.japan-metrics{display:grid;grid-template-columns:1.4fr 1fr .8fr;gap:32px;border-top:1px solid #d4dcd4;padding-top:20px}
+.japan-metrics>div{display:flex;align-items:center;gap:17px}
+.japan-metrics>div+div{border-left:1px solid #d4dcd4;padding-left:24px}
+.japan-metrics b{font-size:46px;line-height:1.1;letter-spacing:-1px;color:var(--ink);font-weight:600}
+.japan-metrics span{font-size:17px;white-space:nowrap;color:#53649d}
+.japan-metrics small{display:block;margin-top:5px;font-size:12px;opacity:.75;letter-spacing:.1px}
+.japan-modes{font-size:16px;color:#7c9092;margin-top:21px;letter-spacing:1px}
+.japan-poster .topline,.japan-poster .machine,.japan-poster .passport,.japan-poster .region-stamps{flex-shrink:0}
+.japan-poster .machine{padding-top:14px}
+.regional-poster .japan-map-plate{height:auto;min-height:565px;flex:1;margin-bottom:18px}
+.regional-poster .map-caption{top:12px}
+.regional-poster .map-caption>span{font-size:27px;letter-spacing:6px}
+.regional-poster .map-caption small{font-size:11px;margin-top:7px}
+.regional-poster .region-stamps{gap:14px 24px;margin-bottom:22px}
+.regional-poster .pref-group p{font-size:16px;line-height:1.65}
+.regional-poster .japan-hero{margin:17px 0 20px}
+.regional-poster .japan-metrics{grid-template-columns:1.4fr 1fr .8fr;gap:20px}
+.regional-poster .japan-metrics b{font-size:44px}
+.regional-poster .japan-metrics>div+div{padding-left:20px}
+.regional-poster .passport__heading p{font-size:15px;letter-spacing:3px}
+.regional-poster .japan-modes{margin-top:20px;margin-bottom:22px;font-size:15px}
+.regional-poster .machine{padding-top:14px}
+.regional-poster .special-unit{font-size:16px;letter-spacing:0;line-height:1.5}
+.region-europe .earth-stat>b{font-size:40px;letter-spacing:3px}
+.region-europe .earth-stat>span{font-size:18px;letter-spacing:2px}
+
+/* 两行机读区：ICAO TD3 的 44 字符定宽，字号按行宽取，使两行铺满页脚 */
+.poster .machine{font-size:29px;letter-spacing:0;line-height:1.4;padding-top:14px}

@@ -8,7 +8,7 @@ import {parseArgs} from 'node:util';
 import yauzl from 'yauzl';
 import tzLookup from 'tz-lookup';
 import {finishCityEvidence,cityDate} from './city-evidence.mjs';
-import {ROOT,readJson} from './data.mjs';
+import {ROOT,readJson,WORKSPACE_ROOT} from './data.mjs';
 import {maintainHistory} from './prune-history.mjs';
 
 export const GLOBAL_EVIDENCE_FILE='全旅程数据点-定位证据.json';
@@ -80,15 +80,15 @@ export async function collectGlobalEvidence({photosPath,footprintPath,googlePath
 
 async function main(){
   const {values}=parseArgs({options:{sources:{type:'string'},vault:{type:'string'},apply:{type:'boolean',default:false}}});
-  const config=await readAtlasConfig(),sources=await readJson(resolve(values.sources||join(ROOT,'inputs/global-sources.json')));
+  const config=await readAtlasConfig(),sources=await readJson(resolve(values.sources||join(WORKSPACE_ROOT,'inputs/global-sources.json')));
   const source=await resolveSource({vault:values.vault,config});
-  const evidence=await collectGlobalEvidence(sources),patch=join(ROOT,'inputs/全球完整定位证据.json');await mkdir(join(patch,'..'),{recursive:true});
+  const evidence=await collectGlobalEvidence(sources),patch=join(WORKSPACE_ROOT,'inputs/全球完整定位证据.json');await mkdir(join(patch,'..'),{recursive:true});
   await writeFile(patch,JSON.stringify(evidence)+'\n');
   const result={dryRun:!values.apply,patch,summary:evidence.summary,googleInventory:evidence.source.googleInventory};
   if(values.apply){
     const target=sourcePath(source,GLOBAL_EVIDENCE_FILE);
     let original=null;try{original=await readFile(target);}catch(e){if(e.code!=='ENOENT')throw e;}
-    const backup=join(ROOT,'data/history',new Date().toISOString().replace(/[:.]/g,'-')+'-global-observations');await mkdir(backup,{recursive:true});
+    const backup=join(WORKSPACE_ROOT,'data/history',new Date().toISOString().replace(/[:.]/g,'-')+'-global-observations');await mkdir(backup,{recursive:true});
     if(original)await writeFile(join(backup,GLOBAL_EVIDENCE_FILE),original);
     for(const s of Object.values(evidence.source.snapshots)){const current=await stat(s.path);if(current.size!==s.size||current.mtime.toISOString()!==s.mtime)throw new Error('扫描期间来源已变化，停止写入');}
     const current=await readFile(target).catch(e=>{if(e.code==='ENOENT')return null;throw e;});

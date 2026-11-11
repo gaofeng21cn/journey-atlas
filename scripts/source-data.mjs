@@ -2,19 +2,19 @@ import { lstatSync, realpathSync } from 'node:fs';
 import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { csv, parseCsv } from './csv.mjs';
-import { ROOT, readJson } from './data.mjs';
+import { WORKSPACE_ROOT, readJson } from './data.mjs';
 import { TABLES, UPDATE_DEFINITIONS } from './schema.mjs';
 
 // The personal Obsidian vault is an adapter, not part of the data contract.
 // A portable workspace can keep the same CSV/JSON source tables under any
 // directory selected by dataSource.path in atlas-config.json.
-export async function readAtlasConfig({ root = ROOT, path = process.env.TRAVEL_PASSPORT_CONFIG } = {}) {
+export async function readAtlasConfig({ root = WORKSPACE_ROOT, path = process.env.TRAVEL_PASSPORT_CONFIG } = {}) {
   const configPath = resolve(root, path || 'data/atlas-config.json');
   const config = await readJson(configPath).catch(error => {
     if (error.code !== 'ENOENT' || path) throw error;
     return { dataSource: { type: 'csv-directory', path: 'data/source' }, output: join(root, 'outputs'), coverage: [] };
   });
-  return { ...config, configPath };
+  return { ...config, ...(config.output ? { output: resolve(root, config.output) } : {}), configPath };
 }
 
 function relativeName(name) {
@@ -33,7 +33,7 @@ export function boundedSourcePath(base,name){
   if(!within(physicalBase,physicalTarget))throw new Error('来源路径不能越出配置根目录：'+name);
   return target;
 }
-export async function resolveSource({vault,source,config,root=ROOT}={}){
+export async function resolveSource({vault,source,config,root=WORKSPACE_ROOT}={}){
   if(source)return source;
   config ||= await readAtlasConfig({root});
   const selected=config.dataSource;
@@ -106,7 +106,7 @@ async function readTable(folder, def) {
   catch (error) { if (error.code === 'ENOENT' && def.optional) return []; throw error; }
 }
 
-export async function initializeDataSource({ workspaceRoot = ROOT, sourceDir = 'data/source', coverage = [], writeConfig = false, configPath, replaceCoverage = false } = {}) {
+export async function initializeDataSource({ workspaceRoot = WORKSPACE_ROOT, sourceDir = 'data/source', coverage = [], writeConfig = false, configPath, replaceCoverage = false } = {}) {
   const root = resolve(workspaceRoot), folder = isAbsolute(sourceDir) ? sourceDir : resolve(root, sourceDir);
   const source={type:'csv-directory',base:root,folder,files:{...PORTABLE_FILES}};
   await mkdir(folder, { recursive: true });
@@ -138,7 +138,7 @@ export async function initializeDataSource({ workspaceRoot = ROOT, sourceDir = '
 // Import a complete portable bundle. Existing rows are never silently
 // overwritten: a repeated id must have identical bytes, or the caller must
 // explicitly use replace=true for a deliberate source replacement.
-export async function importSourceBundle({ workspaceRoot = ROOT, sourceDir = 'data/source', bundle, replace = false, writeConfig = true, configPath } = {}) {
+export async function importSourceBundle({ workspaceRoot = WORKSPACE_ROOT, sourceDir = 'data/source', bundle, replace = false, writeConfig = true, configPath } = {}) {
   if (!bundle || bundle.version !== 1) throw new Error('导入包必须声明 version:1');
   if(bundle.coverage!==undefined&&(!Array.isArray(bundle.coverage)||bundle.coverage.some(row=>!row||typeof row.name!=='string'||typeof row.flag!=='string')))throw new Error('coverage 必须是 {name,flag} 数组');
   const root=resolve(workspaceRoot),folder=isAbsolute(sourceDir)?sourceDir:resolve(root,sourceDir);

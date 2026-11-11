@@ -5,7 +5,7 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 import { chromium } from 'playwright';
-import { ROOT, readJson } from './data.mjs';
+import { ROOT, WORKSPACE_ROOT, readJson } from './data.mjs';
 import { refreshAtlas } from './atlas-data.mjs';
 import { japanMap } from './japan-map.mjs';
 import { renderRegionMap } from './region-map.mjs';
@@ -46,7 +46,7 @@ const mrzIdentity=(latin,english)=>{
 export async function renderAtlas({vault,source,output,variant='all',scope='all',syncVault=false}={}) {
   if(!['all','personal','social'].includes(variant))throw new Error('--variant 应为 all、personal 或 social');
   const runtimeConfig=await readAtlasConfig();
-  if(!output)output=runtimeConfig.output||join(ROOT,'outputs');
+  if(!output)output=runtimeConfig.output||join(WORKSPACE_ROOT,'outputs');
   const catalog=await readJson(join(ROOT,'data/region-catalog.json'));
   const areas=['world','japan',...Object.keys(catalog)];
   if(!['all',...areas].includes(scope))throw new Error('--scope 应为 all 或 '+areas.join('、'));
@@ -61,7 +61,7 @@ export async function renderAtlas({vault,source,output,variant='all',scope='all'
   const represented=new Set(JSON.parse(dots.split('=',2)[1].trim().replace(/;$/,'')).map(p=>p[2]));
   const missing=atlas.countries.filter(c=>!represented.has(c.name));
   if(selected.includes('world')&&missing.length)throw new Error(`地图缺国家点：${missing.map(c=>c.name).join('、')}`);
-  const profile=existsSync(join(ROOT,'data/profile.json'))?await readJson(join(ROOT,'data/profile.json')):{};
+  const profile=existsSync(join(WORKSPACE_ROOT,'data/profile.json'))?await readJson(join(WORKSPACE_ROOT,'data/profile.json')):{};
   const regionalTemplate=await readFile(join(ROOT,'src/region.html'),'utf8');
   const regionMaps=Object.fromEntries(await Promise.all(Object.entries(catalog).filter(([key])=>selected.includes(key)).map(async([key,config])=>
     [key,renderRegionMap(config,await readJson(join(ROOT,'data',config.file)),atlas.regions[key],{aliases:atlas.journeyLayer.aliases})])));

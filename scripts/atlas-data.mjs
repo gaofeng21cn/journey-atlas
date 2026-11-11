@@ -3,7 +3,7 @@ import { join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { pathToFileURL } from 'node:url';
 import {parseCsv,csv} from './csv.mjs';
-import { ROOT, readJson } from './data.mjs';
+import { ROOT, readJson ,WORKSPACE_ROOT} from './data.mjs';
 import { TABLES, SCHEMA_VERSION } from './schema.mjs';
 import { REGION_PLACES, readRegionPlaces, regionView, regionRows } from './region-data.mjs';
 import { JOURNEYS,TRAJECTORY,TRAJECTORY_HEADERS,locationLayer,journeyLayer,journeySummaryRows,improvementRows,trajectoryRows,trajectorySummary,routeTime,routePoints,routeNames,canonicalName,journeyContinuityRows } from './travel-layers.mjs';
@@ -411,7 +411,7 @@ export const routeRows = atlas => atlas.routes.map(r => ({
 export async function refreshAtlas({ vault, output, syncVault = false, source:sourceOverride } = {}) {
   if(!output){
     const config=await readAtlasConfig();
-    output=config.output||join(ROOT,'outputs');
+    output=config.output||join(WORKSPACE_ROOT,'outputs');
   }
   const loaded = await loadAtlas(vault, {}, {source:sourceOverride});
   // Resolve all source dependencies before writing derived output, including

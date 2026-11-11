@@ -5,7 +5,7 @@ import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 import { chromium } from 'playwright';
 import {passportAsset,prepareAsset} from './output-paths.mjs';
-import { ROOT, readJson } from './data.mjs';
+import { ROOT, readJson ,WORKSPACE_ROOT} from './data.mjs';
 import { validateFlightCardData } from './flight-card-data.mjs';
 
 const escape = value => String(value).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
@@ -16,10 +16,10 @@ export function loadRenderData({data}={}){
   return validateFlightCardData(data);
 }
 
-export async function render({ data, output = join(ROOT, 'outputs'), variant = 'all' } = {}) {
+export async function render({ data, output = join(WORKSPACE_ROOT, 'outputs'), variant = 'all' } = {}) {
   if (!['all', 'personal', 'social'].includes(variant)) throw new Error('--variant 应为 all、personal 或 social');
   const renderData = loadRenderData({data});
-  const profilePath = join(ROOT, 'data/profile.json');
+  const profilePath = join(WORKSPACE_ROOT, 'data/profile.json');
   const profile = existsSync(profilePath) ? await readJson(profilePath) : { name: '', latinName: '' };
   const [template, css, map, script] = await Promise.all(['poster.html', 'poster.css', 'world-dots.js', 'poster.js'].map(name => readFile(join(ROOT, 'src', name), 'utf8')));
   // Share only the fields needed to draw the poster, not ticket-level records.

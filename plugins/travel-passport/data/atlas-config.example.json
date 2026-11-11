@@ -1,0 +1,9 @@
+{
+  "dataSource": {
+    "type": "csv-directory",
+    "path": "data/source"
+  },
+  "output": "./outputs",
+  "layerVersion": 1,
+  "coverage": []
+}

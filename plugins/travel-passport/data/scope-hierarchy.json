@@ -1,0 +1,12 @@
+{
+  "regions": [
+    {"id":"asia","name":"亚洲","english":"ASIA","parent":"world","bounds":[25,-12,180,75],"codes":"AF AM AZ BH BD BT BN KH CN CY GE HK IN ID IR IQ IL JP JO KZ KP KR KW KG LA LB MO MY MV MN MM NP OM PK PS PH QA SA SG LK SY TW TJ TH TL TR TM AE UZ VN YE"},
+    {"id":"southeast-asia","parent":"asia","codes":"BN KH ID LA MY MM PH SG TH TL VN"},
+    {"id":"europe","parent":"world","codes":"AL AD AT BY BE BA BG HR CZ DK EE FI FR DE GR HU IS IE IT LV LI LT LU MT MD MC ME NL MK NO PL PT RO RU SM RS SK SI ES SE CH UA GB VA AX FO GG GI IM JE SJ"},
+    {"id":"north-america","name":"北美","english":"NORTH AMERICA","parent":"world","bounds":[-170,7,-50,75],"codes":"AG AI AW BS BB BZ BM BQ CA KY CR CU CW DM DO SV GL GD GP GT HT HN JM MQ MX MS NI PA PR BL KN LC MF PM VC SX TT TC US VG VI"},
+    {"id":"south-america","name":"南美","english":"SOUTH AMERICA","parent":"world","bounds":[-85,-58,-32,14],"codes":"AR BO BR CL CO EC FK GF GY PY PE SR UY VE GS"},
+    {"id":"africa","name":"非洲","english":"AFRICA","parent":"world","bounds":[-26,-38,64,39],"codes":"DZ AO BJ BW BF BI CV CM CF TD KM CG CD CI DJ EG GQ ER SZ ET GA GM GH GN GW IO KE LS LR LY MG MW ML MR MU YT MA MZ NA NE NG RE RW SH ST SN SC SL SO ZA SS SD TZ TG TN UG EH ZM ZW"},
+    {"id":"oceania","name":"大洋洲","english":"OCEANIA","parent":"world","bounds":[110,-50,180,28],"codes":"AS AU CX CC CK FJ PF GU HM KI MH FM NR NC NZ NU NF MP PW PG PN WS SB TK TO TV UM VU WF"},
+    {"id":"antarctica","name":"南极","english":"ANTARCTICA","parent":"world","bounds":[-180,-85,180,-55],"codes":"AQ BV TF"}
+  ]
+}

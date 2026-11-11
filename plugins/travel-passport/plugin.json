@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "travel-passport",
-  "version": "0.1.1",
-  "description": "Review global and regional travel passports, annual travel cards, output artifacts, and build readiness from the owner workspace.",
+  "version": "0.2.0",
+  "description": "Build and review travel maps, passports, and annual reviews from user-owned records.",
   "author": {
     "name": "Journey Atlas contributors"
   },

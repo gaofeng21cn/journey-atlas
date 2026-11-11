@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 import { SCHEMA_VERSION, TABLES, OPTIONAL_SOURCE_FILES } from './schema.mjs';
-import {ROOT} from './data.mjs';
+import {ROOT,WORKSPACE_ROOT} from './data.mjs';
 import {parseCsv} from './csv.mjs';
 import {referencedEvidenceFiles} from './source-references.mjs';
 import {sourcePath,readAtlasConfig} from './source-data.mjs';
@@ -48,7 +48,8 @@ export async function sourceManifest(folder, names = SOURCE_FILES, root=ROOT, so
   const required=await Promise.all(names.map(async name => ({...await fileInfo(folder,name,sourcePath(source,name)), file: `vault/${name}`})));
   for(const name of [...OPTIONAL_SOURCE_FILES,TABLES.visits,'全旅程数据点-定位证据.json']){try{required.push({...await fileInfo(folder,name,sourcePath(source,name)),file:`vault/${name}`});}catch(e){if(e.code!=='ENOENT')throw e;}}
   const rows=(await Promise.all(required.filter(item=>item.file.endsWith('.csv')).map(item=>readFile(sourcePath(source,item.file.slice('vault/'.length)),'utf8').then(parseCsv)))).flat();
-  for(const name of referencedEvidenceFiles(rows,{root}))required.push({...await fileInfo(root,name),file:`app/${name}`});
+  const evidenceRoot=root===ROOT?WORKSPACE_ROOT:root;
+  for(const name of referencedEvidenceFiles(rows,{root:evidenceRoot}))required.push({...await fileInfo(evidenceRoot,name),file:`app/${name}`});
   return required;
 }
 
@@ -66,12 +67,16 @@ async function codeFiles(root) {
 
 export async function runtimeManifest(root) {
   const names=await codeFiles(root);
-  try{await stat(join(root,'data/profile.json'));names.push('data/profile.json');}catch(e){if(e.code!=='ENOENT')throw e;}
-  // Display identity lookup is optional, but a change to it must invalidate
-  // maps just like a change to the public city catalogue.
-  try{await stat(join(root,'data/geocode-cache.json'));names.push('data/geocode-cache.json');}catch(e){if(e.code!=='ENOENT')throw e;}
-  try{await stat(join(root,'data/annual-config.json'));names.push('data/annual-config.json');}catch(e){if(e.code!=='ENOENT')throw e;}
-  return Promise.all(names.map(async name => ({...await fileInfo(root,name,name==='data/atlas-config.json'?(await readAtlasConfig({root})).configPath:join(root,name)),file:`app/${name}`})));
+  const workspace=root===ROOT?WORKSPACE_ROOT:root;
+  const personalFiles=['data/profile.json','data/geocode-cache.json','data/annual-config.json'];
+  // Personal display preferences remain in the workspace and still invalidate
+  // derived maps when changed, just like the installed public city catalogue.
+  for(const name of personalFiles)try{await stat(join(workspace,name));names.push(name);}catch(e){if(e.code!=='ENOENT')throw e;}
+  const configPath=(await readAtlasConfig({root:workspace})).configPath;
+  return Promise.all(names.map(async name => {
+    const file=name==='data/atlas-config.json'?configPath:join(personalFiles.includes(name)?workspace:root,name);
+    return {...await fileInfo(root,name,file),file:`app/${name}`};
+  }));
 }
 
 export function manifestFrom({ sources, atlas, outputFiles = [] }) {

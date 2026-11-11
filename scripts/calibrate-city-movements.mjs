@@ -2,7 +2,7 @@ import {readAtlasConfig,resolveSource,sourcePath} from './source-data.mjs';
 import {readFile,writeFile,mkdir,stat} from 'node:fs/promises';
 import {resolve,join,dirname,relative} from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {ROOT,readJson} from './data.mjs';
+import {ROOT,readJson,WORKSPACE_ROOT} from './data.mjs';
 import {parseCsv} from './csv.mjs';
 import {CITY_FILES} from './city-data.mjs';
 import {collectCityEvidence,matchObservedPath,cityEvidenceRecord} from './city-evidence.mjs';
@@ -64,9 +64,9 @@ export function calibrateCityRows({config,rows,places,evidence,reviewReference='
 
 async function main(){
   const args=process.argv.slice(2),option=name=>{const at=args.indexOf(name);return at<0?null:args[at+1];};
-  const sourcesPath=resolve(option('--sources')||join(ROOT,'inputs/city-sources.json')),output=resolve(option('--output')||join(ROOT,'inputs/city-calibration.json'));
-  const cache=resolve(option('--cache')||join(ROOT,'private/runtime/city-calibration')),requested=option('--cities')?.split(',');
-  const reviewFile=join(ROOT,'private/evidence',new Date().toISOString().replace(/[:.]/g,'-')+'-city-calibration.json');
+  const sourcesPath=resolve(option('--sources')||join(WORKSPACE_ROOT,'inputs/city-sources.json')),output=resolve(option('--output')||join(WORKSPACE_ROOT,'inputs/city-calibration.json'));
+  const cache=resolve(option('--cache')||join(WORKSPACE_ROOT,'private/runtime/city-calibration')),requested=option('--cities')?.split(',');
+  const reviewFile=join(WORKSPACE_ROOT,'private/evidence',new Date().toISOString().replace(/[:.]/g,'-')+'-city-calibration.json');
   const sources=await readJson(sourcesPath),settings=await readAtlasConfig(),catalog=await readJson(join(ROOT,'data/city-catalog.json'));
   const source=await resolveSource({vault:option('--vault'),config:settings});
   const sourceSnapshots=Object.fromEntries(await Promise.all(Object.entries(sources).map(async([key,path])=>{const s=await stat(path);return [key,{path,size:s.size,mtime:s.mtime.toISOString()}];})));

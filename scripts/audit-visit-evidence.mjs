@@ -3,7 +3,7 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
 import {parseArgs} from 'node:util';
 import {loadAtlas,parseCsv,csv} from './atlas-data.mjs';
-import {ROOT,readJson} from './data.mjs';
+import {ROOT,readJson,WORKSPACE_ROOT} from './data.mjs';
 import {TABLES} from './schema.mjs';
 import {visitEvidenceReport} from './visit-evidence.mjs';
 
@@ -13,7 +13,7 @@ const {atlas,source}=await loadAtlas(values.vault);
 const photos=JSON.parse(await readFile(resolve(values.photos),'utf8'));
 const flights=parseCsv(await readFile(sourcePath(source,TABLES.flightArchive),'utf8'));
 const rows=visitEvidenceReport(atlas.locationLayer.places,photos,flights);
-const output=resolve(values.output||join(ROOT,'private/runtime/visit-evidence'));
+const output=resolve(values.output||join(WORKSPACE_ROOT,'private/runtime/visit-evidence'));
 await mkdir(output,{recursive:true});
 await writeFile(join(output,'地点证据预筛.json'),JSON.stringify({generatedAt:new Date().toISOString(),note:'仅筛查信号，需结合照片内容与正文核定。缺少航班匹配不能证明地面到访。',rows},null,2)+'\n');
 await writeFile(join(output,'地点证据预筛.csv'),csv(rows.map(r=>({'地点编号':r.id,'地点名称':r.name,'国家地区':r.country,'到访状态':r.state,'分享纳入':r.include?'纳入':'排除','匹配照片数':r.photoCount,'航班窗口内照片数':r.inFlight,'机场标记照片数':r.airportHints,'需复核':r.inFlight||r.airportHints?'是':'','核定依据':r.evidence,'关联正文':r.source}))));

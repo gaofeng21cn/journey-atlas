@@ -35,3 +35,6 @@ data/new-york-boroughs.geojson
 data/manhattan-districts.geojson
 data/guangdong-cities.geojson
 data/guangzhou-districts.geojson
+
+# Installed runtime dependency setup uses npm and leaves source/data untouched.
+.journey-atlas-setup.lock/

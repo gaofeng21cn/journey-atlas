@@ -2,7 +2,7 @@ import {readFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {feature} from 'topojson-client';
 import iso from 'i18n-iso-countries';
-import {ROOT,readJson} from './data.mjs';
+import {ROOT,WORKSPACE_ROOT,readJson} from './data.mjs';
 import {loadAtlas} from './atlas-data.mjs';
 import {pointInFeature} from './region-map.mjs';
 import {boundsOf} from '../src/scope-model.mjs';
@@ -45,7 +45,7 @@ export async function prepareSiteData({vault,atlas,onCityDetails}={}) {
     readJson(join(ROOT,'data/japan.topojson')),readFile(join(ROOT,'src/world-dots.js'),'utf8'),
     readJson(join(ROOT,'node_modules/world-atlas/countries-110m.json')),readJson(join(ROOT,'node_modules/i18n-iso-countries/langs/zh.json')),
     readJson(join(ROOT,'data/scope-hierarchy.json')),readJson(join(ROOT,'data/geographic-context.json')),
-    readJson(join(ROOT,'data/geocode-cache.json')).catch(()=>({}))]);
+    readJson(join(WORKSPACE_ROOT,'data/geocode-cache.json')).catch(()=>({}))]);
   iso.registerLocale(locale);
   const countryName=new Map(Object.entries(iso.getAlpha2Codes()).filter(([code])=>code!=='XK').map(([code])=>[code,iso.getName(code,'zh')]));
   for(const p of atlas.locationLayer.places)if(p.countryCode)countryName.set(p.countryCode,p.country);

@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{PAGE_TITLE}}</title></head>
+<body><article class="poster japan-poster regional-poster region-{{AREA}}" id="poster"><div class="paper">
+  <svg class="security" aria-hidden="true" width="100%" height="100%"><defs><pattern id="waves" width="200" height="28" patternUnits="userSpaceOnUse"><path d="M-100 14 Q-50 -3 0 14 T100 14 T200 14 T300 14" fill="none" stroke="#94ad9f" stroke-width=".8"/></pattern></defs><rect width="100%" height="100%" fill="url(#waves)"/></svg>
+  <header class="topline"><span>◉ &nbsp; {{TOPLINE}}</span><span>{{YEARS}}</span></header>
+  <section class="japan-map-plate">{{REGION_MAP}}<div class="map-caption"><span>{{REGION_NAME}}</span><small>{{REGION_ENGLISH}} · MY JOURNEYS</small></div></section>
+  <section class="region-stamps" aria-label="旅行足迹">{{REGION_GROUPS}}</section>
+  <section class="passport">
+    <div class="passport__heading"><div><h1>我的{{REGION_NAME}}旅行护照</h1><p>MY {{REGION_ENGLISH}} TRAVEL PASSPORT</p></div><div class="passport__owner">{{OWNER}}<svg class="passport__symbol" viewBox="0 0 80 64" aria-hidden="true"><rect x="3" y="10" width="74" height="44" rx="3" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="40" cy="32" r="14" fill="none" stroke="currentColor" stroke-width="3"/><path d="M3 32H26M54 32H77" stroke="currentColor" stroke-width="3"/></svg></div></div>
+    <div class="hero japan-hero"><div><span class="hero-distance__label">{{UNIT_LABEL}} <i>{{UNIT_ENGLISH}}</i></span><div class="prefecture-number"><strong>{{VISITED}}</strong>{{DENOMINATOR}}</div></div>{{COVERAGE}}</div>
+    <div class="japan-metrics"><div><b>{{REGION_KM}}</b><span>{{REGION_KM_LABEL}} <small>{{REGION_KM_ENGLISH}}</small></span></div><div><b>{{REGION_CITIES}}</b><span>{{REGION_CITIES_LABEL}} <small>{{REGION_CITIES_ENGLISH}}</small></span></div><div><b>{{REGION_ROUTES}}</b><span>{{REGION_ROUTES_LABEL}} <small>{{REGION_ROUTES_ENGLISH}}</small></span></div></div>
+    <div class="japan-modes">{{MODES}}</div>
+  </section>
+  <footer class="machine">{{MACHINE_LINES}}</footer>
+</div></article></body></html>

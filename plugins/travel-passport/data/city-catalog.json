@@ -1,0 +1,81 @@
+[
+  {
+    "id": "tokyo",
+    "name": "东京",
+    "english": "TOKYO",
+    "parent": "unit:JP-13",
+    "entryScopes": ["unit:JP-13"],
+    "timeZone": "Asia/Tokyo",
+    "country": "日本",
+    "unitId": "JP-13",
+    "bounds": [139.59, 35.54, 139.90, 35.83],
+    "boundaryFile": "tokyo-wards.geojson",
+    "contextFile": "tokyo-context.geojson",
+    "boundaryUrl": "https://raw.githubusercontent.com/dataofjapan/land/master/tokyo.geojson",
+    "source": "国土地理院（地球地図日本・道路／河川中心線） / dataofjapan"
+  },
+  {
+    "id":"kyoto","name":"京都","legacyNames":["京都市"],"english":"KYOTO","parent":"unit:JP-26","country":"日本","unitId":"JP-26","timeZone":"Asia/Tokyo",
+    "bounds":[135.57,34.89,135.88,35.32],"focusBounds":[135.64,34.92,135.84,35.13],"mapBounds":[135.63,34.95,135.85,35.14],"expectedUnits":11,
+    "boundaryFile":"kyoto-wards.geojson","contextFile":"kyoto-context.geojson",
+    "boundaryFields":{"id":"N03_007","name":"N03_004","english":"N03_004"},
+    "boundaryUrls":["https://raw.githubusercontent.com/niiyz/JapanCityGeoJson/master/geojson/26/26101.json","https://raw.githubusercontent.com/niiyz/JapanCityGeoJson/master/geojson/26/26102.json","https://raw.githubusercontent.com/niiyz/JapanCityGeoJson/master/geojson/26/26103.json","https://raw.githubusercontent.com/niiyz/JapanCityGeoJson/master/geojson/26/26104.json","https://raw.githubusercontent.com/niiyz/JapanCityGeoJson/master/geojson/26/26105.json","https://raw.githubusercontent.com/niiyz/JapanCityGeoJson/master/geojson/26/26106.json","https://raw.githubusercontent.com/niiyz/JapanCityGeoJson/master/geojson/26/26107.json","https://raw.githubusercontent.com/niiyz/JapanCityGeoJson/master/geojson/26/26108.json","https://raw.githubusercontent.com/niiyz/JapanCityGeoJson/master/geojson/26/26109.json","https://raw.githubusercontent.com/niiyz/JapanCityGeoJson/master/geojson/26/26110.json","https://raw.githubusercontent.com/niiyz/JapanCityGeoJson/master/geojson/26/26111.json"],
+    "source":"国土数値情報 2020 / niiyz · 国土地理院道路河流"
+  },
+  {
+    "id":"hong-kong","name":"香港","english":"HONG KONG","parent":"country:中国香港","entryScopes":["country:中国香港","unit:CN-81"],"country":"中国香港","unitId":"CN-81","timeZone":"Asia/Hong_Kong",
+    "bounds":[113.83,22.15,114.45,22.57],"mapBounds":[113.89,22.195,114.29,22.37],"expectedUnits":18,"boundaryFile":"hong-kong-districts.geojson","contextFile":"hong-kong-context.geojson","contextProvider":"osm-pbf","contextPbfUrl":"https://download.geofabrik.de/asia/china/hong-kong-latest.osm.pbf",
+    "boundaryUrl":"https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+    "boundaryFields":{"id":"地區號碼","name":"地區","english":"District"},
+    "unitNames":{"A":"中西区","B":"湾仔区","C":"东区","D":"南区","E":"油尖旺区","F":"深水埗区","G":"九龙城区","H":"黄大仙区","J":"观塘区","K":"荃湾区","L":"屯门区","M":"元朗区","N":"北区","P":"大埔区","Q":"西贡区","R":"沙田区","S":"葵青区","T":"离岛区"},
+    "names":{"元朗區":"元朗区","屯門區":"屯门区","荃灣區":"荃湾区","葵青區":"葵青区","離島區":"离岛区","中西區":"中西区","灣仔區":"湾仔区","東區":"东区","南區":"南区","油尖旺區":"油尖旺区","深水埗區":"深水埗区","九龍城區":"九龙城区","黃大仙區":"黄大仙区","觀塘區":"观塘区","西貢區":"西贡区","沙田區":"沙田区","大埔區":"大埔区","北區":"北区"},
+    "landMaskCountryCode":"HK",
+    "landMaskFile":"hong-kong-coast.geojson",
+    "source":"香港民政事务总署 18区 · Natural Earth海岸 · OpenStreetMap © contributors"
+  },
+  {
+    "id":"singapore","name":"新加坡","english":"SINGAPORE","parent":"country:新加坡","entryScopes":["country:新加坡"],"country":"新加坡","unitId":"SG","timeZone":"Asia/Singapore",
+    "bounds":[103.60,1.16,104.10,1.49],"expectedUnits":55,"unitLabel":"到访规划区","boundaryFile":"singapore-planning.geojson","contextFile":"singapore-context.geojson","contextProvider":"osm-pbf","contextPbfUrl":"https://download.bbbike.org/osm/bbbike/Singapore/Singapore.osm.pbf",
+    "boundaryUrl":"https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/SGP/ADM2/geoBoundaries-SGP-ADM2.geojson",
+    "boundaryFields":{"id":"shapeID","name":"shapeName","english":"shapeName"},
+    "names":{"MARINE PARADE":"马林百列","PAYA LEBAR":"巴耶利峇","DOWNTOWN CORE":"市中心","MARINA SOUTH":"滨海南","MARINA EAST":"滨海东","MUSEUM":"博物馆区","OUTRAM":"欧南","SINGAPORE RIVER":"新加坡河","ROCHOR":"梧槽","SOUTHERN ISLANDS":"南部群岛","WESTERN WATER CATCHMENT":"西部集水区","CENTRAL WATER CATCHMENT":"中央集水区","JURONG EAST":"裕廊东","QUEENSTOWN":"女皇镇","BUKIT MERAH":"红山","KALLANG":"加冷","CHANGI":"樟宜","TANGLIN":"东陵","BEDOK":"勿洛","TAMPINES":"淡滨尼","CLEMENTI":"金文泰","BUKIT TIMAH":"武吉知马","ANG MO KIO":"宏茂桥","BISHAN":"碧山","TOA PAYOH":"大巴窑","NOVENA":"诺维娜","WOODLANDS":"兀兰","MANDAI":"万礼","YISHUN":"义顺","SEMBAWANG":"三巴旺","SENGKANG":"盛港","PUNGGOL":"榜鹅","HOUGANG":"后港","SERANGOON":"实龙岗","GEYLANG":"芽笼","PASIR RIS":"巴西立","JURONG WEST":"裕廊西","BUKIT BATOK":"武吉巴督","BUKIT PANJANG":"武吉班让","CHOA CHU KANG":"蔡厝港","BOON LAY":"文礼","PIONEER":"先驱","TUAS":"大士","SUNGEI KADUT":"双溪加株","LIM CHU KANG":"林厝港","TENGAH":"登加","SELETAR":"实里达","CHANGI BAY":"樟宜湾","PULAU TEKONG":"德光岛","PULAU UBIN":"乌敏岛","SIMPANG":"新邦","NORTH-EASTERN ISLANDS":"东北部群岛","WESTERN ISLANDS":"西部群岛","STRAITS VIEW":"海峡景","NEWTON":"纽顿","ORCHARD":"乌节","RIVER VALLEY":"里峇峇利"},
+    "source":"URA 2016规划区 / geoBoundaries · Singapore Open Data Licence · OpenStreetMap © contributors"
+  },
+  {
+    "id":"new-york","name":"纽约","english":"NEW YORK","parent":"unit:US-NY","country":"美国","unitId":"US-NY","timeZone":"America/New_York",
+    "bounds":[-74.26,40.49,-73.69,40.92],"expectedUnits":5,"unitLabel":"到访行政区",
+    "boundaryFile":"new-york-boroughs.geojson","contextFile":"new-york-context.geojson",
+    "boundaryUrl":"https://raw.githubusercontent.com/dwillis/nyc-maps/master/boroughs.geojson",
+    "boundaryFields":{"id":"BoroCode","name":"BoroName","english":"BoroName"},
+    "names":{"Manhattan":"曼哈顿","Brooklyn":"布鲁克林","Queens":"皇后区","Bronx":"布朗克斯","Staten Island":"斯塔滕岛"},
+    "contextProvider":"osm-vector","contextZoom":12,
+    "source":"NYC Department of City Planning · OpenStreetMap © contributors"
+  },
+  {
+    "id":"guangzhou","name":"广州","english":"GUANGZHOU","parent":"city:guangdong","entryScopes":["district:guangdong-440100"],"country":"中国","unitId":"CN-44","timeZone":"Asia/Shanghai",
+    "bounds":[112.95,22.5,114.1,23.98],"mapBounds":[113.19,22.96,113.65,23.49],"expectedUnits":11,"unitLabel":"到访行政区",
+    "boundaryFile":"guangzhou-districts.geojson","contextFile":"guangzhou-context.geojson",
+    "boundaryUrl":"https://geo.datav.aliyun.com/areas_v3/bound/440100_full.json",
+    "boundaryFields":{"id":"adcode","name":"name","english":"name"},
+    "contextProvider":"osm-vector","contextZoom":11,
+    "source":"DataV 行政边界 · OpenStreetMap © contributors"
+  },
+  {
+    "id":"guangdong","name":"广东","english":"GUANGDONG","parent":"china","entryScopes":["unit:CN-44"],"country":"中国","unitId":"CN-44","timeZone":"Asia/Shanghai","detailKind":"province","useGlobal":true,
+    "bounds":[109.6,20.1,117.4,25.6],"expectedUnits":21,"unitLabel":"到访地级市",
+    "boundaryFile":"guangdong-cities.geojson","contextFile":"guangdong-context.geojson",
+    "boundaryUrl":"https://geo.datav.aliyun.com/areas_v3/bound/440000_full.json",
+    "boundaryFields":{"id":"adcode","name":"name","english":"name"},
+    "contextProvider":"osm-vector","contextZoom":8,
+    "source":"DataV 21地级市边界 · OpenStreetMap © contributors"
+  },
+  {
+    "id":"manhattan","name":"曼哈顿","english":"MANHATTAN","parent":"city:new-york","entryScopes":["city:new-york","district:new-york-1"],"deriveFrom":"new-york","country":"美国","unitId":"US-NY","timeZone":"America/New_York",
+    "bounds":[-74.06,40.68,-73.91,40.88],"expectedUnits":13,"unitLabel":"到访社区区","uncountedUnits":["164"],
+    "boundaryFile":"manhattan-districts.geojson","contextFile":"new-york-context.geojson","contextProvider":"reuse",
+    "boundaryUrl":"https://services5.arcgis.com/GfwWNkhOj9bNBqoJ/arcgis/rest/services/NYC_Community_Districts/FeatureServer/0/query?where=BoroCD%3E%3D100%20AND%20BoroCD%3C200&outFields=*&f=geojson&outSR=4326",
+    "boundaryFields":{"id":"BoroCD","name":"BoroCD","english":"BoroCD"},
+    "names":{"101":"金融区","102":"格林尼治村·苏荷","103":"下东区","104":"切尔西·地狱厨房","105":"中城","106":"东中城","107":"上西区","108":"上东区","109":"晨边高地","110":"哈莱姆","111":"东哈莱姆","112":"华盛顿高地","164":"中央公园"},
+    "source":"NYC DCP 12社区区＋中央公园特殊单元 · OpenFreeMap / OpenMapTiles / © OpenStreetMap contributors"
+  }
+]

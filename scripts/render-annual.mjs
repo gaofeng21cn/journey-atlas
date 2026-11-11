@@ -4,7 +4,7 @@ import {join,resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {parseArgs} from 'node:util';
 import {chromium} from 'playwright';
-import {ROOT,readJson} from './data.mjs';
+import {ROOT,WORKSPACE_ROOT,readJson} from './data.mjs';
 import {loadAtlas} from './atlas-data.mjs';
 import {annualView} from './annual-data.mjs';
 import {annualMap} from './annual-map.mjs';
@@ -14,7 +14,7 @@ import {validateLinks} from './source-references.mjs';
 
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>n.toLocaleString('en-US'),mrz=s=>{if(s.length>44)throw new Error('年度机读区超过44字符');return esc(s.padEnd(44,'<'));};
-export async function annualConfig(){return readJson(join(ROOT,'data/annual-config.json')).catch(e=>{if(e.code==='ENOENT')return {years:{}};throw e;});}
+export async function annualConfig(){return readJson(join(WORKSPACE_ROOT,'data/annual-config.json')).catch(e=>{if(e.code==='ENOENT')return {years:{}};throw e;});}
 
 export async function renderAnnual({year,asOf,output,vault,atlas}={}){
   const config=await readAtlasConfig(),curation=(await annualConfig()).years?.[year]||{};

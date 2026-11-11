@@ -20,6 +20,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm test
       - run: npm run package:check
+      - run: npm run verify:installed
       - run: npm run init:data
       - run: npm run import:data -- --input examples/import-bundle.json
       - run: npm run build -- --variant social

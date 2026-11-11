@@ -1,0 +1,1859 @@
+{
+ "usa": {
+  "name": "美国",
+  "english": "USA",
+  "file": "usa.geojson",
+  "countries": [
+   "美国"
+  ],
+  "unitLabel": "到访州",
+  "unitEnglish": "States explored",
+  "unitMachine": "STATES",
+  "denominator": 50,
+  "bounds": [
+   -125,
+   24,
+   -66,
+   50
+  ],
+  "step": 0.5,
+  "source": "U.S. Census Bureau · us-atlas",
+  "insets": [
+   {
+    "ids": [
+     "US-AK"
+    ],
+    "bounds": [
+     -180,
+     50,
+     -129,
+     72
+    ],
+    "extent": [
+     32,
+     510,
+     220,
+     142
+    ],
+    "label": "阿拉斯加"
+   },
+   {
+    "ids": [
+     "US-HI"
+    ],
+    "bounds": [
+     -161,
+     18,
+     -154,
+     23
+    ],
+    "extent": [
+     285,
+     555,
+     150,
+     82
+    ],
+    "label": "夏威夷"
+   }
+  ],
+  "units": [
+   {
+    "id": "US-AL",
+    "name": "阿拉巴马",
+    "native": "Alabama",
+    "group": "南部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-AK",
+    "name": "阿拉斯加",
+    "native": "Alaska",
+    "group": "西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-AZ",
+    "name": "亚利桑那",
+    "native": "Arizona",
+    "group": "西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-AR",
+    "name": "阿肯色",
+    "native": "Arkansas",
+    "group": "南部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-CA",
+    "name": "加利福尼亚",
+    "native": "California",
+    "group": "西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-CO",
+    "name": "科罗拉多",
+    "native": "Colorado",
+    "group": "西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-CT",
+    "name": "康涅狄格",
+    "native": "Connecticut",
+    "group": "东北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-DE",
+    "name": "特拉华",
+    "native": "Delaware",
+    "group": "南部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-DC",
+    "name": "华盛顿特区",
+    "native": "District of Columbia",
+    "group": "南部",
+    "counted": false,
+    "anchor": [
+     38.907,
+     -77.037
+    ]
+   },
+   {
+    "id": "US-FL",
+    "name": "佛罗里达",
+    "native": "Florida",
+    "group": "南部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-GA",
+    "name": "佐治亚",
+    "native": "Georgia",
+    "group": "南部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-HI",
+    "name": "夏威夷",
+    "native": "Hawaii",
+    "group": "西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-ID",
+    "name": "爱达荷",
+    "native": "Idaho",
+    "group": "西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-IL",
+    "name": "伊利诺伊",
+    "native": "Illinois",
+    "group": "中西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-IN",
+    "name": "印第安纳",
+    "native": "Indiana",
+    "group": "中西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-IA",
+    "name": "艾奥瓦",
+    "native": "Iowa",
+    "group": "中西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-KS",
+    "name": "堪萨斯",
+    "native": "Kansas",
+    "group": "中西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-KY",
+    "name": "肯塔基",
+    "native": "Kentucky",
+    "group": "南部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-LA",
+    "name": "路易斯安那",
+    "native": "Louisiana",
+    "group": "南部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-ME",
+    "name": "缅因",
+    "native": "Maine",
+    "group": "东北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-MD",
+    "name": "马里兰",
+    "native": "Maryland",
+    "group": "南部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-MA",
+    "name": "马萨诸塞",
+    "native": "Massachusetts",
+    "group": "东北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-MI",
+    "name": "密歇根",
+    "native": "Michigan",
+    "group": "中西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-MN",
+    "name": "明尼苏达",
+    "native": "Minnesota",
+    "group": "中西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-MS",
+    "name": "密西西比",
+    "native": "Mississippi",
+    "group": "南部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-MO",
+    "name": "密苏里",
+    "native": "Missouri",
+    "group": "中西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-MT",
+    "name": "蒙大拿",
+    "native": "Montana",
+    "group": "西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-NE",
+    "name": "内布拉斯加",
+    "native": "Nebraska",
+    "group": "中西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-NV",
+    "name": "内华达",
+    "native": "Nevada",
+    "group": "西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-NH",
+    "name": "新罕布什尔",
+    "native": "New Hampshire",
+    "group": "东北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-NJ",
+    "name": "新泽西",
+    "native": "New Jersey",
+    "group": "东北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-NM",
+    "name": "新墨西哥",
+    "native": "New Mexico",
+    "group": "西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-NY",
+    "name": "纽约",
+    "native": "New York",
+    "group": "东北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-NC",
+    "name": "北卡罗来纳",
+    "native": "North Carolina",
+    "group": "南部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-ND",
+    "name": "北达科他",
+    "native": "North Dakota",
+    "group": "中西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-OH",
+    "name": "俄亥俄",
+    "native": "Ohio",
+    "group": "中西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-OK",
+    "name": "俄克拉荷马",
+    "native": "Oklahoma",
+    "group": "南部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-OR",
+    "name": "俄勒冈",
+    "native": "Oregon",
+    "group": "西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-PA",
+    "name": "宾夕法尼亚",
+    "native": "Pennsylvania",
+    "group": "东北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-RI",
+    "name": "罗得岛",
+    "native": "Rhode Island",
+    "group": "东北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-SC",
+    "name": "南卡罗来纳",
+    "native": "South Carolina",
+    "group": "南部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-SD",
+    "name": "南达科他",
+    "native": "South Dakota",
+    "group": "中西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-TN",
+    "name": "田纳西",
+    "native": "Tennessee",
+    "group": "南部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-TX",
+    "name": "得克萨斯",
+    "native": "Texas",
+    "group": "南部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-UT",
+    "name": "犹他",
+    "native": "Utah",
+    "group": "西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-VT",
+    "name": "佛蒙特",
+    "native": "Vermont",
+    "group": "东北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-VA",
+    "name": "弗吉尼亚",
+    "native": "Virginia",
+    "group": "南部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-WA",
+    "name": "华盛顿",
+    "native": "Washington",
+    "group": "西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-WV",
+    "name": "西弗吉尼亚",
+    "native": "West Virginia",
+    "group": "南部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-WI",
+    "name": "威斯康星",
+    "native": "Wisconsin",
+    "group": "中西部",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "US-WY",
+    "name": "怀俄明",
+    "native": "Wyoming",
+    "group": "西部",
+    "counted": true,
+    "anchor": null
+   }
+  ],
+  "labels": [],
+  "edgeLabels": {
+   "gap": 34
+  }
+ },
+ "switzerland": {
+  "name": "瑞士",
+  "english": "SWITZERLAND",
+  "file": "switzerland.geojson",
+  "countries": [
+   "瑞士"
+  ],
+  "unitLabel": "到访州",
+  "unitEnglish": "Cantons explored",
+  "unitMachine": "CANTONS",
+  "denominator": 26,
+  "bounds": [
+   5.8,
+   45.65,
+   10.6,
+   47.95
+  ],
+  "step": 0.04,
+  "source": "Bundesamt für Statistik (BFS), GEOSTAT",
+  "units": [
+   {
+    "id": "CH-ZH",
+    "name": "苏黎世",
+    "native": "ZH",
+    "group": "苏黎世地区",
+    "counted": true
+   },
+   {
+    "id": "CH-BE",
+    "name": "伯尔尼",
+    "native": "BE",
+    "group": "伯尔尼与阿尔卑斯",
+    "counted": true
+   },
+   {
+    "id": "CH-LU",
+    "name": "卢塞恩",
+    "native": "LU",
+    "group": "中部湖区",
+    "counted": true
+   },
+   {
+    "id": "CH-UR",
+    "name": "乌里",
+    "native": "UR",
+    "group": "中部湖区",
+    "counted": true
+   },
+   {
+    "id": "CH-SZ",
+    "name": "施维茨",
+    "native": "SZ",
+    "group": "中部湖区",
+    "counted": true
+   },
+   {
+    "id": "CH-OW",
+    "name": "上瓦尔登",
+    "native": "OW",
+    "group": "中部湖区",
+    "counted": true
+   },
+   {
+    "id": "CH-NW",
+    "name": "下瓦尔登",
+    "native": "NW",
+    "group": "中部湖区",
+    "counted": true
+   },
+   {
+    "id": "CH-GL",
+    "name": "格拉鲁斯",
+    "native": "GL",
+    "group": "东部",
+    "counted": true
+   },
+   {
+    "id": "CH-ZG",
+    "name": "楚格",
+    "native": "ZG",
+    "group": "中部湖区",
+    "counted": true
+   },
+   {
+    "id": "CH-FR",
+    "name": "弗里堡",
+    "native": "FR",
+    "group": "西部",
+    "counted": true
+   },
+   {
+    "id": "CH-SO",
+    "name": "索洛图恩",
+    "native": "SO",
+    "group": "西部",
+    "counted": true
+   },
+   {
+    "id": "CH-BS",
+    "name": "巴塞尔城市",
+    "native": "BS",
+    "group": "巴塞尔地区",
+    "counted": true
+   },
+   {
+    "id": "CH-BL",
+    "name": "巴塞尔乡村",
+    "native": "BL",
+    "group": "巴塞尔地区",
+    "counted": true
+   },
+   {
+    "id": "CH-SH",
+    "name": "沙夫豪森",
+    "native": "SH",
+    "group": "苏黎世地区",
+    "counted": true
+   },
+   {
+    "id": "CH-AR",
+    "name": "外阿彭策尔",
+    "native": "AR",
+    "group": "东部",
+    "counted": true
+   },
+   {
+    "id": "CH-AI",
+    "name": "内阿彭策尔",
+    "native": "AI",
+    "group": "东部",
+    "counted": true
+   },
+   {
+    "id": "CH-SG",
+    "name": "圣加仑",
+    "native": "SG",
+    "group": "东部",
+    "counted": true
+   },
+   {
+    "id": "CH-GR",
+    "name": "格劳宾登",
+    "native": "GR",
+    "group": "东部",
+    "counted": true
+   },
+   {
+    "id": "CH-AG",
+    "name": "阿尔高",
+    "native": "AG",
+    "group": "苏黎世地区",
+    "counted": true
+   },
+   {
+    "id": "CH-TG",
+    "name": "图尔高",
+    "native": "TG",
+    "group": "东部",
+    "counted": true
+   },
+   {
+    "id": "CH-TI",
+    "name": "提契诺",
+    "native": "TI",
+    "group": "南部",
+    "counted": true
+   },
+   {
+    "id": "CH-VD",
+    "name": "沃",
+    "native": "VD",
+    "group": "日内瓦湖地区",
+    "counted": true
+   },
+   {
+    "id": "CH-VS",
+    "name": "瓦莱",
+    "native": "VS",
+    "group": "伯尔尼与阿尔卑斯",
+    "counted": true
+   },
+   {
+    "id": "CH-NE",
+    "name": "纳沙泰尔",
+    "native": "NE",
+    "group": "西部",
+    "counted": true
+   },
+   {
+    "id": "CH-GE",
+    "name": "日内瓦",
+    "native": "GE",
+    "group": "日内瓦湖地区",
+    "counted": true
+   },
+   {
+    "id": "CH-JU",
+    "name": "汝拉",
+    "native": "JU",
+    "group": "西部",
+    "counted": true
+   }
+  ],
+  "labels": [],
+  "edgeLabels": {
+   "gap": 30
+  }
+ },
+ "italy": {
+  "name": "意大利",
+  "english": "ITALY",
+  "file": "italy.geojson",
+  "countries": [
+   "意大利"
+  ],
+  "unitLabel": "到访大区",
+  "unitEnglish": "Regions explored",
+  "unitMachine": "REGIONS",
+  "denominator": 20,
+  "bounds": [
+   6.45,
+   35.5,
+   18.7,
+   47.3
+  ],
+  "step": 0.1,
+  "source": "ISTAT · Openpolis · CC BY 4.0",
+  "units": [
+   {
+    "id": "IT-21",
+    "name": "皮埃蒙特",
+    "native": "Piemonte",
+    "group": "西北",
+    "counted": true
+   },
+   {
+    "id": "IT-23",
+    "name": "瓦莱达奥斯塔",
+    "native": "Valle d'Aosta/Vallée d'Aoste",
+    "group": "西北",
+    "counted": true
+   },
+   {
+    "id": "IT-25",
+    "name": "伦巴第",
+    "native": "Lombardia",
+    "group": "西北",
+    "counted": true
+   },
+   {
+    "id": "IT-32",
+    "name": "特伦蒂诺-上阿迪杰",
+    "native": "Trentino-Alto Adige/Südtirol",
+    "group": "东北",
+    "counted": true
+   },
+   {
+    "id": "IT-34",
+    "name": "威尼托",
+    "native": "Veneto",
+    "group": "东北",
+    "counted": true
+   },
+   {
+    "id": "IT-36",
+    "name": "弗留利-威尼斯朱利亚",
+    "native": "Friuli-Venezia Giulia",
+    "group": "东北",
+    "counted": true
+   },
+   {
+    "id": "IT-42",
+    "name": "利古里亚",
+    "native": "Liguria",
+    "group": "西北",
+    "counted": true
+   },
+   {
+    "id": "IT-45",
+    "name": "艾米利亚-罗马涅",
+    "native": "Emilia-Romagna",
+    "group": "东北",
+    "counted": true
+   },
+   {
+    "id": "IT-52",
+    "name": "托斯卡纳",
+    "native": "Toscana",
+    "group": "中部",
+    "counted": true
+   },
+   {
+    "id": "IT-55",
+    "name": "翁布里亚",
+    "native": "Umbria",
+    "group": "中部",
+    "counted": true
+   },
+   {
+    "id": "IT-57",
+    "name": "马尔凯",
+    "native": "Marche",
+    "group": "中部",
+    "counted": true
+   },
+   {
+    "id": "IT-62",
+    "name": "拉齐奥",
+    "native": "Lazio",
+    "group": "中部",
+    "counted": true
+   },
+   {
+    "id": "IT-65",
+    "name": "阿布鲁佐",
+    "native": "Abruzzo",
+    "group": "南部",
+    "counted": true
+   },
+   {
+    "id": "IT-67",
+    "name": "莫利塞",
+    "native": "Molise",
+    "group": "南部",
+    "counted": true
+   },
+   {
+    "id": "IT-72",
+    "name": "坎帕尼亚",
+    "native": "Campania",
+    "group": "南部",
+    "counted": true
+   },
+   {
+    "id": "IT-75",
+    "name": "普利亚",
+    "native": "Puglia",
+    "group": "南部",
+    "counted": true
+   },
+   {
+    "id": "IT-77",
+    "name": "巴西利卡塔",
+    "native": "Basilicata",
+    "group": "南部",
+    "counted": true
+   },
+   {
+    "id": "IT-78",
+    "name": "卡拉布里亚",
+    "native": "Calabria",
+    "group": "南部",
+    "counted": true
+   },
+   {
+    "id": "IT-82",
+    "name": "西西里",
+    "native": "Sicilia",
+    "group": "岛屿",
+    "counted": true
+   },
+   {
+    "id": "IT-88",
+    "name": "撒丁",
+    "native": "Sardegna",
+    "group": "岛屿",
+    "counted": true
+   }
+  ],
+  "labels": [],
+  "edgeLabels": {
+   "gap": 30
+  }
+ },
+ "europe": {
+  "name": "欧洲",
+  "english": "EUROPE",
+  "file": "europe.geojson",
+  "countries": [
+   "阿尔巴尼亚",
+   "安道尔",
+   "奥地利",
+   "比利时",
+   "波黑",
+   "保加利亚",
+   "白俄罗斯",
+   "克罗地亚",
+   "塞浦路斯",
+   "捷克",
+   "丹麦",
+   "爱沙尼亚",
+   "芬兰",
+   "法国",
+   "德国",
+   "希腊",
+   "梵蒂冈",
+   "匈牙利",
+   "冰岛",
+   "爱尔兰",
+   "意大利",
+   "拉脱维亚",
+   "列支敦士登",
+   "立陶宛",
+   "卢森堡",
+   "马耳他",
+   "摩纳哥",
+   "摩尔多瓦",
+   "黑山",
+   "荷兰",
+   "挪威",
+   "波兰",
+   "葡萄牙",
+   "罗马尼亚",
+   "俄罗斯",
+   "圣马力诺",
+   "塞尔维亚",
+   "斯洛伐克",
+   "斯洛文尼亚",
+   "西班牙",
+   "瑞典",
+   "瑞士",
+   "土耳其",
+   "乌克兰",
+   "北马其顿",
+   "英国"
+  ],
+  "unitLabel": "旅行国家与地区",
+  "unitEnglish": "Countries explored",
+  "unitMachine": "COUNTRIES",
+  "denominator": null,
+  "bounds": [
+   -12,
+   34,
+   42,
+   64
+  ],
+  "step": 0.36,
+  "source": "Natural Earth · Public Domain",
+  "includePlans": true,
+  "units": [
+   {
+    "id": "AL",
+    "name": "阿尔巴尼亚",
+    "native": "AL",
+    "group": "南欧",
+    "counted": true,
+    "flag": "🇦🇱",
+    "anchor": null
+   },
+   {
+    "id": "AD",
+    "name": "安道尔",
+    "native": "AD",
+    "group": "南欧",
+    "counted": true,
+    "flag": "🇦🇩",
+    "anchor": null
+   },
+   {
+    "id": "AT",
+    "name": "奥地利",
+    "native": "AT",
+    "group": "西欧",
+    "counted": true,
+    "flag": "🇦🇹",
+    "anchor": null
+   },
+   {
+    "id": "BE",
+    "name": "比利时",
+    "native": "BE",
+    "group": "西欧",
+    "counted": true,
+    "flag": "🇧🇪",
+    "anchor": null
+   },
+   {
+    "id": "BA",
+    "name": "波黑",
+    "native": "BA",
+    "group": "南欧",
+    "counted": true,
+    "flag": "🇧🇦",
+    "anchor": null
+   },
+   {
+    "id": "BG",
+    "name": "保加利亚",
+    "native": "BG",
+    "group": "东欧",
+    "counted": true,
+    "flag": "🇧🇬",
+    "anchor": null
+   },
+   {
+    "id": "BY",
+    "name": "白俄罗斯",
+    "native": "BY",
+    "group": "东欧",
+    "counted": true,
+    "flag": "🇧🇾",
+    "anchor": null
+   },
+   {
+    "id": "HR",
+    "name": "克罗地亚",
+    "native": "HR",
+    "group": "南欧",
+    "counted": true,
+    "flag": "🇭🇷",
+    "anchor": null
+   },
+   {
+    "id": "CY",
+    "name": "塞浦路斯",
+    "native": "CY",
+    "group": "南欧",
+    "counted": true,
+    "flag": "🇨🇾",
+    "anchor": null
+   },
+   {
+    "id": "CZ",
+    "name": "捷克",
+    "native": "CZ",
+    "group": "东欧",
+    "counted": true,
+    "flag": "🇨🇿",
+    "anchor": null
+   },
+   {
+    "id": "DK",
+    "name": "丹麦",
+    "native": "DK",
+    "group": "北欧",
+    "counted": true,
+    "flag": "🇩🇰",
+    "anchor": null
+   },
+   {
+    "id": "EE",
+    "name": "爱沙尼亚",
+    "native": "EE",
+    "group": "北欧",
+    "counted": true,
+    "flag": "🇪🇪",
+    "anchor": null
+   },
+   {
+    "id": "FI",
+    "name": "芬兰",
+    "native": "FI",
+    "group": "北欧",
+    "counted": true,
+    "flag": "🇫🇮",
+    "anchor": null
+   },
+   {
+    "id": "FR",
+    "name": "法国",
+    "native": "FR",
+    "group": "西欧",
+    "counted": true,
+    "flag": "🇫🇷",
+    "anchor": null
+   },
+   {
+    "id": "DE",
+    "name": "德国",
+    "native": "DE",
+    "group": "西欧",
+    "counted": true,
+    "flag": "🇩🇪",
+    "anchor": null
+   },
+   {
+    "id": "GR",
+    "name": "希腊",
+    "native": "GR",
+    "group": "南欧",
+    "counted": true,
+    "flag": "🇬🇷",
+    "anchor": null
+   },
+   {
+    "id": "VA",
+    "name": "梵蒂冈",
+    "native": "VA",
+    "group": "南欧",
+    "counted": true,
+    "flag": "🇻🇦",
+    "anchor": [
+     41.903,
+     12.453
+    ]
+   },
+   {
+    "id": "HU",
+    "name": "匈牙利",
+    "native": "HU",
+    "group": "东欧",
+    "counted": true,
+    "flag": "🇭🇺",
+    "anchor": null
+   },
+   {
+    "id": "IS",
+    "name": "冰岛",
+    "native": "IS",
+    "group": "北欧",
+    "counted": true,
+    "flag": "🇮🇸",
+    "anchor": null
+   },
+   {
+    "id": "IE",
+    "name": "爱尔兰",
+    "native": "IE",
+    "group": "北欧",
+    "counted": true,
+    "flag": "🇮🇪",
+    "anchor": null
+   },
+   {
+    "id": "IT",
+    "name": "意大利",
+    "native": "IT",
+    "group": "南欧",
+    "counted": true,
+    "flag": "🇮🇹",
+    "anchor": null
+   },
+   {
+    "id": "LV",
+    "name": "拉脱维亚",
+    "native": "LV",
+    "group": "北欧",
+    "counted": true,
+    "flag": "🇱🇻",
+    "anchor": null
+   },
+   {
+    "id": "LI",
+    "name": "列支敦士登",
+    "native": "LI",
+    "group": "西欧",
+    "counted": true,
+    "flag": "🇱🇮",
+    "anchor": null
+   },
+   {
+    "id": "LT",
+    "name": "立陶宛",
+    "native": "LT",
+    "group": "北欧",
+    "counted": true,
+    "flag": "🇱🇹",
+    "anchor": null
+   },
+   {
+    "id": "LU",
+    "name": "卢森堡",
+    "native": "LU",
+    "group": "西欧",
+    "counted": true,
+    "flag": "🇱🇺",
+    "anchor": null
+   },
+   {
+    "id": "MT",
+    "name": "马耳他",
+    "native": "MT",
+    "group": "南欧",
+    "counted": true,
+    "flag": "🇲🇹",
+    "anchor": null
+   },
+   {
+    "id": "MC",
+    "name": "摩纳哥",
+    "native": "MC",
+    "group": "西欧",
+    "counted": true,
+    "flag": "🇲🇨",
+    "anchor": null
+   },
+   {
+    "id": "MD",
+    "name": "摩尔多瓦",
+    "native": "MD",
+    "group": "东欧",
+    "counted": true,
+    "flag": "🇲🇩",
+    "anchor": null
+   },
+   {
+    "id": "ME",
+    "name": "黑山",
+    "native": "ME",
+    "group": "南欧",
+    "counted": true,
+    "flag": "🇲🇪",
+    "anchor": null
+   },
+   {
+    "id": "NL",
+    "name": "荷兰",
+    "native": "NL",
+    "group": "西欧",
+    "counted": true,
+    "flag": "🇳🇱",
+    "anchor": null
+   },
+   {
+    "id": "NO",
+    "name": "挪威",
+    "native": "NO",
+    "group": "北欧",
+    "counted": true,
+    "flag": "🇳🇴",
+    "anchor": null
+   },
+   {
+    "id": "PL",
+    "name": "波兰",
+    "native": "PL",
+    "group": "东欧",
+    "counted": true,
+    "flag": "🇵🇱",
+    "anchor": null
+   },
+   {
+    "id": "PT",
+    "name": "葡萄牙",
+    "native": "PT",
+    "group": "南欧",
+    "counted": true,
+    "flag": "🇵🇹",
+    "anchor": null
+   },
+   {
+    "id": "RO",
+    "name": "罗马尼亚",
+    "native": "RO",
+    "group": "东欧",
+    "counted": true,
+    "flag": "🇷🇴",
+    "anchor": null
+   },
+   {
+    "id": "RU",
+    "name": "俄罗斯",
+    "native": "RU",
+    "group": "东欧",
+    "counted": true,
+    "flag": "🇷🇺",
+    "anchor": null
+   },
+   {
+    "id": "SM",
+    "name": "圣马力诺",
+    "native": "SM",
+    "group": "南欧",
+    "counted": true,
+    "flag": "🇸🇲",
+    "anchor": null
+   },
+   {
+    "id": "RS",
+    "name": "塞尔维亚",
+    "native": "RS",
+    "group": "南欧",
+    "counted": true,
+    "flag": "🇷🇸",
+    "anchor": null
+   },
+   {
+    "id": "SK",
+    "name": "斯洛伐克",
+    "native": "SK",
+    "group": "东欧",
+    "counted": true,
+    "flag": "🇸🇰",
+    "anchor": null
+   },
+   {
+    "id": "SI",
+    "name": "斯洛文尼亚",
+    "native": "SI",
+    "group": "南欧",
+    "counted": true,
+    "flag": "🇸🇮",
+    "anchor": null
+   },
+   {
+    "id": "ES",
+    "name": "西班牙",
+    "native": "ES",
+    "group": "南欧",
+    "counted": true,
+    "flag": "🇪🇸",
+    "anchor": null
+   },
+   {
+    "id": "SE",
+    "name": "瑞典",
+    "native": "SE",
+    "group": "北欧",
+    "counted": true,
+    "flag": "🇸🇪",
+    "anchor": null
+   },
+   {
+    "id": "CH",
+    "name": "瑞士",
+    "native": "CH",
+    "group": "西欧",
+    "counted": true,
+    "flag": "🇨🇭",
+    "anchor": null
+   },
+   {
+    "id": "TR",
+    "name": "土耳其",
+    "native": "TR",
+    "group": "跨欧亚",
+    "counted": true,
+    "flag": "🇹🇷",
+    "anchor": null
+   },
+   {
+    "id": "UA",
+    "name": "乌克兰",
+    "native": "UA",
+    "group": "东欧",
+    "counted": true,
+    "flag": "🇺🇦",
+    "anchor": null
+   },
+   {
+    "id": "MK",
+    "name": "北马其顿",
+    "native": "MK",
+    "group": "南欧",
+    "counted": true,
+    "flag": "🇲🇰",
+    "anchor": null
+   },
+   {
+    "id": "GB",
+    "name": "英国",
+    "native": "GB",
+    "group": "北欧",
+    "counted": true,
+    "flag": "🇬🇧",
+    "anchor": null
+   }
+  ],
+  "labels": [],
+  "edgeLabels": {
+   "gap": 30
+  }
+ },
+ "china": {
+  "name": "中国",
+  "english": "CHINA",
+  "file": "china.geojson",
+  "countries": [
+   "中国",
+   "中国香港",
+   "中国澳门"
+  ],
+  "unitLabel": "到访省级行政区",
+  "unitEnglish": "Provinces explored",
+  "unitMachine": "PROVINCES",
+  "denominator": 34,
+  "bounds": [
+   73,
+   17,
+   136,
+   54
+  ],
+  "step": 0.55,
+  "source": "阿里云 DataV · 中国省级边界",
+  "units": [
+   {
+    "id": "CN-11",
+    "name": "北京",
+    "native": "北京市",
+    "group": "华北",
+    "counted": true,
+    "anchor": [
+     39.9042,
+     116.4074
+    ]
+   },
+   {
+    "id": "CN-12",
+    "name": "天津",
+    "native": "天津市",
+    "group": "华北",
+    "counted": true,
+    "anchor": [
+     39.0842,
+     117.2009
+    ]
+   },
+   {
+    "id": "CN-13",
+    "name": "河北",
+    "native": "河北省",
+    "group": "华北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-14",
+    "name": "山西",
+    "native": "山西省",
+    "group": "华北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-15",
+    "name": "内蒙古",
+    "native": "内蒙古自治区",
+    "group": "华北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-21",
+    "name": "辽宁",
+    "native": "辽宁省",
+    "group": "东北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-22",
+    "name": "吉林",
+    "native": "吉林省",
+    "group": "东北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-23",
+    "name": "黑龙江",
+    "native": "黑龙江省",
+    "group": "东北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-31",
+    "name": "上海",
+    "native": "上海市",
+    "group": "华东",
+    "counted": true,
+    "anchor": [
+     31.2304,
+     121.4737
+    ]
+   },
+   {
+    "id": "CN-32",
+    "name": "江苏",
+    "native": "江苏省",
+    "group": "华东",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-33",
+    "name": "浙江",
+    "native": "浙江省",
+    "group": "华东",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-34",
+    "name": "安徽",
+    "native": "安徽省",
+    "group": "华东",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-35",
+    "name": "福建",
+    "native": "福建省",
+    "group": "华东",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-36",
+    "name": "江西",
+    "native": "江西省",
+    "group": "华东",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-37",
+    "name": "山东",
+    "native": "山东省",
+    "group": "华东",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-41",
+    "name": "河南",
+    "native": "河南省",
+    "group": "华中",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-42",
+    "name": "湖北",
+    "native": "湖北省",
+    "group": "华中",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-43",
+    "name": "湖南",
+    "native": "湖南省",
+    "group": "华中",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-44",
+    "name": "广东",
+    "native": "广东省",
+    "group": "华南",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-45",
+    "name": "广西",
+    "native": "广西壮族自治区",
+    "group": "华南",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-46",
+    "name": "海南",
+    "native": "海南省",
+    "group": "华南",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-50",
+    "name": "重庆",
+    "native": "重庆市",
+    "group": "西南",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-51",
+    "name": "四川",
+    "native": "四川省",
+    "group": "西南",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-52",
+    "name": "贵州",
+    "native": "贵州省",
+    "group": "西南",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-53",
+    "name": "云南",
+    "native": "云南省",
+    "group": "西南",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-54",
+    "name": "西藏",
+    "native": "西藏自治区",
+    "group": "西南",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-61",
+    "name": "陕西",
+    "native": "陕西省",
+    "group": "西北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-62",
+    "name": "甘肃",
+    "native": "甘肃省",
+    "group": "西北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-63",
+    "name": "青海",
+    "native": "青海省",
+    "group": "西北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-64",
+    "name": "宁夏",
+    "native": "宁夏回族自治区",
+    "group": "西北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-65",
+    "name": "新疆",
+    "native": "新疆维吾尔自治区",
+    "group": "西北",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-71",
+    "name": "台湾",
+    "native": "台湾省",
+    "group": "华东",
+    "counted": true,
+    "anchor": null
+   },
+   {
+    "id": "CN-81",
+    "name": "香港",
+    "native": "香港特别行政区",
+    "group": "华南",
+    "counted": true,
+    "anchor": [
+     22.3193,
+     114.1694
+    ]
+   },
+   {
+    "id": "CN-82",
+    "name": "澳门",
+    "native": "澳门特别行政区",
+    "group": "华南",
+    "counted": true,
+    "anchor": [
+     22.1987,
+     113.5439
+    ]
+   }
+  ],
+  "labels": [],
+  "edgeLabels": {
+   "gap": 30
+  }
+ },
+  "southeast-asia": {
+  "name": "东南亚",
+  "english": "SOUTHEAST ASIA",
+  "file": "southeast-asia.geojson",
+  "countries": [
+   "柬埔寨",
+   "印度尼西亚",
+   "老挝",
+   "马来西亚",
+   "缅甸",
+   "菲律宾",
+   "新加坡",
+   "泰国",
+   "越南",
+   "文莱",
+   "东帝汶"
+  ],
+  "unitLabel": "覆盖国家",
+  "unitEnglish": "Countries with traces",
+  "unitMachine": "COUNTRIES",
+  "denominator": 11,
+  "bounds": [
+   92,
+   -11,
+   142,
+   29
+  ],
+  "step": 1.0,
+    "source": "Natural Earth · geo-countries",
+  "activeFromCoverage": true,
+  "labels": [],
+  "edgeLabels": {
+   "gap": 30
+  },
+  "units": [
+   {
+    "id": "KH",
+    "name": "柬埔寨",
+    "native": "Cambodia",
+    "group": "中南半岛",
+    "counted": true,
+    "anchor": [
+     12.5657,
+     104.991
+    ]
+   },
+   {
+    "id": "ID",
+    "name": "印度尼西亚",
+    "native": "Indonesia",
+    "group": "群岛国家",
+    "counted": true,
+    "anchor": [
+     -2.2,
+     117.2
+    ]
+   },
+   {
+    "id": "LA",
+    "name": "老挝",
+    "native": "Laos",
+    "group": "中南半岛",
+    "counted": true,
+    "anchor": [
+     19.8,
+     102.5
+    ]
+   },
+   {
+    "id": "MY",
+    "name": "马来西亚",
+    "native": "Malaysia",
+    "group": "马来群岛",
+    "counted": true,
+    "anchor": [
+     4.2,
+     102.0
+    ]
+   },
+   {
+    "id": "MM",
+    "name": "缅甸",
+    "native": "Myanmar",
+    "group": "中南半岛",
+    "counted": true,
+    "anchor": [
+     21.0,
+     96.0
+    ]
+   },
+   {
+    "id": "PH",
+    "name": "菲律宾",
+    "native": "Philippines",
+    "group": "群岛国家",
+    "counted": true,
+    "anchor": [
+     12.8,
+     122.8
+    ]
+   },
+   {
+    "id": "SG",
+    "name": "新加坡",
+    "native": "Singapore",
+    "group": "马来群岛",
+    "counted": true,
+    "anchor": [
+     1.35,
+     103.82
+    ]
+   },
+   {
+    "id": "TH",
+    "name": "泰国",
+    "native": "Thailand",
+    "group": "中南半岛",
+    "counted": true,
+    "anchor": [
+     15.2,
+     101.0
+    ]
+   },
+   {
+    "id": "TL",
+    "name": "东帝汶",
+    "native": "Timor-Leste",
+    "group": "群岛国家",
+    "counted": true,
+    "anchor": [
+     -8.8,
+     125.8
+    ]
+   },
+   {
+    "id": "BN",
+    "name": "文莱",
+    "native": "Brunei",
+    "group": "马来群岛",
+    "counted": true,
+    "anchor": [
+     4.6,
+     114.7
+    ]
+   },
+   {
+    "id": "VN",
+    "name": "越南",
+    "native": "Vietnam",
+    "group": "中南半岛",
+    "counted": true,
+    "anchor": [
+     16.2,
+     107.8
+    ]
+   }
+  ],
+  "includeBorderRoutes": true,
+  "kmLabel": "区内里程",
+  "kmEnglish": "Internal distance",
+  "citiesLabel": "记录地点",
+  "citiesEnglish": "Recorded places",
+  "routesLabel": "跨境航段",
+  "routesEnglish": "Border legs"
+ },
+  "greece": {
+    "name": "希腊",
+    "english": "GREECE",
+    "file": "greece-regions.geojson",
+    "countries": [
+      "希腊"
+    ],
+    "unitLabel": "到访大区",
+    "unitEnglish": "Regions visited",
+    "unitMachine": "REGIONS",
+    "denominator": 13,
+  "bounds": [
+   19,
+   34,
+   29,
+   42
+  ],
+  "step": 0.08,
+    "source": "Natural Earth · admin-1 states/provinces",
+    "labels": [],
+  "edgeLabels": {
+   "gap": 30
+  },
+    "units": [
+      {"id":"GR-A","name":"东马其顿和色雷斯","native":"East Macedonia and Thrace","group":"北希腊","counted":true,"anchor":[41.1,25.3]},
+      {"id":"GR-B","name":"中马其顿","native":"Central Macedonia","group":"北希腊","counted":true,"anchor":[40.7,23.3]},
+      {"id":"GR-C","name":"西马其顿","native":"West Macedonia","group":"北希腊","counted":true,"anchor":[40.4,21.5]},
+      {"id":"GR-D","name":"伊庇鲁斯","native":"Epirus","group":"北希腊","counted":true,"anchor":[39.5,20.8]},
+      {"id":"GR-E","name":"色萨利","native":"Thessaly","group":"中希腊","counted":true,"anchor":[39.6,22.2]},
+      {"id":"GR-F","name":"伊奥尼亚群岛","native":"Ionian Islands","group":"岛屿地区","counted":true,"anchor":[38.5,20.5]},
+      {"id":"GR-G","name":"西希腊","native":"West Greece","group":"中希腊","counted":true,"anchor":[38.3,21.8]},
+      {"id":"GR-H","name":"中希腊","native":"Central Greece","group":"中希腊","counted":true,"anchor":[38.6,23.2]},
+      {"id":"GR-J","name":"伯罗奔尼撒","native":"Peloponnese","group":"南希腊","counted":true,"anchor":[37.5,22.3]},
+      {"id":"GR-K","name":"北爱琴","native":"North Aegean","group":"岛屿地区","counted":true,"anchor":[39.7,26.0]},
+      {"id":"GR-L","name":"南爱琴","native":"South Aegean","group":"岛屿地区","counted":true,"anchor":[36.9,25.0]},
+      {"id":"GR-M","name":"克里特","native":"Crete","group":"岛屿地区","counted":true,"anchor":[35.2,24.9]},
+      {"id":"GR-A1","name":"阿提卡","native":"Attica","group":"中希腊","counted":true,"anchor":[38.0,23.7]}
+    ]
+  }
+}

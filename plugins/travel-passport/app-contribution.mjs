@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, realpathSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { dependenciesReady, setupRuntime } from './journey-atlas.mjs';
 
 const REQUEST_SCHEMA = 'opl-package-app-contribution-request.v1';
 const RESPONSE_SCHEMA = 'opl-package-app-contribution-response.v1';
@@ -26,10 +27,10 @@ function readStdin() {
   });
 }
 
-function runStatus(ownerRoot) {
+function runStatus(workspaceRoot) {
   return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, ['scripts/passport.mjs', 'status', '--json'], {
-      cwd: ownerRoot,
+    const child = spawn(process.execPath, [path.join(packageRoot, 'journey-atlas.mjs'), '--workspace', workspaceRoot, 'status', '--json'], {
+      cwd: packageRoot,
       env: process.env,
       stdio: ['ignore', 'pipe', 'pipe'],
     });
@@ -42,7 +43,7 @@ function runStatus(ownerRoot) {
     child.on('error', reject);
     child.on('close', (code) => {
       if (code !== 0) {
-        reject(new Error(`Travel Passport status failed (${code}): ${stderr.slice(0, 1000)}`));
+        reject(new Error(`Journey Atlas status failed (${code}): ${stderr.slice(0, 1000)}`));
         return;
       }
       try { resolve(JSON.parse(stdout)); } catch (error) { reject(error); }
@@ -145,16 +146,24 @@ export function buildRegions(ownerRoot, status) {
 
 async function main() {
   const request = await readStdin();
+  const setup = request?.operation === 'execute' && request?.ref === 'travel.passport.v1#runtime.setup';
   if (
     request?.schema_version !== REQUEST_SCHEMA
-    || request?.operation !== 'read'
-    || !REFS.has(request?.ref)
+    || !(setup || request?.operation === 'read' && REFS.has(request?.ref))
   ) {
     throw new Error('unsupported app contribution request');
   }
-  const ownerRoot = process.env.OPL_PROFILE_WORKSPACE
-    || (existsSync(path.join(packageRoot, 'scripts', 'passport.mjs')) ? packageRoot : null);
-  if (!ownerRoot) {
+  if (setup) {
+    await setupRuntime();
+    process.stdout.write(JSON.stringify({ schema_version: RESPONSE_SCHEMA, ok: true, ref: request.ref, operation: 'execute', result: { state: 'ready', data: { status: 'ready', dependencies: 'package-lock.json' } } }));
+    return;
+  }
+  if (!dependenciesReady()) {
+    process.stdout.write(JSON.stringify({ schema_version: RESPONSE_SCHEMA, ok: true, ref: request.ref, operation: 'read', result: { state: 'input_required', reason: '首次使用请初始化 Journey Atlas 运行环境；此操作只安装锁定依赖，不改动旅行资料。', data: { action_ref: 'travel.passport.v1#runtime.setup' } } }));
+    return;
+  }
+  const ownerRoot = process.env.OPL_PROFILE_WORKSPACE || process.env.JOURNEY_ATLAS_WORKSPACE;
+  if (!ownerRoot || !existsSync(path.join(ownerRoot, 'data', 'atlas-config.json'))) {
     process.stdout.write(JSON.stringify({
       schema_version: RESPONSE_SCHEMA,
       ok: true,
@@ -162,19 +171,17 @@ async function main() {
       operation: 'read',
       result: {
         state: 'input_required',
-        reason: '请选择已登记的旅行护照工作区。',
+        reason: '请选择已配置的 Journey Atlas 工作区；资料仍保存在原目录或 Obsidian 中。',
         input_schema: {
           type: 'object',
           required: ['workspace_path'],
-          properties: { workspace_path: { type: 'string', title: '旅行护照工作区路径' } },
+          properties: { workspace_path: { type: 'string', title: 'Journey Atlas 工作区路径' } },
           additionalProperties: false,
         },
       },
     }));
     return;
   }
-  const manifest = JSON.parse(readFileSync(path.join(ownerRoot, 'package.json'), 'utf8'));
-  if (manifest.name !== 'travel-passport') throw new Error('Selected workspace is not Travel Passport.');
   const status = await runStatus(ownerRoot);
   const result = request.ref === 'travel.passport.v1#overview' ? buildOverview(ownerRoot, status)
     : request.ref === 'travel.passport.v1#annual' ? buildAnnual(ownerRoot, status, request.input?.year)
@@ -189,7 +196,7 @@ async function main() {
   }));
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main().catch((error) => {
     process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
     process.exitCode = 1;

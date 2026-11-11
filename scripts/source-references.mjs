@@ -1,11 +1,11 @@
 import {readFile,stat} from 'node:fs/promises';
 import {relative,resolve,sep} from 'node:path';
-import {ROOT} from './data.mjs';
+import {WORKSPACE_ROOT} from './data.mjs';
 import {sourceReferencePath} from './source-data.mjs';
 
 // Only explicit app-owned file references are resolved here. Ticket identifiers,
 // photo UUIDs and prose citations retain their own domain meaning.
-export function referencedEvidenceFiles(rows,{root=ROOT}={}){
+export function referencedEvidenceFiles(rows,{root=WORKSPACE_ROOT}={}){
   const files=new Set(),base=resolve(root);
   for(const row of rows)for(const reference of String(row['证据引用']||'').split('；')){
     const name=reference.trim().split('#')[0];
@@ -17,7 +17,7 @@ export function referencedEvidenceFiles(rows,{root=ROOT}={}){
   return [...files].sort();
 }
 
-export async function validateLinks(vault,rows,{root=ROOT,source}={}){
+export async function validateLinks(vault,rows,{root=WORKSPACE_ROOT,source}={}){
   source ||= {type:'obsidian',base:resolve(vault)};
   const links=new Set(rows.flatMap(r=>String(r['关联正文']||'').split('；').filter(Boolean)));
   for(const link of links){
