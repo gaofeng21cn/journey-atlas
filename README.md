@@ -1,4 +1,12 @@
-# Journey Atlas
+<p align="center">
+  <img src="assets/branding/journey-atlas-logo.png" alt="Journey Atlas logo" width="132" />
+</p>
+
+<p align="center"><a href="./README.en.md">English</a> | <strong>中文</strong></p>
+
+<h1 align="center">Journey Atlas</h1>
+
+<p align="center"><strong>把旅行记录变成地图与旅行护照。</strong></p>
 
 Journey Atlas 是一个本地优先的旅行数据可视化工具：把地点、行程和交通组成一份有向旅行账本，生成 Flighty 风格的旅行护照 PNG/SVG、可交互的多尺度地图，以及可供 Agent 读取的 OPL App 贡献视图。
 

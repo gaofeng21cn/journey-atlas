@@ -1,6 +1,8 @@
 {
   "schema_version": "journey-atlas.runtime-files.v1",
   "paths": [
+    "assets/branding/journey-atlas-logo.png",
+    "README.en.md",
     "LICENSE",
     "NOTICE.md",
     "README.md",

@@ -3,7 +3,7 @@
   "package_id": "travel-passport",
   "display_name": "Journey Atlas",
   "publisher": "gaofeng21cn",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "source": "first_party",
   "source_repo": "https://github.com/gaofeng21cn/journey-atlas.git",
   "package_role": "capability_package",
@@ -170,9 +170,11 @@
       ".codex-plugin/plugin.json",
       "LICENSE",
       "NOTICE.md",
+      "README.en.md",
       "README.md",
       "app-contribution-adapter.json",
       "app-contribution.mjs",
+      "assets/branding/journey-atlas-logo.png",
       "data/atlas-config.example.json",
       "data/china.geojson",
       "data/city-catalog.json",
@@ -309,7 +311,7 @@
       "src/transport-time.mjs",
       "src/world-dots.js"
     ],
-    "digest": "sha256:6c737faa104bcca07f2c1214100264d3b14b20e6e601b8aecc10511d462ad575"
+    "digest": "sha256:cf191006bcf04c0c00fce5c9fa916d1045d772226dbb23aa0fc1fc09bddeb403"
   },
   "visibility": "public",
   "description": "Agent-native travel atlas using user-owned travel records and Obsidian sources.",
@@ -330,7 +332,8 @@
       "zh-CN": "用 Journey Atlas 读取和维护旅行资料，生成地图并在共享视图中审阅。",
       "en-US": "Use Journey Atlas to maintain travel records, generate maps, and review shared views."
     },
-    "home_shortcuts": []
+    "home_shortcuts": [],
+    "icon_ref": "assets/branding/journey-atlas-logo.png"
   },
   "entrypoints": [
     {

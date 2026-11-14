@@ -1,6 +1,6 @@
 {
   "name": "travel-passport",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Build and review travel maps, passports, and annual reviews from user-owned records.",
   "author": {
     "name": "Journey Atlas contributors"
@@ -32,6 +32,8 @@
       "Show my 2026 annual travel review.",
       "List my regional travel passports by travel intensity.",
       "Explain what still blocks a fresh travel passport build."
-    ]
+    ],
+    "logo": "./assets/branding/journey-atlas-logo.png",
+    "composerIcon": "./assets/branding/journey-atlas-logo.png"
   }
 }
