@@ -1,0 +1,33 @@
+{
+  "strategy": "daily_patch",
+  "prepare": [
+    [
+      "npm",
+      "ci",
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund"
+    ],
+    [
+      "node",
+      "scripts/materialize_package.mjs"
+    ]
+  ],
+  "verify": [
+    [
+      "node",
+      "scripts/materialize_package.mjs",
+      "--check"
+    ]
+  ],
+  "version_files": [
+    {
+      "path": "package.json",
+      "kind": "json"
+    },
+    {
+      "path": "package-lock.json",
+      "kind": "json"
+    }
+  ]
+}
