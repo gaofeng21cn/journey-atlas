@@ -59,6 +59,15 @@ test('未到访国家和行政区不进入导航，交通端点不激活，完�
   d.scopes[0].coverage.push('乙国');assert.equal(createScopeEngine(d).isVisible('empty'),true);
 });
 
+test('构建可见导航只检查地点，不提前计算各分区的路线统计',()=>{
+  const d=fixture(),e=createScopeEngine(d);
+  assert.equal(e.hasPlaces('a'),true);assert.equal(e.hasPlaces('unit:A-1'),true);
+  assert.deepEqual(e.visibleChildren('world').map(s=>s.id),['a']);
+  assert.deepEqual(e.visibleChildren('a').map(s=>s.id),['unit:A-1']);
+  assert.equal(e.cache.size,0);
+  assert.equal(e.query('a').stats.places,2);assert.equal(e.cache.size,1);
+});
+
 test('重复行政入口和旧链接直接解析城市，保留事实分区与完整祖先关系',()=>{
   const d=fixture();d.scopes[2].detailScopeId='city:sample';
   d.scopes.push({id:'city:sample',name:'甲城',english:'CITY',parent:'a',level:'city',cityId:'sample',countries:['甲国'],units:[],bounds:[105,25,115,35]});

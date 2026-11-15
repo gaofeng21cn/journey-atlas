@@ -25,7 +25,7 @@ const passportStem = (area, config, social) => {
 
 const esc = s => String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const safeJson = x => JSON.stringify(x).replace(/</g,'\\u003c');
-const fmt = n => n.toLocaleString('en-US');
+const fmt = n => Math.round(n).toLocaleString('en-US');
 
 // Passport machine-readable zone: two fixed-width 44-character lines, exactly as
 // an ICAO TD3 passport MRZ. Every field is a real value from the maintained CSV

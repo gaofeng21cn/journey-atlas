@@ -4,7 +4,7 @@ import iso from 'i18n-iso-countries';
 import {ROOT,readJson} from './data.mjs';
 import {greatCircleKm} from './travel-layers.mjs';
 import {pointInFeature} from './region-map.mjs';
-import {reconstructCity} from './reconstruct-city.mjs';
+import {movingWindows,reconstructCity} from './reconstruct-city.mjs';
 import {GLOBAL_EVIDENCE_FILE,locationTimeZone} from './collect-global-evidence.mjs';
 import {travelTime} from '../src/transport-time.mjs';
 import {sourcePath} from './source-data.mjs';
@@ -16,6 +16,63 @@ const degreeBox=feature=>{
   return [Math.min(...p.map(p=>p[0])),Math.min(...p.map(p=>p[1])),Math.max(...p.map(p=>p[0])),Math.max(...p.map(p=>p[1]))];
 };
 const inBox=(p,b)=>p[0]>=b[0]&&p[0]<=b[2]&&p[1]>=b[1]&&p[1]<=b[3];
+
+// A single recorded track can contain an aircraft approach/takeoff followed
+// by taxi and ground access. Remove only its directionally matched, fast end
+// portion before building ground moves; retain the source track and its ID.
+export function trimFlightTrackFragments(evidence,routes){
+  const flights=routes.filter(r=>r.mode==='飞机'&&r.include!==false&&r.countDistance!==false&&
+    !['计划','计划航班','待飞','排除'].includes(r.status)&&r.review?.conclusion!=='计划'&&
+    Number.isFinite(r.scheduledStart)&&Number.isFinite(r.scheduledEnd)&&r.scheduledEnd>r.scheduledStart&&r.points?.length>=2);
+  const dispositions=[];
+  const tracks=(evidence.tracks||[]).map(track=>{
+    const p=track.points,t=track.sampleTimes;if(!p||!t||p.length!==t.length||p.length<3)return track;
+    const speed=i=>t[i]>t[i-1]?distance([p[i-1][1],p[i-1][0]],[p[i][1],p[i][0]])/(t[i]-t[i-1])*3600:0;
+    let lo=0,hi=p.length-1,arrival=null,departure=null,departureIndex=null;
+    for(let i=1;i<hi&&speed(i)>=220;i++){
+      const before=[p[0][1],p[0][0]],after=[p[i][1],p[i][0]];
+      const f=flights.find(r=>Math.abs(t[i]-r.scheduledEnd)<=7200&&distance(after,r.points.at(-1))<=5&&
+        distance(before,r.points.at(-1))<=120&&distance(before,r.points.at(-1))-distance(after,r.points.at(-1))>=.5);
+      if(f){lo=i;arrival=f;}
+    }
+    for(let i=hi;i>lo+1&&speed(i)>=220;i--){
+      const before=[p[i-1][1],p[i-1][0]],after=[p[hi][1],p[hi][0]];
+      const f=flights.find(r=>Math.abs(t[i-1]-r.scheduledStart)<=7200&&distance(before,r.points[0])<=5&&
+        distance(after,r.points[0])<=120&&distance(after,r.points[0])-distance(before,r.points[0])>=.5);
+      if(f){departure=f;departureIndex=i-1;}
+    }
+    if(departure)hi=departureIndex;
+    if(!arrival&&!departure)return track;
+    const next={...track,start:t[lo],end:t[hi]};
+    for(const key of ['points','sampleTimes','sampleAccuracies','sampleIntervalMaxAccuracies','sampleIntervalMaxGaps','sampleIndices','sampleCumulativeKm'])
+      if(Array.isArray(track[key]))next[key]=track[key].slice(lo,hi+1);
+    if(next.sampleIntervalMaxGaps?.length)next.sampleIntervalMaxGaps[0]=0;
+    if(next.sampleCumulativeKm?.length){const first=next.sampleCumulativeKm[0];next.sampleCumulativeKm=next.sampleCumulativeKm.map(n=>n-first);}
+    // Preserve the number of ground windows so maintained move references do
+    // not silently shift when the observations are reconstructed again.
+    const windows=movingWindows(next,{maxSpeed:320});
+    if(!windows.length||windows.length!==movingWindows(track,{maxSpeed:320}).length)return track;
+    for(const [flight,a,b] of [[arrival,0,lo],[departure,hi,p.length-1]])if(flight&&a<b)
+      dispositions.push({date:track.date,kind:'airborne-fragment',start:t[a],end:t[b],from:[p[a][1],p[a][0]],to:[p[b][1],p[b][0]],
+        references:['gps:'+track.id],referenceIds:[flight.id],resolution:'existing-movement',
+        reason:'定位端段在已发生航班的起降机场附近高速同向移动；由航班计程，保留余下地面移动及原始观测'});
+    return next;
+  });
+  return {evidence:{...evidence,tracks},dispositions};
+}
+
+// Daily serial IDs are used by maintained routes. If trimming changes which
+// physical movement an existing ID denotes, leave that day's evidence intact.
+export function unstableReconstructionDates(before,after){
+  const old=new Map(before.moves.map(m=>[m.id,m])),current=new Map(after.moves.map(m=>[m.id,m])),dates=new Set();
+  for(const id of new Set([...old.keys(),...current.keys()])){
+    const a=old.get(id),b=current.get(id);
+    if(!a||!b||a.sourceKind!==b.sourceKind||JSON.stringify(a.evidenceReferences)!==JSON.stringify(b.evidenceReferences)){
+      if(a)dates.add(a.date);if(b)dates.add(b.date);
+    }
+  }
+  return dates;
+}
 
 // Observation clocks and local-date boundaries need not coincide with a ticket's
 // departure day. Match the directed archival chain, including transfers, before
@@ -199,6 +256,28 @@ export function reconcileMobility(referenceRoutes,reconstruction){
         const originalMinutes=(travelTime(r).minutes??0)*(total?separation/total:1/(points.length-1));old.minutesDelta+=best.minutes-originalMinutes;old.segments.push(segment);replacements.set(r.id,old);}
     }
   }
+  // GPS recorded aboard an aircraft often contains only the approach or
+  // departure, not a complete airport-to-airport chain. A fast directed
+  // fragment near a confirmed flight's airport in its scheduled time window
+  // belongs to the ticket mileage; keep slower ground access independent.
+  const timedFlights=references.filter(r=>r.mode==='飞机'&&r.status!=='计划'&&r.review?.conclusion!=='计划'&&
+    Number.isFinite(r.scheduledStart)&&Number.isFinite(r.scheduledEnd)&&r.scheduledEnd>r.scheduledStart);
+  for(const m of reconstruction.moves){
+    if(used.has(m.id)||m.sourceKind!=='gps'||!(m.end>m.start)||m.km/(m.end-m.start)*3600<220)continue;
+    const from=nodes.get(m.fromNodeId),to=nodes.get(m.toNodeId);if(!from||!to)continue;
+    const p=[from.lat,from.lon],q=[to.lat,to.lon];
+    const flight=timedFlights.find(r=>{
+      if(m.start<r.scheduledStart-7200||m.end>r.scheduledEnd+7200)return false;
+      const start=r.points[0],end=r.points.at(-1);
+      const [a,b,c,d]=[distance(p,start),distance(q,start),distance(p,end),distance(q,end)];
+      return Math.max(a,b)<=120&&b-a>=Math.min(.2,m.km*.2)||
+        Math.max(c,d)<=120&&c-d>=Math.min(.2,m.km*.2);
+    });
+    if(!flight)continue;
+    used.add(m.id);
+    ownership.push({referenceId:flight.id,segment:1,moveIds:[m.id],originalKm:flight.km,recoveredKm:m.km,
+      action:'flight-fragment-owns',reason:'高速定位片段位于已发生航班的起降机场附近及排定时间窗口，方向与起飞或进近一致；由航班计程'});
+  }
   assignSparseIntervals();
   assignPartialIntervals();
   const reference=referenceRoutes.map(r=>{
@@ -225,14 +304,17 @@ export function effectiveMobilityRoutes(mobility){
     distanceBasis:'原交通代表值经完整连续GPS链校准；原值保留于sourceKm',travelDurationBasis:'原交通时长经同一连续GPS窗口去停留校准'}),...mobility.additions];
 }
 
-export function projectMobility(reconstruction,config,geometry,places=[]){
+export function projectMobility(reconstruction,config,geometry,places=[],{coveredBoundaries=new Set(),excludedFragments=new Set()}={}){
   const sourceNodes=new Map(reconstruction.nodes.map(n=>[n.id,n])),nodes=new Map();
   const adapt=id=>{
     if(nodes.has(id))return nodes.get(id);const p=sourceNodes.get(id),district=geometry.features.find(f=>pointInFeature([p.lon,p.lat],f));
     const near=places.find(q=>q.level!=='区域接续'&&distance([p.lat,p.lon],[q.lat,q.lon])<.2);
     const node={...p,name:near?.name||p.name,cityId:district?config.id:null,districtId:district?.id||null};nodes.set(id,node);return node;
   };
-  const moves=reconstruction.moves.filter(m=>[m.fromNodeId,m.toNodeId].some(id=>adapt(id).cityId===config.id)).map(m=>({...m}));
+  const moves=reconstruction.moves.filter(m=>{
+    const inside=[m.fromNodeId,m.toNodeId].map(id=>adapt(id).cityId===config.id);
+    return inside.some(Boolean)&&!excludedFragments.has(m.id)&&!(inside[0]!==inside[1]&&coveredBoundaries.has(m.id));
+  }).map(m=>({...m}));
   const ids=new Set(moves.map(m=>m.id)),visitIds=new Set(moves.flatMap(m=>[m.fromVisitId,m.toVisitId]));
   const visits=reconstruction.visits.filter(v=>visitIds.has(v.id)).map(v=>{const copy={...v,incoming:v.incoming.filter(id=>ids.has(id)),outgoing:v.outgoing.filter(id=>ids.has(id))};
     if(!copy.incoming.length||!copy.outgoing.length)copy.boundary||='区域投影边界';return copy;});
@@ -249,16 +331,36 @@ export async function loadGlobalMobility(folder,atlas,source={type:'obsidian',fo
   let evidence;try{evidence=JSON.parse(await readFile(sourcePath(source,GLOBAL_EVIDENCE_FILE),'utf8'));}catch(e){if(e.code==='ENOENT')return null;throw e;}
   if(!evidence.tracks?.length&&!evidence.photoPoints?.length&&!evidence.stays?.length)return null;
   const resolveNode=await globalNodeResolver(atlas,evidence),references=atlas.routes.filter(r=>r.include!==false&&!r.structuralLink&&r.countDistance!==false&&!['计划','计划航班','待飞','排除'].includes(r.status));
-  const canConnect=(a,b,window)=>{
-    if(window.kind==='gps')return true;
-    const separation=distance([a.lat,a.lon],[b.lat,b.lon]);
-    if(separation>=100){
-      const coveredBy=archivalMovementCover(references,a,b,window);
-      if(coveredBy.length)return {coveredBy};
-    }
-    return separation<=400;
+  const trimmed=trimFlightTrackFragments(evidence,references);
+  const reconstruct=(input,fragments)=>{
+    const canConnect=(a,b,window)=>{
+      if(window.kind==='gps')return true;
+      const flightFragment=fragments.find(d=>window.start<=d.start+60&&window.end>=d.end-60&&
+        distance([a.lat,a.lon],d.from)<=1&&distance([b.lat,b.lon],d.to)<=1);
+      if(flightFragment)return {coveredBy:flightFragment.referenceIds};
+      const separation=distance([a.lat,a.lon],[b.lat,b.lon]);
+      if(separation>=100){
+        const coveredBy=archivalMovementCover(references,a,b,window);
+        if(coveredBy.length)return {coveredBy};
+      }
+      return separation<=400;
+    };
+    return reconstructCity({config:{id:'global',timeZone:'UTC',timeZoneAt:locationTimeZone,maxSpeed:320,regional:true},evidence:input,resolveNode,canConnect});
   };
-  const reconstruction=classifyObservationConflicts(reconstructCity({config:{id:'global',timeZone:'UTC',timeZoneAt:locationTimeZone,maxSpeed:320,regional:true},evidence,resolveNode,canConnect}),references);
+  const original=reconstruct(evidence,[]);let observed=original,applied=[];
+  if(trimmed.dispositions.length){
+    observed=reconstruct(trimmed.evidence,trimmed.dispositions);applied=trimmed.dispositions;
+    const unstable=unstableReconstructionDates(original,observed);
+    if(unstable.size){
+      const originals=new Map(evidence.tracks.map(t=>[t.id,t]));
+      const safe={...trimmed.evidence,tracks:trimmed.evidence.tracks.map(t=>unstable.has(t.date)?originals.get(t.id):t)};
+      applied=trimmed.dispositions.filter(d=>!unstable.has(d.date));
+      observed=reconstruct(safe,applied);
+      if(unstableReconstructionDates(original,observed).size){observed=original;applied=[];}
+    }
+  }
+  observed.dispositions.push(...applied);
+  const reconstruction=classifyObservationConflicts(observed,references);
   const ledger=reconcileMobility(atlas.routes,reconstruction);
   return {...ledger,reconstruction,observations:evidence.summary,source:evidence.source,policy:evidence.policy};
 }

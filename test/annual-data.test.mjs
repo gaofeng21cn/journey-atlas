@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {annualView} from '../scripts/annual-data.mjs';
-import {annualMap} from '../scripts/annual-map.mjs';
+import {annualView,resolveAnnualMemory} from '../scripts/annual-data.mjs';
+import {annualMap,resolveAnnualLabels} from '../scripts/annual-map.mjs';
 
 const place=(id,name,country,first,extra={})=>({id,name,country,first,lat:10,lon:20,status:'已到访',include:true,level:'城市/城镇',source:'trip.md',...extra});
 const route=(id,date,km,extra={})=>({id,date,startDate:date,endDate:date,km,mode:'飞机',minutes:60,points:[[10,20],[30,40]],names:['基地','目的地'],include:true,...extra});
@@ -33,4 +33,30 @@ test('显示归组统一城市计数而不合并里程，地图保留有向往�
   const v=annualView(a,{year:2026,basePlaceId:'HOME',placeGroups:[{id:'CITY','name':'同一城市',placeIds:['A','B']}]});assert.equal(v.metrics.cities,1);assert.equal(v.metrics.newCities,1);assert.equal(v.metrics.totalKm,2000);
   const m=annualMap(v,[],{});assert.equal(m.segments,2);assert.equal((m.svg.match(/class="route flight"/g)||[]).length,2);
   assert.throws(()=>annualView(a,{year:2026,basePlaceId:'HOME',placeGroups:[{id:'BAD',name:'错误归组',placeIds:['HOME','A']}]}),/跨国/);
+});
+
+test('年度最远地点变化时，地图标注跟随最新计算并保留原地点名称',()=>{
+  const view={base:{id:'HOME'},farthest:{id:'CITY',placeIds:['NEW']}};
+  const input=[{placeId:'OLD',dx:-3,dy:-34,caption:'年度最远'},{placeId:'HOME',dx:10,dy:10}];
+  const labels=resolveAnnualLabels(view,input);
+  assert.equal(labels.find(l=>l.placeId==='OLD').caption,undefined);
+  assert.equal(labels.find(l=>l.placeId==='NEW').caption,'年度最远');
+  assert.equal(input[0].caption,'年度最远');
+});
+
+test('旅程强度亮点从同一年度账本汇总航段、里程、时长及基地出发次数',()=>{
+  const a=fixture();a.routes=[
+    route('OUT','2026-10-01',1200.4,{minutes:120,cities:['基地','甲']}),
+    route('BACK','2026-10-02',999.6,{minutes:60,cities:['甲','基地']}),
+    route('NEXT','2026-10-03',9000,{cities:['基地','乙']}),
+    route('PLAN','2026-10-01',8000,{status:'计划',cities:['基地','乙']})];
+  const memory={range:{from:'2026-10-01',to:'2026-10-02',mode:'飞机'},label:'密集出行',
+    title:'{count} 段飞行',body:['{km} 公里 · {hours} 小时'],foot:'{departures} 次出发'};
+  const resolved=resolveAnnualMemory(project(a),memory);
+  assert.deepEqual([resolved.title,...resolved.body,resolved.foot],['2 段飞行','2,200 公里 · 3 小时','1 次出发']);
+  assert.deepEqual(resolved.selectedRoutes,['OUT','BACK']);
+  assert.equal(memory.title,'{count} 段飞行');
+  assert.throws(()=>resolveAnnualMemory(project(a),{...memory,range:{...memory.range,from:'2026-10-04',to:'2026-10-05'}}),/没有计程移动/);
+  a.routes[0].minutes=null;
+  assert.throws(()=>resolveAnnualMemory(project(a),memory),/缺少移动时长/);
 });

@@ -105,7 +105,10 @@
   DATA.countries.forEach((c) => {
     const li = document.createElement("li");
     li.className = "stamp";
-    li.innerHTML = `<span class="stamp__flag">${c.flag || "🌐"}</span>${c.name}`;
+    const flag = document.createElement("span");
+    flag.className = "stamp__flag";
+    flag.textContent = c.flag || "🌐";
+    li.append(flag, document.createTextNode(c.name));
     stamps.appendChild(li);
   });
 
@@ -113,7 +116,7 @@
   const totalFlights = m.flightCount + m.plannedCount;
   const totalHours = Math.round(m.totalMinutes / 60);
   const stats = {
-    flights: totalFlights, distance: fmt(m.totalKm),
+    flights: totalFlights, distance: fmt(Math.round(m.totalKm)),
     years: `${m.firstYear} — ${m.lastYear}`, countries: m.countries,
     cities: m.cities, airports: m.airports, airlines: m.airlines,
     earth: (m.totalKm / m.earthKm).toFixed(1),

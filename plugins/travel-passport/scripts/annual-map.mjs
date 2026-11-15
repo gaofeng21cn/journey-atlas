@@ -4,6 +4,21 @@ import {routeSegments} from './route-geometry.mjs';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const mercator=([lat,lon])=>[lon*Math.PI/180,-Math.log(Math.tan(Math.PI/4+Math.max(-80,Math.min(80,lat))*Math.PI/360))];
 
+// A curated label may outlive the record it once described. Keep its place
+// label, but bind the farthest caption to the current annual calculation.
+export function resolveAnnualLabels(view,configured){
+  const farthestId=view.farthest?.placeIds?.[0]||view.farthest?.id;
+  const labels=(configured||[{placeId:view.base.id,dx:-30,dy:45}]).map(label=>({...label}));
+  const old=labels.find(label=>label.caption==='年度最远');
+  for(const label of labels)if(label.caption==='年度最远')delete label.caption;
+  if(farthestId){
+    let target=labels.find(label=>label.placeId===farthestId);
+    if(!target){target={placeId:farthestId,dx:old?.dx??0,dy:old?.dy??-26};labels.push(target);}
+    target.caption='年度最远';
+  }
+  return labels;
+}
+
 export function annualMap(view,dots,{labels=[]}={}){
   const width=1032,height=534,padding=46;
   const positions=view.places.map(p=>[p.lat,p.lon]);

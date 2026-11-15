@@ -6,8 +6,8 @@ import {parseArgs} from 'node:util';
 import {chromium} from 'playwright';
 import {ROOT,WORKSPACE_ROOT,readJson} from './data.mjs';
 import {loadAtlas} from './atlas-data.mjs';
-import {annualView} from './annual-data.mjs';
-import {annualMap} from './annual-map.mjs';
+import {annualView,resolveAnnualMemory} from './annual-data.mjs';
+import {annualMap,resolveAnnualLabels} from './annual-map.mjs';
 import {writeOutputGuide} from './output-paths.mjs';
 import {annotateManifest,manifestPath} from './manifest.mjs';
 import {validateLinks} from './source-references.mjs';
@@ -25,13 +25,13 @@ export async function renderAnnual({year,asOf,output,vault,atlas}={}){
     .map(j=>j.baseId).filter(Boolean).sort((a,b)=>atlas.journeyLayer.journeys.filter(j=>j.baseId===b).length-atlas.journeyLayer.journeys.filter(j=>j.baseId===a).length)[0];
   const view=annualView(atlas,{year,asOf:asOf||curation.asOf||`${year}-12-31`,basePlaceId,placeGroups:curation.placeGroups||[]});
   if(!view.farthest)throw new Error('该年度暂无已核地面到访记录，无法生成年度卡');
-  const memory=curation.memory;
+  const memory=resolveAnnualMemory(view,curation.memory);
   if(memory){
     if(!view.places.some(p=>p.id===memory.placeId))throw new Error('年度记忆须引用本年度实际到访地点');
     await validateLinks(source.base,[{'关联正文':memory.source}],{source});
   }
   const dotText=await readFile(join(ROOT,'src/world-dots.js'),'utf8'),dots=JSON.parse(dotText.slice(dotText.indexOf('=')+1).trim().replace(/;$/,''));
-  const labels=curation.mapLabels||[{placeId:view.base.id,dx:-30,dy:45},{placeId:view.farthest.id,dx:0,dy:-26,caption:'年度最远'}];
+  const labels=resolveAnnualLabels(view,curation.mapLabels);
   const map=annualMap(view,dots,{labels});
   const firstCountry=view.newCountries[0],newPlace=view.places.filter(p=>p.country===firstCountry).sort((a,b)=>a.first.localeCompare(b.first))[0]||view.newCities[0];
   const fallback=view.revisits[0],period='01.01 — '+view.dataThrough.slice(5).replace('-','.');
@@ -41,7 +41,7 @@ export async function renderAnnual({year,asOf,output,vault,atlas}={}){
     NEW_BODY:firstCountry?`第一次走进${esc(newPlace.name)}，<br>点亮一片新的地图。`:`${view.metrics.newCities}座新城市，<br>让这一年的地图更丰富。`,
     NEW_FOOT:esc(newPlace?newPlace.first.slice(5).replace('-','.')+' · '+newPlace.name:''),
     FARTHEST:esc(view.farthest.name),FAR_KM:fmt(view.farthest.km),BASE:esc(view.base.name),
-    MEMORY_TITLE:esc(memory?.title||fallback?.country||'在路上的日子'),MEMORY_BODY:memory?memory.body.map(esc).join('<br>'):`${fallback?.trips||0}次旅行，<br>继续探索熟悉的远方。`,MEMORY_FOOT:esc(memory?.foot||''),
+    MEMORY_LABEL:esc(memory?.label||'这一年的特别时刻'),MEMORY_TITLE:esc(memory?.title||fallback?.country||'在路上的日子'),MEMORY_BODY:memory?memory.body.map(esc).join('<br>'):`${fallback?.trips||0}次旅行，<br>继续探索熟悉的远方。`,MEMORY_FOOT:esc(memory?.foot||''),
     MRZ_1:mrz(`P<CHN<MY<TRAVEL<YEARBOOK<${year}`),MRZ_2:mrz(`${year}<${view.metrics.totalKm}KM<${view.metrics.countries}COUNTRIES<${view.metrics.cities}CITIES`)};
   const html=template.replace(/\{\{(\w+)\}\}/g,(_,key)=>values[key]??'');
   const stem=`年度旅行卡-${year}-分享`,htmlPath=join(output,'html/01_全球护照',stem+'.html'),pngPath=join(output,'01_全球护照',stem+'.png');

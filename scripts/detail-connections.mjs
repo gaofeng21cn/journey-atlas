@@ -5,6 +5,18 @@ import {greatCircleKm} from './travel-layers.mjs';
 // visit. Airport endpoints retain their real position, not a city centroid.
 export function atlasConnections(config,geo,atlas,places,{all=false}={}){
   const wardAt=(lat,lon)=>geo.features.find(f=>pointInFeature([lon,lat],f));
+  // A GPS sample in the middle of an intercity trip is not its destination.
+  // Where the ledger matched that boundary crossing to a maintained route,
+  // expose the route's actual endpoints in the city view.
+  const coveredBoundaries=new Set();
+  if(!all&&atlas.mobility?.reconstruction){
+    const nodes=new Map(atlas.mobility.reconstruction.nodes.map(n=>[n.id,n]));
+    const moves=new Map(atlas.mobility.reconstruction.moves.map(m=>[m.id,m]));
+    for(const entry of atlas.mobility.ownership||[])for(const id of entry.moveIds){
+      const move=moves.get(id),a=nodes.get(move?.fromNodeId),b=nodes.get(move?.toNodeId);
+      if(a&&b&&Boolean(wardAt(a.lat,a.lon))!==Boolean(wardAt(b.lat,b.lon)))coveredBoundaries.add(entry.referenceId);
+    }
+  }
   const adapt=(r,i)=>{
     const ref=r.nodeRefs?.[i],display=(r.displayPoints||r.points)[i],actual=r.points[i];
     const parent=atlas.locationLayer.places.find(p=>p.id===(ref?.placeId||ref?.servicePlaceId));
@@ -20,7 +32,7 @@ export function atlasConnections(config,geo,atlas,places,{all=false}={}){
   const routes=[];
   for(const r of atlas.routes){
     const nodes=r.points.map((_,i)=>adapt(r,i)),inside=nodes.map(n=>n.cityId===config.id);
-    if(!inside.some(Boolean)||!all&&(inside.every(Boolean)||r.mode!=='飞机'))continue;
+    if(!inside.some(Boolean)||!all&&(inside.every(Boolean)||r.mode!=='飞机'&&!coveredBoundaries.has(r.id)))continue;
     routes.push({id:r.id,mode:r.mode,km:r.km,minutes:r.minutes||0,travelMinutes:r.travelMinutes,travelDurationBasis:r.travelDurationBasis,
       date:r.startDate||r.date,startDate:r.startDate,endDate:r.endDate,timePrecision:r.timePrecision,
       recordType:r.recordType,structuralLink:r.structuralLink||false,countDistance:r.countDistance!==false,countDuration:r.countDuration!==false,

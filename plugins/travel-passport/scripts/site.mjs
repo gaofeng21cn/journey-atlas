@@ -22,7 +22,16 @@ export async function buildSite({vault,output,atlas}={}) {
   const [data,template,css,bundle]=await Promise.all([
     prepareSiteData({vault,atlas,onCityDetails:detail=>writeCityReconstructions(detail,reconstructionOutput)}),readFile(join(ROOT,'src/site.html'),'utf8'),readFile(join(ROOT,'src/site.css'),'utf8'),
     build({entryPoints:[join(ROOT,'src/site-app.mjs')],bundle:true,write:false,minify:true,format:'iife',target:'es2022'})]);
-  const html=template.replace('__SITE_CSS__',()=>css).replace('__SITE_DATA__',()=>JSON.stringify(data).replace(/</g,'\\u003c'))
+  // City context is the largest part of a personal atlas. Keep the offline
+  // page self-contained, but parse each background only when it is opened.
+  const contextIndex={},contextTags=[];
+  for(const [key,value] of Object.entries(data.contexts||{})){
+    const id='atlas-context-'+contextTags.length;contextIndex[key]=id;
+    contextTags.push(`<script id="${id}" type="application/json" data-map-context>${JSON.stringify(value).replace(/</g,'\\u003c')}</script>`);
+  }
+  const pageData={...data,contexts:{},contextIndex};
+  const html=template.replace('__SITE_CSS__',()=>css).replace('__SITE_DATA__',()=>JSON.stringify(pageData).replace(/</g,'\\u003c'))
+    .replace('__SITE_CONTEXTS__',()=>contextTags.join(''))
     .replace('__SITE_JS__',()=>bundle.outputFiles[0].text.replace(/<\/script/gi,'<\\/script'));
   await mkdir(output,{recursive:true});await writeFile(join(output,'index.html'),html);
   await mkdir(join(output,'data'),{recursive:true});

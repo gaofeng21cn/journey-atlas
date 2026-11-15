@@ -7,6 +7,29 @@ const startOf=r=>r.startDate||String(r.date||'').match(/\d{4}(?:-\d{2}(?:-\d{2})
 const groundPlace=p=>p.include!==false&&p.status==='已到访'&&!['交通节点','行政区','区域接续'].includes(p.level);
 const bounds=(first,last=first)=>{const a=dateBounds(first),b=dateBounds(last);return a&&b?{start:a.start,end:b.end}:null;};
 
+// Curated annual stories can refer to a real time window while deriving their
+// movement counts, kilometres and hours from the same annual ledger.
+export function resolveAnnualMemory(view,memory){
+  if(!memory?.range)return memory;
+  const {from,to,mode}=memory.range;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(from||'')||!/^\d{4}-\d{2}-\d{2}$/.test(to||'')||!bounds(from,to)||from>to)
+    throw new Error('年度旅程亮点需要有效的开始与结束日期');
+  const routes=view.routes.filter(r=>r.countDistance!==false&&startOf(r)>=from&&startOf(r)<=to&&(!mode||r.mode===mode));
+  if(!routes.length)throw new Error('年度旅程亮点的时间范围内没有计程移动');
+  const texts=[memory.label,memory.title,...(memory.body||[]),memory.foot].filter(Boolean).join(' ');
+  if(texts.includes('{km}')&&routes.some(r=>!Number.isFinite(r.km)))throw new Error('年度旅程亮点缺少移动里程');
+  const times=routes.map(travelTime);
+  if(texts.includes('{hours}')&&times.some(t=>t.minutes===null))throw new Error('年度旅程亮点缺少移动时长');
+  if(texts.includes('{departures}')&&routes.some(r=>!r.cities?.[0]))throw new Error('年度旅程亮点缺少出发服务城市');
+  const values={count:routes.reduce((n,r)=>n+Math.max(1,(r.points?.length||2)-1),0),
+    km:Math.round(routes.reduce((n,r)=>n+(r.km||0),0)).toLocaleString('en-US'),
+    hours:Math.round(times.reduce((n,t)=>n+(t.minutes||0),0)/60),
+    departures:routes.filter(r=>r.cities?.[0]===view.base.name).length};
+  const render=value=>typeof value==='string'?value.replace(/\{(count|km|hours|departures)\}/g,(_,key)=>String(values[key])):value;
+  return {...memory,label:render(memory.label),title:render(memory.title),body:(memory.body||[]).map(render),foot:render(memory.foot),
+    selectedRoutes:routes.map(r=>r.id)};
+}
+
 // A year is a projection over the same deduplicated physical-movement ledger.
 // Entire movements belong to their departure year; coarse/cross-year records
 // retain their source window rather than gaining invented daily mileage.

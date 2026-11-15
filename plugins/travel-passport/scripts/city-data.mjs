@@ -159,12 +159,16 @@ export async function loadCityDetails(folder,atlas,overrides={},source){
     for(const t of e.tracks||[])if(!/^\d{4}-\d{2}-\d{2}$/.test(t.date)||!Array.isArray(t.points)||t.points.length<2||t.points.some(p=>!Array.isArray(p)||p.length!==2||!p.every(Number.isFinite)||Math.abs(p[0])>180||Math.abs(p[1])>90))throw new Error('城市定位轨迹格式无效：'+c.id);
     for(const p of e.photoPoints||[])if(!/^\d{4}-\d{2}-\d{2}$/.test(p.date)||!Number.isFinite(p.lat)||!Number.isFinite(p.lon)||Math.abs(p.lat)>90||Math.abs(p.lon)>180)throw new Error('城市照片定位格式无效：'+c.id);
     for(const route of routes)validateObservedCityRoute(route,e);
-    const combined=mergeDetailConnections(routes,atlasConnections(c,geo,atlas,places,{all:!!c.useGlobal}));
+    const globalConnections=atlasConnections(c,geo,atlas,places,{all:!!c.useGlobal});
+    const combined=mergeDetailConnections(routes,globalConnections);
     if(c.useGlobal)for(const p of places.filter(p=>p.active)){
       const incoming=combined.some(r=>r.nodes.slice(1).some(n=>n.id===p.id)),outgoing=combined.some(r=>r.nodes.slice(0,-1).some(n=>n.id===p.id));
       if(!incoming||!outgoing)throw new Error('区域细化地点缺少接续：'+p.name);
     }
-    const reconstruction=c.useGlobal?null:atlas.mobility?.reconstruction?projectMobility(atlas.mobility.reconstruction,c,geo,places):reconstructCity({config:c,geometry:geo,evidence:e,places});
+    const visibleReferences=new Set(globalConnections.map(r=>r.id));
+    const coveredBoundaries=new Set((atlas.mobility?.ownership||[]).filter(o=>visibleReferences.has(o.referenceId)).flatMap(o=>o.moveIds));
+    const excludedFragments=new Set((atlas.mobility?.ownership||[]).filter(o=>o.action==='flight-fragment-owns').flatMap(o=>o.moveIds));
+    const reconstruction=c.useGlobal?null:atlas.mobility?.reconstruction?projectMobility(atlas.mobility.reconstruction,c,geo,places,{coveredBoundaries,excludedFragments}):reconstructCity({config:c,geometry:geo,evidence:e,places});
     const inferredNodes=new Map(reconstruction?.nodes.map(n=>[n.id,n])||[]);
     const globalRoutes=new Map(atlas.routes.map(r=>[r.id,r]));
     const inferredRoutes=(reconstruction?.moves||[]).map(m=>({...m,...(globalRoutes.get('MOB-'+m.id)?.classificationRef?{mode:globalRoutes.get('MOB-'+m.id).mode,sourceMode:m.mode,vehicle:globalRoutes.get('MOB-'+m.id).vehicle}:{}),nodes:[inferredNodes.get(m.fromNodeId),inferredNodes.get(m.toNodeId)],minutes:0,reconstructed:true,

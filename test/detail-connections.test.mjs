@@ -19,3 +19,12 @@ test('同日同向城市维护航段优先，反方向或其他年份接续保�
   assert.equal(mergeDetailConnections([old],[{...route,date:'2016-01-01'}]).length,2);
   assert.equal(mergeDetailConnections([old],[{...route,nodes:[...route.nodes].reverse()}]).length,2);
 });
+
+test('跨城轨迹中途的定位片段归入已登记铁路时，城市边缘显示铁路真实终点',()=>{
+  const rail={id:'RAIL',names:['甲城','乙城'],points:[[10.5,10.5],[12,12]],countries:['甲国'],km:200,date:'2024-01-01',mode:'铁路'};
+  const record={locationLayer:{places:[]},routes:[rail],mobility:{ownership:[{referenceId:'RAIL',moveIds:['PART']}],reconstruction:{
+    nodes:[{id:'A',lat:10.5,lon:10.5},{id:'MID',lat:11.2,lon:11.2}],moves:[{id:'PART',fromNodeId:'A',toNodeId:'MID'}]}}};
+  const routes=atlasConnections(config,geo,record,[]);
+  assert.deepEqual(routes.map(r=>r.id),['RAIL']);
+  assert.equal(routes[0].nodes[1].name,'乙城');
+});

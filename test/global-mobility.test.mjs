@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {reconcileMobility,effectiveMobilityRoutes,projectMobility} from '../scripts/global-mobility.mjs';
+import {reconcileMobility,effectiveMobilityRoutes,projectMobility,trimFlightTrackFragments,unstableReconstructionDates} from '../scripts/global-mobility.mjs';
 
 const node=(id,lat,lon)=>({id,name:id,lat,lon,country:'甲国'});
 const a=node('A',35,139),b=node('B',35,140),c=node('C',35.02,139.01);
@@ -41,6 +41,15 @@ test('城市投影复用同一物理移动编号和计量，不另造一份移�
   assert.equal(source.nodes[0].cityId,undefined);
 });
 
+test('城市投影隐藏已由完整路线接替的中途边缘点，保留独立移动和城内轨迹',()=>{
+  const outside=node('OUT',36,140),inside=node('IN',35,139),other=node('OTHER',35.02,139.01);
+  const moves=[movement('COVERED',inside,outside),movement('FREE',inside,outside),movement('LOCAL',inside,other)];
+  const source={...recon(moves),nodes:[outside,inside,other],visits:moves.flatMap(m=>[{id:m.fromVisitId,nodeId:m.fromNodeId,incoming:[],outgoing:[m.id]},{id:m.toVisitId,nodeId:m.toNodeId,incoming:[m.id],outgoing:[]}]),journeys:[],stationary:[]};
+  const geo={features:[{id:'D',properties:{name:'城区'},geometry:{type:'Polygon',coordinates:[[[138.9,34.9],[139.1,34.9],[139.1,35.1],[138.9,35.1],[138.9,34.9]]]}}]};
+  const projected=projectMobility(source,{id:'sample'},geo,[],{coveredBoundaries:new Set(['COVERED','LOCAL'])});
+  assert.deepEqual(projected.moves.map(m=>m.id),['FREE','LOCAL']);
+});
+
 test('长途行程的分段观测由原全程计量；反向、另一次与离开走廊的移动保留',()=>{
   const d=node('D',35,139.25),e=node('E',35,139.7),off=node('OFF',36,139.7);
   const legs=[movement('PART1',d,e,{km:45,path:[[139.25,35],[139.7,35]],start:100,end:200}),
@@ -69,4 +78,48 @@ test('观测跨越既有长途的一部分，只增加未覆盖区间，计量�
   assert.equal(r.additions[0].km,20);assert.equal(r.additions[0].originalMoveKm,70);
   assert.equal(r.ownership[0].coveredKm+r.additions[0].km,m.km);
   assert.equal(r.reference[0].km,120);assert.equal(m.km,70);
+});
+
+test('机场附近同向高速定位片段由已发生航班计量，地面接驳与待飞航班不受影响',()=>{
+  const before=node('APPROACH',35,140.4),near=node('NEAR',35,140.1),wrong=node('WRONG',35,140.5);
+  const fast=movement('FAST',before,near,{km:27,start:10000,end:10300});
+  const reverse=movement('REVERSE',near,wrong,{km:36,start:10400,end:10800});
+  const ground=movement('GROUND',near,b,{km:10,start:11000,end:12200});
+  const flight=reference({mode:'飞机',points:[[30,100],[35,140]],km:5000,distanceType:'archived',
+    scheduledStart:1000,scheduledEnd:20000,status:'已飞'});
+  const observed={nodes:[before,near,wrong,b],moves:[fast,reverse,ground],conflicts:[]};
+  const result=reconcileMobility([flight],observed);
+  assert.deepEqual(result.ownership.map(o=>[o.referenceId,o.moveIds[0],o.action]),[['R','FAST','flight-fragment-owns']]);
+  assert.deepEqual(result.additions.map(m=>m.id),['MOB-REVERSE','MOB-GROUND']);
+  assert.equal(result.summary.totalKm,5046);
+  const planned=reconcileMobility([{...flight,status:'计划'}],observed);
+  assert.equal(planned.summary.additionalMoves,3);
+});
+
+test('同一定位轨迹混有起降高速段时，只移除航班覆盖部分并保留地面接驳',()=>{
+  const arrival={id:'ARRIVAL',date:'2024-01-01',start:10000,end:10760,
+    points:[[140,34.9],[140,35],[140,35.05]],sampleTimes:[10000,10160,10760],sampleAccuracies:[5,5,5]};
+  const departure={id:'DEPARTURE',date:'2024-01-01',start:20000,end:20760,
+    points:[[139,35],[139,35.05],[139,35.15]],sampleTimes:[20000,20600,20760],sampleAccuracies:[5,5,5]};
+  const flights=[reference({id:'IN',mode:'飞机',points:[[30,100],[35,140]],status:'已飞',scheduledStart:1000,scheduledEnd:10200}),
+    reference({id:'OUT',mode:'飞机',points:[[35.05,139],[30,100]],status:'已飞',scheduledStart:20600,scheduledEnd:30000})];
+  const evidence={tracks:[arrival,departure]};
+  const trimmed=trimFlightTrackFragments(evidence,flights);
+  assert.deepEqual(trimmed.evidence.tracks.map(t=>t.points),[arrival.points.slice(1),departure.points.slice(0,2)]);
+  assert.deepEqual(trimmed.dispositions.map(d=>d.referenceIds[0]),['IN','OUT']);
+  assert.equal(evidence.tracks[0].points.length,3);
+  const planned=trimFlightTrackFragments(evidence,flights.map(f=>({...f,status:'计划'})));
+  assert.deepEqual(planned.evidence.tracks,evidence.tracks);
+  assert.equal(planned.dispositions.length,0);
+  const wrongDirection={...arrival,points:[...arrival.points].reverse()};
+  assert.equal(trimFlightTrackFragments({tracks:[wrongDirection]},[flights[0]]).dispositions.length,0);
+  const otherTime={...flights[0],scheduledStart:30000,scheduledEnd:40000};
+  assert.equal(trimFlightTrackFragments({tracks:[arrival]},[otherTime]).dispositions.length,0);
+});
+
+test('定位调整不能让维护中的移动编号指向另一段行程',()=>{
+  const before={moves:[movement('M1',a,b,{evidenceReferences:['first']}),movement('M2',a,b,{evidenceReferences:['second']})]};
+  const shifted={moves:[movement('M1',a,b,{evidenceReferences:['second']})]};
+  assert.deepEqual([...unstableReconstructionDates(before,shifted)],['2024-01-01']);
+  assert.equal(unstableReconstructionDates(before,{moves:before.moves.map(m=>({...m,km:1}))}).size,0);
 });

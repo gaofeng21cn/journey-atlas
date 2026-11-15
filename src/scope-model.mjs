@@ -9,7 +9,8 @@ const inRing=(x,y,ring)=>{let yes=false;for(let i=0,j=ring.length-1;i<ring.lengt
 export const pointInRing=(p,ring)=>inRing(p[0],p[1],ring);
 export const pointInFeature=(p,f)=>polygonsOf(f).some(poly=>inRing(p[0],p[1],poly[0])&&!poly.slice(1).some(r=>inRing(p[0],p[1],r)));
 export function createScopeEngine(data) {
-  const scopes=new Map(data.scopes.map(s=>[s.id,s])), cache=new Map();
+  const scopes=new Map(data.scopes.map(s=>[s.id,s])), cache=new Map(),childrenByParent=new Map();
+  for(const scope of data.scopes){const siblings=childrenByParent.get(scope.parent)||[];siblings.push(scope);childrenByParent.set(scope.parent,siblings);}
   const resolve=id=>scopes.get(id)?.detailScopeId||id;
   const navigationLeaf=id=>{const s=scopes.get(resolve(id));return s?.level==='city'&&s.detailKind!=='province';};
   if(scopes.size!==data.scopes.length)throw new Error('分区编号重复');
@@ -45,7 +46,7 @@ export function createScopeEngine(data) {
     const visited=new Set(places.map(p=>scope.districtId||scope.unitId||scope.placeCoverage?p.id:scope.cityId?p.districtId:scope.level==='country'&&scope.units.length?p.unitId:p.country));
     const units=scope.districtId||scope.unitId?places.map(p=>({id:p.id,name:p.name,active:true})):
       scope.units.map(u=>({...u,active:visited.has(u.id)||scope.coverage?.includes(u.id)}));
-    const children=data.scopes.filter(s=>s.parent===id);
+    const children=[...(childrenByParent.get(id)||[])];
     const nodes=new Map();for(const r of routes)for(const n of r.nodes)if(contains(scope,n))nodes.set(n.id,n);
     const activeUnits=units.filter(u=>u.active&&u.counted!==false).length;
     const counted=units.filter(u=>u.counted!==false).length;
@@ -70,14 +71,20 @@ export function createScopeEngine(data) {
         firstYear:years.length?Math.min(...years):null,lastYear:years.length?Math.max(...years):null}};
     cache.set(key,view);return view;
   }
-  const visibility=new Map(),world=scopes.get('world');
+  const visibility=new Map(),placePresence=new Map(),world=scopes.get('world');
+  function hasPlaces(id){
+    id=resolve(id);if(placePresence.has(id))return placePresence.get(id);
+    const scope=scopes.get(id);if(!scope)return false;
+    const places=(scope.cityId?data.cities?.[scope.cityId]?.places:null)||data.places;
+    const present=places.some(p=>contains(scope,p)&&p.active);placePresence.set(id,present);return present;
+  }
   function isVisible(id){
     if(visibility.has(id))return visibility.get(id);const s=scopes.get(id);if(!s)return false;
     if(s.level==='district'&&navigationLeaf(s.parent)&&!s.detailScopeId){visibility.set(id,false);return false;}
-    const shown=id==='world'||query(id).places.length>0||s.level==='country'&&s.countries.some(c=>world?.coverage?.includes(c))||data.scopes.some(c=>c.parent===id&&isVisible(c.id));
+    const shown=id==='world'||hasPlaces(id)||s.level==='country'&&s.countries.some(c=>world?.coverage?.includes(c))||(childrenByParent.get(id)||[]).some(c=>isVisible(c.id));
     visibility.set(id,Boolean(shown));return Boolean(shown);
   }
-  return {query,scopes,contains,cache,isVisible,resolve,navigationLeaf,visibleChildren:id=>navigationLeaf(id)?[]:query(id).children.filter(s=>!s.detailScopeId&&isVisible(s.id))};
+  return {query,scopes,contains,cache,hasPlaces,isVisible,resolve,navigationLeaf,visibleChildren:id=>navigationLeaf(id)?[]:(childrenByParent.get(resolve(id))||[]).filter(s=>!s.detailScopeId&&isVisible(s.id))};
 }
 
 export function boundsOf(points,padding=.12,minimumPadding=.2) {
