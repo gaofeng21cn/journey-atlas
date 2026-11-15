@@ -1,6 +1,6 @@
 {
   "name": "travel-passport",
-  "version": "0.2.2",
+  "version": "0.3.0-dev.20261115",
   "type": "module",
   "description": "Agent-native travel atlas with a local CLI and shared OPL review views",
   "engines": {
@@ -47,7 +47,8 @@
     "init:data": "node scripts/source-data-cli.mjs init",
     "import:data": "node scripts/source-data-cli.mjs import",
     "journey": "node journey-atlas.mjs",
-    "verify:installed": "node scripts/verify-installed-runtime.mjs"
+    "verify:installed": "node scripts/verify-installed-runtime.mjs",
+    "review": "node scripts/render-year-review.mjs"
   },
   "dependencies": {
     "@mapbox/vector-tile": "^3.0.0",

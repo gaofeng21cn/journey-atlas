@@ -9,6 +9,15 @@ const visit=(id,placeId,startDate,extra={})=>({id,placeId,startDate,endDate:star
 function fixture(){return {meta:{earthKm:40075},routes:[],locationLayer:{places:[place('HOME','基地','中国','2020-01-01')]},visitInstances:[],journeyLayer:{journeys:[{id:'J',source:'trip.md'}]}};}
 const project=a=>annualView(a,{year:2026,asOf:'2026-11-05',basePlaceId:'HOME'});
 
+test('显式纳入待飞仅扩展同年度有效移动，不激活未来到访或改变实际资料截止日',()=>{
+  const a=fixture();a.routes=[route('DONE','2026-01-01',1000),route('PLAN','2026-12-01',2400,{status:'计划'}),route('NEXT','2027-01-01',800,{status:'计划'}),route('DUP','2026-12-01',2400,{status:'计划',metricOwnerIds:['PLAN']})];
+  a.locationLayer.places.push(place('FUTURE','未来目的地','示例国','2026-12-01'));
+  a.visitInstances=[visit('FUTURE-VISIT','FUTURE','2026-12-01')];
+  const v=annualView(a,{year:2026,asOf:'2026-11-05',basePlaceId:'HOME',includePlanned:true});
+  assert.equal(v.metrics.flightCount,2);assert.equal(v.metrics.flightKm,3400);assert.deepEqual(v.plannedRouteIds,['PLAN']);
+  assert.equal(v.metrics.cities,0);assert.equal(v.dataThrough,'2026-01-01');assert.equal(project(a).metrics.flightCount,1);
+});
+
 test('年度公里来自去重后的同一移动账本，包含步行，排除计划和其他年度',()=>{
   const a=fixture();a.routes=[route('F','2026-01-01',1000.125),route('W','2026-01-02',1.234,{mode:'步行'}),route('P','2026-02-01',9000,{status:'计划'}),route('OLD','2025-12-31',2000,{endDate:'2026-01-01'}),route('COVERED','2026-01-01',1000,{metricOwnerIds:['F']})];
   const v=project(a);assert.equal(v.metrics.totalMeters,1001359);assert.equal(v.metrics.flightCount,1);assert.equal(v.metrics.flightHours,1);assert.equal(v.dataThrough,'2026-01-02');

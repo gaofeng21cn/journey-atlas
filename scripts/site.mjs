@@ -14,6 +14,8 @@ import {travelTime} from '../src/transport-time.mjs';
 import {csv} from './csv.mjs';
 import {passportAsset,prepareAsset} from './output-paths.mjs';
 import {writeCityReconstructions} from './city-reconstruction-output.mjs';
+import {buildReviewGallery} from './render-year-review.mjs';
+import {loadYearReview} from './year-review.mjs';
 
 export async function buildSite({vault,output,atlas}={}) {
   const started=performance.now(),config=await readAtlasConfig();
@@ -30,10 +32,20 @@ export async function buildSite({vault,output,atlas}={}) {
     contextTags.push(`<script id="${id}" type="application/json" data-map-context>${JSON.stringify(value).replace(/</g,'\\u003c')}</script>`);
   }
   const pageData={...data,contexts:{},contextIndex};
-  const html=template.replace('__SITE_CSS__',()=>css).replace('__SITE_DATA__',()=>JSON.stringify(pageData).replace(/</g,'\\u003c'))
+  const defaultOutput=resolve(join(config.output||join(WORKSPACE_ROOT,'outputs'),'site'));
+  const reviewRoot=output===defaultOutput?resolve(output,'..','annual-reviews'):join(output,'annual-reviews');
+  const reviewHref=relative(output,join(reviewRoot,'index.html')).split(sep).join('/');
+  const html=template.replace('__YEAR_REVIEW_HREF__',()=>reviewHref).replace('__SITE_CSS__',()=>css).replace('__SITE_DATA__',()=>JSON.stringify(pageData).replace(/</g,'\\u003c'))
     .replace('__SITE_CONTEXTS__',()=>contextTags.join(''))
     .replace('__SITE_JS__',()=>bundle.outputFiles[0].text.replace(/<\/script/gi,'<\\/script'));
   await mkdir(output,{recursive:true});await writeFile(join(output,'index.html'),html);
+  const annual=await readJson(join(WORKSPACE_ROOT,'data/annual-config.json')).catch(e=>{if(e.code==='ENOENT')return {years:{}};throw e;});
+  const models=[],years=Object.keys(annual.years||{}).map(Number).sort((a,b)=>b-a);
+  for(const year of years)for(const includePlanned of [annual.years[year].review?.includePlanned??false,!(annual.years[year].review?.includePlanned??false)]){
+    models.push((await loadYearReview({year,includePlanned,theme:'life',format:'story',atlas,config,curation:annual.years[year]})).model);
+  }
+  const defaults=annual.years?.[years[0]]?.review||{};
+  await buildReviewGallery(reviewRoot,models,{mapHref:relative(reviewRoot,join(output,'index.html')).split(sep).join('/'),defaults:{year:years[0],theme:defaults.theme,style:defaults.style,format:defaults.format,includePlanned:defaults.includePlanned}});
   await mkdir(join(output,'data'),{recursive:true});
   await writeFile(join(output,'data','交通移动时长.csv'),csv(data.routes.map(r=>{const t=travelTime(r);return {
     '交通编号':r.id,'交通方式':r.mode,'里程公里':r.km,'时长分钟':t.minutes??'','时长采用来源':t.minutes===null?'待补':t.estimated?'方式模型':'已有记录','时长依据':t.basis};})));

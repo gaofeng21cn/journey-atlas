@@ -4,6 +4,7 @@ import { existsSync, readFileSync, readdirSync, realpathSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { dependenciesReady, setupRuntime } from './journey-atlas.mjs';
+import { reviewThemes, reviewStyles } from './src/year-review.mjs';
 
 const REQUEST_SCHEMA = 'opl-package-app-contribution-request.v1';
 const RESPONSE_SCHEMA = 'opl-package-app-contribution-response.v1';
@@ -101,14 +102,22 @@ export function availableYears(output) {
 }
 
 export function buildAnnual(ownerRoot, status, requestedYear) {
-  const output = outputRoot(ownerRoot), years = availableYears(output);
+  const output = outputRoot(ownerRoot), index=readJson(path.join(output,'annual-reviews/index.json'));
+  const configured=Object.keys(readJson(path.join(ownerRoot,'data/annual-config.json'))?.years||{}).map(Number);
+  const years=[...new Set([...availableYears(output),...configured,...(index?.editions||[]).map(e=>e.year)])].filter(Number.isInteger).sort((a,b)=>b-a);
   const year = Number.isInteger(requestedYear) ? requestedYear : years[0] || new Date().getFullYear();
   const summary = readJson(path.join(output, 'data', `年度旅行摘要-${year}.json`));
-  const metrics = summary?.metrics || {};
+  const editions=(index?.editions||[]).filter(e=>e.year===year).map(e=>({
+    ...e, content:readJson(path.join(output,'annual-reviews',e.manifest)),
+  })).filter(e=>e.content);
+  const latest=editions.at(-1)?.content;
+  const metrics = latest?.travelMetrics || summary?.metrics || {};
+  const available=Boolean(latest||summary);
   const item = {
-    id: `travel-passport-annual-${year}`, title: `${year} 年度旅行回顾`,
-    summary: summary ? `${Number(metrics.totalKm || 0).toLocaleString('en-US')} 公里 · ${metrics.countries || 0} 个国家与地区 · ${metrics.cities || 0} 个城市` : '尚未生成该年度旅行卡',
-    status: summary ? 'available' : 'unavailable', year, data_through: summary?.dataThrough || null,
+    id: `travel-passport-annual-${year}`, title: `${year} 年度总结`,
+    summary: latest ? `${metrics.flightCount || 0} 飞行航段 · ${Math.round(Number(metrics.flightKm || 0)).toLocaleString('en-US')} 飞行公里` : summary ? `${Number(metrics.totalKm || 0).toLocaleString('en-US')} 公里 · ${metrics.countries || 0} 个国家与地区 · ${metrics.cities || 0} 个城市` : '选择主题和风格，制作这一年的卡片',
+    status: available ? 'available' : 'unavailable', year, data_through: latest?.model.dataThrough || summary?.dataThrough || null,
+    includes_planned:latest?.includesPlanned??false,
     km: Number(metrics.totalKm || 0), flight_hours: Number(metrics.flightHours || 0),
     countries: Number(metrics.countries || 0), cities: Number(metrics.cities || 0),
     new_countries: summary?.newCountries || [], farthest: summary?.farthest?.name || null,
@@ -117,7 +126,30 @@ export function buildAnnual(ownerRoot, status, requestedYear) {
       artifact(ownerRoot, `html/01_全球护照/年度旅行卡-${year}-分享.html`, `${year} 年度旅行卡 HTML`, 'text/html'),
     ].filter(Boolean), source_refs: [`travel-passport://annual/${year}`],
   };
-  return { state: 'ready', data: { items: [item], available_years: years, quality: status.quality?.state || 'unknown' } };
+  const gallery=artifact(ownerRoot,'annual-reviews/index.html','年度总结 · 选择主题、风格与单卡／多卡','text/html');
+  if(gallery)item.artifacts.unshift(gallery);
+  const editionItems=editions.map(e=>({
+    id:`annual-${year}-${e.theme}-${e.style}-${e.format}`,title:`${year} · ${reviewThemes.find(t=>t.id===e.theme)?.name||e.theme} · ${reviewStyles.find(s=>s.id===e.style)?.name||e.style} · ${e.format==='story'?'多卡故事':'单卡总览'}`,
+    year,page_count:e.pageCount,status:'available',source_refs:[`travel-passport://annual/${year}`],
+    artifacts:(e.content.files||[]).flatMap((file,i)=>[
+      artifact(ownerRoot,'annual-reviews/'+file.png,`第 ${i+1} 张 · PNG`),
+      artifact(ownerRoot,'annual-reviews/'+file.svg,`第 ${i+1} 张 · 可编辑 SVG`,'image/svg+xml'),
+    ]).filter(Boolean),
+  }));
+  return { state: 'ready', data: { items: [item,...editionItems], available_years: years, quality: status.quality?.state || 'unknown',
+    themes:['life','travel','creation'],styles:['paper','night','blueprint'],formats:['single','story'],max_story_pages:9,
+    action_ref:'travel.passport.v1#annual.generate' } };
+}
+
+export function runAnnualReview(ownerRoot,input={}){
+  if(!Number.isInteger(input.year)||input.year<1900||input.year>2200)throw new Error('请选择1900—2200之间的年度');
+  if(Object.keys(input).some(k=>!['year','theme','style','format','include_planned'].includes(k)))throw new Error('年度总结包含未知选项');
+  if(input.include_planned!==undefined&&typeof input.include_planned!=='boolean')throw new Error('待飞选项须为布尔值');
+  const args=[path.join(packageRoot,'journey-atlas.mjs'),'--workspace',ownerRoot,'review','--year',String(input.year)];
+  for(const key of ['theme','style','format'])if(input[key]!==undefined){if(typeof input[key]!=='string')throw new Error('年度总结选项须为文字');args.push('--'+key,input[key]);}
+  if(input.include_planned!==undefined)args.push(input.include_planned?'--include-planned':'--exclude-planned');
+  return new Promise((resolve,reject)=>{const child=spawn(process.execPath,args,{cwd:packageRoot,env:process.env,stdio:['ignore','pipe','pipe']});let out='',err='';
+    child.stdout.on('data',c=>{out+=c;});child.stderr.on('data',c=>{err+=c;});child.on('error',reject);child.on('close',code=>{if(code!==0)return reject(new Error(err.slice(-1500)||'年度总结生成失败'));try{resolve(JSON.parse(out));}catch(error){reject(error);}});});
 }
 
 const regionNames = { china: '中国', usa: '美国', europe: '欧洲', japan: '日本', 'southeast-asia': '东南亚', switzerland: '瑞士', italy: '意大利', greece: '希腊' };
@@ -147,9 +179,10 @@ export function buildRegions(ownerRoot, status) {
 async function main() {
   const request = await readStdin();
   const setup = request?.operation === 'execute' && request?.ref === 'travel.passport.v1#runtime.setup';
+  const generate=request?.operation==='execute'&&request?.ref==='travel.passport.v1#annual.generate';
   if (
     request?.schema_version !== REQUEST_SCHEMA
-    || !(setup || request?.operation === 'read' && REFS.has(request?.ref))
+    || !(setup || generate || request?.operation === 'read' && REFS.has(request?.ref))
   ) {
     throw new Error('unsupported app contribution request');
   }
@@ -159,7 +192,7 @@ async function main() {
     return;
   }
   if (!dependenciesReady()) {
-    process.stdout.write(JSON.stringify({ schema_version: RESPONSE_SCHEMA, ok: true, ref: request.ref, operation: 'read', result: { state: 'input_required', reason: '首次使用请初始化 Journey Atlas 运行环境；此操作只安装锁定依赖，不改动旅行资料。', data: { action_ref: 'travel.passport.v1#runtime.setup' } } }));
+    process.stdout.write(JSON.stringify({ schema_version: RESPONSE_SCHEMA, ok: true, ref: request.ref, operation: request.operation, result: { state: 'input_required', reason: '首次使用请初始化 Journey Atlas 运行环境；此操作只安装锁定依赖，不改动旅行资料。', data: { action_ref: 'travel.passport.v1#runtime.setup' } } }));
     return;
   }
   const ownerRoot = process.env.OPL_PROFILE_WORKSPACE || process.env.JOURNEY_ATLAS_WORKSPACE;
@@ -168,7 +201,7 @@ async function main() {
       schema_version: RESPONSE_SCHEMA,
       ok: true,
       ref: request.ref,
-      operation: 'read',
+      operation: request.operation,
       result: {
         state: 'input_required',
         reason: '请选择已配置的 Journey Atlas 工作区；资料仍保存在原目录或 Obsidian 中。',
@@ -183,6 +216,10 @@ async function main() {
     return;
   }
   const status = await runStatus(ownerRoot);
+  if(generate){
+    const exported=await runAnnualReview(ownerRoot,request.input||{});
+    process.stdout.write(JSON.stringify({schema_version:RESPONSE_SCHEMA,ok:true,ref:request.ref,operation:'execute',result:{state:'ready',data:{...exported,...buildAnnual(ownerRoot,status,request.input.year).data}}}));return;
+  }
   const result = request.ref === 'travel.passport.v1#overview' ? buildOverview(ownerRoot, status)
     : request.ref === 'travel.passport.v1#annual' ? buildAnnual(ownerRoot, status, request.input?.year)
       : request.ref === 'travel.passport.v1#regions' ? buildRegions(ownerRoot, status)

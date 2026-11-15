@@ -69,7 +69,8 @@ npm test
 
 - `npm run build`：从当前源表生成静态护照、SVG、派生表和构建清单。
 - `npm run site:build`：生成离线动态地图；默认展示全球，可切换大区、国家、行政区和城市。
-- `npm run annual -- --year 2026`：生成年度旅行卡（若工作区提供该年度数据）。
+- `npm run annual -- --year 2026`：生成地图式年度旅行卡。
+- `npm run review -- --year 2026 --theme life --style paper --format single`：从同一年度数据生成单卡或 `story` 多卡（最多九张）；支持旅行、创造与 AI、综合主题和三种风格。详见[年度总结](docs/年度总结.md)。
 - `npm run status -- --json`：读取构建新鲜度、数据质量和主要统计。
 - `npm run verify`：运行源码、数据、连续性、边缘节点和离线网站检查。
 - `npm run package:check`：确认 OPL Package 与插件载体同步。
@@ -82,7 +83,7 @@ PNG/SVG 导出使用浅纸纹、蓝色上下边缘、点阵和方向弧线；网
 
 - `travel.passport.v1#status`：构建与质量状态；
 - `travel.passport.v1#overview`：全球摘要及可用产物；
-- `travel.passport.v1#annual`：年度旅行卡摘要；
+- `travel.passport.v1#annual`：统一年度总结入口、单卡/多卡和现有旅行卡；
 - `travel.passport.v1#regions`：按旅行强度排序的分区护照清单。
 
 复杂地图探索保留为离线网页，结构化摘要和产物引用通过 OPL 共享视图暴露；两者读取同一个工作区，不建立第二份个人数据源。

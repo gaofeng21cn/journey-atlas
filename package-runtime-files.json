@@ -1,13 +1,13 @@
 {
   "schema_version": "journey-atlas.runtime-files.v1",
   "paths": [
-    "assets/branding/journey-atlas-logo.png",
-    "README.en.md",
     "LICENSE",
     "NOTICE.md",
+    "README.en.md",
     "README.md",
     "app-contribution-adapter.json",
     "app-contribution.mjs",
+    "assets/branding/journey-atlas-logo.png",
     "data/atlas-config.example.json",
     "data/china.geojson",
     "data/city-catalog.json",
@@ -29,6 +29,7 @@
     "data/usa.geojson",
     "docs/城市地图与数据规范.md",
     "docs/安装与共享基座.md",
+    "docs/年度总结.md",
     "docs/架构与数据边界.md",
     "docs/维护流程.md",
     "docs/输入目录约定.md",
@@ -95,6 +96,7 @@
     "scripts/render-all.mjs",
     "scripts/render-annual.mjs",
     "scripts/render-atlas.mjs",
+    "scripts/render-year-review.mjs",
     "scripts/render.mjs",
     "scripts/repair-formal-node-edges.mjs",
     "scripts/repair-journey-scope.mjs",
@@ -115,6 +117,7 @@
     "scripts/verify-all.mjs",
     "scripts/visit-evidence.mjs",
     "scripts/visit-instances.mjs",
+    "scripts/year-review.mjs",
     "skills/travel-planning/SKILL.md",
     "src/annual.css",
     "src/annual.html",
@@ -141,6 +144,10 @@
     "src/site.css",
     "src/site.html",
     "src/transport-time.mjs",
-    "src/world-dots.js"
+    "src/world-dots.js",
+    "src/year-review-app.mjs",
+    "src/year-review.css",
+    "src/year-review.html",
+    "src/year-review.mjs"
   ]
 }

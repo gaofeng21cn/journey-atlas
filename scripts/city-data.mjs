@@ -1,6 +1,6 @@
 import {readFile} from 'node:fs/promises';
 import {join} from 'node:path';
-import {ROOT,readJson} from './data.mjs';
+import {ROOT,WORKSPACE_ROOT,readJson} from './data.mjs';
 import {parseCsv} from './csv.mjs';
 import {pointInFeature} from './region-map.mjs';
 import {boundsOf} from '../src/scope-model.mjs';
@@ -74,12 +74,12 @@ export function validateObservedCityRoute(route,evidence){
 }
 
 export const CITY_FILES=OPTIONAL_SOURCE_FILES;
-export async function loadCityMapResources(c,{root=ROOT}={}){
+export async function loadCityMapResources(c,{root=WORKSPACE_ROOT}={}){
   let geo;
   try{geo=await readJson(join(root,'data',c.boundaryFile));}
   catch(error){
     if(error.code!=='ENOENT')throw error;
-    throw new Error(`城市${c.name}缺少行政边界资源 ${c.boundaryFile}；安装后重试：node scripts/fetch-city-geography.mjs ${c.id}`);
+    throw new Error(`城市${c.name}缺少工作区行政边界资源 ${c.boundaryFile}；安装后重试：node journey-atlas.mjs --workspace "${root}" city-geography ${c.id}`);
   }
   let context;
   try{context=await readJson(join(root,'data',c.contextFile));}

@@ -25,3 +25,5 @@ a:focus-visible,#map-stage:focus-visible,button:focus-visible,input:focus-visibl
 .map-pan button,.map-zoom button{display:grid;place-items:center;width:32px;height:32px;padding:0;background:none;border:0;color:#526a50}.map-pan button+button{border-left:1px solid #e8ecdf}.map-pan button:hover{background:#e6eddc}.map-pan svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.3}
 @media(max-width:760px){.navigation:not(.is-open) #mobile-nav-content{display:none}.navigation.is-open .nav-search{display:block;padding:12px 5px 0}.map-pan{left:10px;bottom:10px}}
 @media(pointer:coarse){button,select{min-height:44px}button{min-width:44px}.tree-row{min-height:44px}.tree-toggle,.tree-spacer{width:44px;height:44px}.tree-select{min-height:44px}.map-pan button,.map-zoom button{width:44px;height:44px}.nav-search input{min-height:44px;font-size:16px}}
+
+.annual-entry{display:inline-flex;align-items:center;min-height:48px;padding:.5rem 1rem;color:inherit;text-decoration:none;border:1px solid currentColor;border-radius:4px;white-space:nowrap}.annual-entry:focus-visible{outline:3px solid #b36342;outline-offset:3px}

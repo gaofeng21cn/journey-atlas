@@ -20,13 +20,29 @@ are missing, the read stays read-only and offers the confirmed runtime setup.
 
 For installed use, run `node <package-root>/journey-atlas.mjs --workspace <path>
 <command>` with `init`, `import`, `status`, `check`, `trace`, `update`, `receipt`,
-`build`, `site`, `annual`, or `verify`. `version` reads the actual installed
+`build`, `site`, `annual`, `review`, or `verify`. `version` reads the actual installed
 identity; `setup` installs locked npm dependencies without package scripts. The
 first CLI business command uses the same setup automatically. `site build`
 generates the interactive offline UI; `status --json` supplies Agent readback.
 Package code and dependencies stay in the carrier; configuration, source tables,
 outputs, backups, and receipts stay in the external workspace across updates and
 uninstall. Read [installation and shared foundation](../../docs/安装与共享基座.md).
+
+## Year in review
+
+Use the shared `travel.passport.annual` view and `travel.passport.v1#annual.generate`
+action, or `review --year <year> --theme life|travel|creation --style
+paper|night|blueprint --format single|story`. This is the unified single-card and
+up-to-nine-card entry. The offline gallery offers the same theme/style choices
+and PNG/SVG downloads. `annual` retains the existing map-style travel card.
+Read [year-in-review configuration](../../docs/年度总结.md) for optional GitHub,
+Tokscale and project snapshots in the private annual configuration. Reuse the
+travel ledger; do not create a parallel travel data source. Respect the annual
+`includePlanned` preference unless the user requests another scope; CLI overrides
+are `--include-planned` and `--exclude-planned`. Planned flights never establish
+ground visits. Keep query dates and provenance in the data and export manifest;
+the shareable cards prioritize phone readability. These reusable templates run
+inside Journey Atlas; a fresh RedCube production is a separate visual-design task.
 
 Use already authorized OPL knowledge sources first, especially Obsidian. Read a
 known source through `opl knowledge read-source` and use Framework dependency

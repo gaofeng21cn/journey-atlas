@@ -71,3 +71,23 @@ test('地区投影隐藏没有到访、地点、路线或里程的空区域', as
     assert.deepEqual(result.data.items.map(item => item.region_id), ['china']);
   } finally { await f.dispose(); }
 });
+
+test('统一年度入口读取最新总结的统计口径，并提供每张卡片的实际图片',async()=>{
+ const f=await fixture();
+ try{
+  const dir=join(f.root,'outputs/annual-reviews/2026/travel-night-story');
+  await mkdir(dir,{recursive:true});
+  for(const ext of ['png','svg'])await writeFile(join(dir,'01-cover.'+ext),'fixture');
+  await writeFile(join(f.root,'outputs/annual-reviews/index.html'),'fixture');
+  const file='2026/travel-night-story/manifest.json';
+  await writeFile(join(f.root,'outputs/annual-reviews',file),JSON.stringify({includesPlanned:true,travelMetrics:{flightCount:14,flightKm:16000,totalKm:17000},model:{dataThrough:'2026-07-01'},files:[{png:'2026/travel-night-story/01-cover.png',svg:'2026/travel-night-story/01-cover.svg'}]}));
+  await writeFile(join(f.root,'outputs/annual-reviews/index.json'),JSON.stringify({editions:[{year:2026,theme:'travel',style:'night',format:'story',pageCount:1,manifest:file}]}));
+  const {data}=buildAnnual(f.root,status,2026);
+  assert.equal(data.items[0].includes_planned,true);
+  assert.equal(data.items[0].km,17000);
+  assert.equal(data.items[0].summary,'14 飞行航段 · 16,000 飞行公里');
+  assert.equal(data.items[0].artifacts[0].media_type,'text/html');
+  assert.match(data.items[1].title,/旅行与移动 · 午夜航线/);
+  assert.deepEqual(data.items[1].artifacts.map(a=>a.media_type),['image/png','image/svg+xml']);
+ }finally{await f.dispose();}
+});

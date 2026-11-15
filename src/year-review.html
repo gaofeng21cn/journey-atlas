@@ -1,0 +1,12 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>年度总结 · Journey Atlas</title><style>__REVIEW_CSS__</style></head><body>
+<header><a href="__MAP_HREF__">← 旅行护照</a><span>JOURNEY ATLAS / YEAR IN REVIEW</span></header>
+<main><div class="intro"><p>给这一年，留一张坐标。</p><h1>年度总结</h1><p>创造、AI 协作与行走。选一个主题，把这一年的故事带给朋友。</p></div>
+<form id="review-options" aria-labelledby="options-title"><h2 id="options-title">选择这一年的表达</h2>
+<div class="year-field"><label for="review-year">年份</label><select id="review-year" name="year"></select></div>
+<fieldset><legend>主题</legend><div id="theme-options" class="choices"></div></fieldset>
+<fieldset><legend>风格</legend><div id="style-options" class="choices"></div></fieldset>
+<fieldset><legend>形式</legend><div id="format-options" class="choices"></div></fieldset>
+<label class="planned"><input id="include-planned" name="include-planned" type="checkbox"> 计入本年度待飞行程</label>
+<button type="submit">预览年度总结</button><p id="review-status" role="status"></p></form>
+<section aria-labelledby="preview-title"><div class="preview-heading"><h2 id="preview-title">你的年度卡片</h2><p id="page-count"></p></div><div id="review-pages" class="review-pages"></div></section>
+</main><script id="review-data" type="application/json">__REVIEW_DATA__</script><script id="review-defaults" type="application/json">__REVIEW_DEFAULTS__</script><script>__REVIEW_JS__</script></body></html>

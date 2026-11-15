@@ -83,6 +83,64 @@
         "properties": {},
         "additionalProperties": false
       }
+    },
+    "travel.passport.v1#annual.generate": {
+      "kind": "command",
+      "cwd": "package",
+      "argv": [
+        "node",
+        "./app-contribution.mjs"
+      ],
+      "stdin": "request_json",
+      "passthrough": true,
+      "input_schema": {
+        "type": "object",
+        "required": [
+          "year"
+        ],
+        "properties": {
+          "year": {
+            "type": "integer",
+            "title": "年份",
+            "minimum": 1900,
+            "maximum": 2200
+          },
+          "theme": {
+            "type": "string",
+            "title": "主题：创造与行走／旅行／创造与AI",
+            "enum": [
+              "life",
+              "travel",
+              "creation"
+            ],
+            "default": "life"
+          },
+          "style": {
+            "type": "string",
+            "title": "风格：奶油纸色／午夜航线／蓝色护照",
+            "enum": [
+              "paper",
+              "night",
+              "blueprint"
+            ],
+            "default": "paper"
+          },
+          "format": {
+            "type": "string",
+            "title": "形式：单卡／多卡（最多九张）",
+            "enum": [
+              "single",
+              "story"
+            ],
+            "default": "single"
+          },
+          "include_planned": {
+            "type": "boolean",
+            "title": "计入本年度待飞行程"
+          }
+        },
+        "additionalProperties": false
+      }
     }
   }
 }

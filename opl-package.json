@@ -3,7 +3,7 @@
   "package_id": "travel-passport",
   "display_name": "Journey Atlas",
   "publisher": "gaofeng21cn",
-  "version": "0.2.2",
+  "version": "0.3.0-dev.20261115",
   "source": "first_party",
   "source_repo": "https://github.com/gaofeng21cn/journey-atlas.git",
   "package_role": "capability_package",
@@ -89,14 +89,17 @@
         "view_id": "travel.passport.annual",
         "view_type": "artifact_view",
         "title_i18n": {
-          "zh-CN": "年度旅行回顾",
-          "en-US": "Annual travel review"
+          "zh-CN": "年度总结",
+          "en-US": "Year in review"
         },
         "data_ref": "travel.passport.v1#annual",
         "empty_state_i18n": {
-          "zh-CN": "尚未找到年度旅行卡",
-          "en-US": "No annual travel card is available"
-        }
+          "zh-CN": "选择年度、主题、风格与单卡或多卡，生成自己的年度总结",
+          "en-US": "Choose a year, theme, style and single card or story"
+        },
+        "command_ids": [
+          "travel.passport.annual.generate"
+        ]
       },
       {
         "view_id": "travel.passport.regions",
@@ -121,6 +124,15 @@
         },
         "action_ref": "travel.passport.v1#runtime.setup",
         "confirmation_required": true
+      },
+      {
+        "command_id": "travel.passport.annual.generate",
+        "label_i18n": {
+          "zh-CN": "制作年度总结",
+          "en-US": "Create year in review"
+        },
+        "action_ref": "travel.passport.v1#annual.generate",
+        "confirmation_required": false
       }
     ],
     "badges": [],
@@ -196,6 +208,7 @@
       "data/usa.geojson",
       "docs/城市地图与数据规范.md",
       "docs/安装与共享基座.md",
+      "docs/年度总结.md",
       "docs/架构与数据边界.md",
       "docs/维护流程.md",
       "docs/输入目录约定.md",
@@ -263,6 +276,7 @@
       "scripts/render-all.mjs",
       "scripts/render-annual.mjs",
       "scripts/render-atlas.mjs",
+      "scripts/render-year-review.mjs",
       "scripts/render.mjs",
       "scripts/repair-formal-node-edges.mjs",
       "scripts/repair-journey-scope.mjs",
@@ -283,6 +297,7 @@
       "scripts/verify-all.mjs",
       "scripts/visit-evidence.mjs",
       "scripts/visit-instances.mjs",
+      "scripts/year-review.mjs",
       "skills/travel-planning/SKILL.md",
       "src/annual.css",
       "src/annual.html",
@@ -309,9 +324,13 @@
       "src/site.css",
       "src/site.html",
       "src/transport-time.mjs",
-      "src/world-dots.js"
+      "src/world-dots.js",
+      "src/year-review-app.mjs",
+      "src/year-review.css",
+      "src/year-review.html",
+      "src/year-review.mjs"
     ],
-    "digest": "sha256:7c66c751edc5355a7e6c30106dcbcb60848f4758aceaecfa2af5cdbc50cf9e1d"
+    "digest": "sha256:7cf62fb88d8cf1219151b6efb18210f4c48213b93390bcb517e78f18f32627a8"
   },
   "visibility": "public",
   "description": "Agent-native travel atlas using user-owned travel records and Obsidian sources.",

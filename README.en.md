@@ -60,3 +60,7 @@ The shared refs `travel.passport.v1#status`, `#overview`, `#annual`, and `#regio
 Personal routes, photos, GPS, tickets, text, and Obsidian paths stay in the user's workspace. Do not commit `inputs/`, `private/`, `outputs/`, personal configuration, or runtime caches. Report issues with fictional or redacted inputs.
 
 Code is MIT-licensed. Bundled and optional map data retain the sources and attribution in [NOTICE.md](NOTICE.md). Optional city boundaries and roads are downloaded locally under their respective licenses.
+
+## Year in review
+
+Run `node journey-atlas.mjs --workspace <private-workspace> review --year 2026 --theme life --style paper --format single`. Use `story` for at most nine cards, choose `life`, `travel` or `creation`, and style them with `paper`, `night` or `blueprint`. The OPL annual view and offline map link to the same annual-summary gallery. Optional GitHub and Tokscale snapshots stay in private `data/annual-config.json`; travel metrics use the existing ledger. `--include-planned` explicitly includes the year's planned movements without activating future ground visits. See [annual summary details](docs/年度总结.md).

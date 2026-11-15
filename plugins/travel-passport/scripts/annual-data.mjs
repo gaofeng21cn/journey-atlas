@@ -16,7 +16,7 @@ export function resolveAnnualMemory(view,memory){
     throw new Error('年度旅程亮点需要有效的开始与结束日期');
   const routes=view.routes.filter(r=>r.countDistance!==false&&startOf(r)>=from&&startOf(r)<=to&&(!mode||r.mode===mode));
   if(!routes.length)throw new Error('年度旅程亮点的时间范围内没有计程移动');
-  const texts=[memory.label,memory.title,...(memory.body||[]),memory.foot].filter(Boolean).join(' ');
+  const texts=[memory.label,memory.title,...(memory.body||[]),...(memory.lines||[]),memory.foot].filter(Boolean).join(' ');
   if(texts.includes('{km}')&&routes.some(r=>!Number.isFinite(r.km)))throw new Error('年度旅程亮点缺少移动里程');
   const times=routes.map(travelTime);
   if(texts.includes('{hours}')&&times.some(t=>t.minutes===null))throw new Error('年度旅程亮点缺少移动时长');
@@ -27,17 +27,20 @@ export function resolveAnnualMemory(view,memory){
     departures:routes.filter(r=>r.cities?.[0]===view.base.name).length};
   const render=value=>typeof value==='string'?value.replace(/\{(count|km|hours|departures)\}/g,(_,key)=>String(values[key])):value;
   return {...memory,label:render(memory.label),title:render(memory.title),body:(memory.body||[]).map(render),foot:render(memory.foot),
+    ...(memory.lines?{lines:memory.lines.map(render)}:{}),
     selectedRoutes:routes.map(r=>r.id)};
 }
 
 // A year is a projection over the same deduplicated physical-movement ledger.
 // Entire movements belong to their departure year; coarse/cross-year records
 // retain their source window rather than gaining invented daily mileage.
-export function annualView(atlas,{year,asOf=`${year}-12-31`,basePlaceId,placeGroups=[]}={}){
+export function annualView(atlas,{year,asOf=`${year}-12-31`,basePlaceId,placeGroups=[],includePlanned=false}={}){
   if(!Number.isInteger(year)||year<1900||year>2200)throw new Error('年度须为1900—2200之间的整数');
   const end=String(asOf),window=bounds(`${year}-01-01`,end);
   if(!/^\d{4}-\d{2}-\d{2}$/.test(end)||!window||end<`${year}-01-01`||end>`${year}-12-31`)throw new Error('截至日期须在所选年度内');
-  const routes=atlas.routes.filter(r=>isRecordedMovement(r)&&!planned(r)&&String(startOf(r)).startsWith(String(year))&&dateBounds(startOf(r))?.start<=window.end);
+  const actualRoutes=atlas.routes.filter(r=>isRecordedMovement(r)&&!planned(r)&&String(startOf(r)).startsWith(String(year))&&dateBounds(startOf(r))?.start<=window.end);
+  const plannedRoutes=includePlanned?atlas.routes.filter(r=>isRecordedMovement(r)&&planned(r)&&String(startOf(r)).startsWith(String(year))):[];
+  const routes=[...actualRoutes,...plannedRoutes];
   const index=new Map(atlas.locationLayer.places.map(p=>[p.id,p]));
   const visits=(atlas.visitInstances||[]).filter(v=>v.include!==false&&v.activity==='地面到访'&&groundPlace(index.get(v.placeId)||{}));
   const inYear=visits.filter(v=>{const b=bounds(v.startDate,v.endDate);return b&&b.start<=window.end&&b.end>=window.start;});
@@ -45,7 +48,7 @@ export function annualView(atlas,{year,asOf=`${year}-12-31`,basePlaceId,placeGro
   // endpoint plus the SAME reviewed travel narrative supplies temporal proof;
   // airport service names, raw GPS proximity and a place's lifetime range do not.
   const supplementalVisits=[];
-  for(const r of routes.filter(r=>r.mode!=='飞机'&&r.source))for(const p of atlas.locationLayer.places.filter(groundPlace)){
+  for(const r of actualRoutes.filter(r=>r.mode!=='飞机'&&r.source))for(const p of atlas.locationLayer.places.filter(groundPlace)){
     const sources=new Set(String(p.source||'').split('；'));
     if(!String(r.source).split('；').some(s=>sources.has(s))||!r.names?.includes(p.name))continue;
     if(inYear.some(v=>v.placeId===p.id&&v.journeyId===r.journeyId))continue;
@@ -91,11 +94,12 @@ export function annualView(atlas,{year,asOf=`${year}-12-31`,basePlaceId,placeGro
     tripCountries.get(p.country).add(j.closureGroup||j.source||j.id);
   }
   const revisits=[...tripCountries].map(([country,trips])=>({country,trips:trips.size})).sort((a,b)=>b.trips-a.trips);
-  const observedDates=routes.map(r=>r.endDate||startOf(r)).filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d)&&d<=end).sort();
+  const observedDates=actualRoutes.map(r=>r.endDate||startOf(r)).filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d)&&d<=end).sort();
   return {year,asOf:end,dataThrough:observedDates.at(-1)||end,base:{id:base.id,name:base.name,lat:base.lat,lon:base.lon},supplementalVisits,
     routes,places,cities,countries,newCountries,newCities,farthest,revisits,
     metrics:{totalMeters,totalKm:Math.round(totalMeters/1000),flightKm:flightMeters/1000,groundKm:(totalMeters-flightMeters)/1000,
       flightHours:Math.round(flightMinutes/60),flightCount:flightRoutes.reduce((s,r)=>s+Math.max(1,(r.points?.length||2)-1),0),countries:countries.length,cities:cities.length,newCities:newCities.length,earth:totalMeters/1000/(atlas.meta.earthKm||40075)},
-    policy:{distance:'同一有效移动台账，包含步行及日常通勤；不另加城市汇总',year:'移动按开始日期所属年度归属，不按日均摊跨年粗日期',
+    plannedRouteIds:plannedRoutes.map(r=>r.id),
+    policy:{includePlanned,distance:'同一有效移动台账，包含步行及日常通勤；不另加城市汇总',year:'移动按开始日期所属年度归属，不按日均摊跨年粗日期',
       coverage:'仅实际地面到访；机场、转机与途经不激活到访',novelty:'与年度以前的正式地面到访比较；归组只影响城市阅读，不改变地点或计程'}};
 }

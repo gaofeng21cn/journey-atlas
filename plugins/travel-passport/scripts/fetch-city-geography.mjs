@@ -8,21 +8,24 @@ import {vectorContext} from './vector-context.mjs';
 // Only public catalogue bounds are sent to map providers, never personal data.
 const configs=JSON.parse(await readFile(join(ROOT,'data/city-catalog.json'),'utf8'));
 const selected=process.argv.slice(2).filter(v=>!v.startsWith('--'));
+const resourceData=join(WORKSPACE_ROOT,'data');
+await mkdir(resourceData,{recursive:true});
+if(selected.some(id=>!configs.some(c=>c.id===id)))throw new Error('请选择已登记的城市编号');
 const get=async url=>{let last;for(let attempt=0;attempt<2;attempt++)try{const r=await fetch(url,{headers:{'User-Agent':'TravelPassport/0.1 (local offline city map; public geography only)'},signal:AbortSignal.timeout(60000)});if(!r.ok)throw new Error(url+'：'+r.status);return await r.json();}catch(e){last=e;}
   const fallback=spawnSync('curl',['-fsSL','--retry','2','--max-time','60',url],{encoding:'utf8',maxBuffer:30*1024*1024});if(fallback.status===0)return JSON.parse(fallback.stdout);throw last;};
 for(const c of configs.filter(c=>!selected.length||selected.includes(c.id))){
-  let existing;try{existing=JSON.parse(await readFile(join(ROOT,'data',c.boundaryFile),'utf8'));}catch{}
+  let existing;try{existing=JSON.parse(await readFile(join(resourceData,c.boundaryFile),'utf8'));}catch{}
   if(existing?.features?.length===c.expectedUnits&&c.unitNames&&!existing.features.every(f=>f.properties?.name)){
     for(const f of existing.features){const name=c.unitNames[f.id.slice(c.id.length+1)];if(!name)throw new Error('行政区代码未登记：'+f.id);f.properties={name,native:name,english:name};}
-    await writeFile(join(ROOT,'data',c.boundaryFile),JSON.stringify(existing));
+    await writeFile(join(resourceData,c.boundaryFile),JSON.stringify(existing));
   }
   if(c.landMaskFile){
-    const filename='ne_10m_admin_0_countries.geojson',rawPath=join(ROOT,'data/site-cache/public-geography',filename);
+    const filename='ne_10m_admin_0_countries.geojson',rawPath=join(WORKSPACE_ROOT,'data/site-cache/public-geography',filename);
     let source;try{source=JSON.parse(await readFile(rawPath,'utf8'));}catch{source=await get('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/'+filename);}
     const land=source.features.find(f=>(f.properties.ISO_A2_EH||f.properties.ISO_A2)===c.landMaskCountryCode);if(!land)throw new Error('城市海岸源缺失：'+c.id);
     // Keep original 10m coastline resolution at city scale, not the global
     // display simplification. This is public geometry, no private points.
-    await writeFile(join(ROOT,'data',c.landMaskFile),JSON.stringify({type:'Feature',properties:{source:'Natural Earth 1:10m'},geometry:land.geometry}));
+    await writeFile(join(resourceData,c.landMaskFile),JSON.stringify({type:'Feature',properties:{source:'Natural Earth 1:10m'},geometry:land.geometry}));
   }
   if(process.argv.includes('--refresh')||!existing?.features?.every(f=>f.properties?.name)){
   const files=await Promise.all((c.boundaryUrls||[c.boundaryUrl]).map(get));
@@ -34,18 +37,18 @@ for(const c of configs.filter(c=>!selected.length||selected.includes(c.id))){
   });
   if(features.length!==(c.expectedUnits||23)||new Set(features.map(f=>f.id)).size!==features.length)throw new Error(c.name+'行政单元数或身份不符');
   const display=displayGeometry({type:'FeatureCollection',features});display.features.forEach((f,i)=>f.properties=features[i].properties);
-  await writeFile(join(ROOT,'data',c.boundaryFile),JSON.stringify(display));
+  await writeFile(join(resourceData,c.boundaryFile),JSON.stringify(display));
   console.log(c.name+'行政边界：'+features.length+'区');
   }
   if(c.contextProvider==='reuse')continue;
-  const [w,s,e,n]=c.focusBounds||c.bounds,cache=join(ROOT,'data/site-cache/public-tiles');await mkdir(cache,{recursive:true});
+  const [w,s,e,n]=c.focusBounds||c.bounds,cache=join(WORKSPACE_ROOT,'data/site-cache/public-tiles');await mkdir(cache,{recursive:true});
   let context;
   if(c.contextProvider==='osm-vector'){
     context=(await vectorContext(c,cache)).features;
   }else if(c.contextProvider==='osm-pbf'){
     const file=join(cache,(c.contextCacheId||c.id)+'.osm.pbf');
     try{await readFile(file);}catch{const r=await fetch(c.contextPbfUrl,{signal:AbortSignal.timeout(120000)});if(!r.ok)throw new Error('公共路网下载失败：'+r.status);await writeFile(file,new Uint8Array(await r.arrayBuffer()));}
-    const result=spawnSync(process.env.TRAVEL_PYTHON||join(WORKSPACE_ROOT,'private/python/bin/python'),[join(ROOT,'scripts/extract-city-context.py'),file,join(ROOT,'data',c.contextFile),JSON.stringify(c.focusBounds||c.bounds)],{encoding:'utf8'});
+    const result=spawnSync(process.env.TRAVEL_PYTHON||join(WORKSPACE_ROOT,'private/python/bin/python'),[join(ROOT,'scripts/extract-city-context.py'),file,join(resourceData,c.contextFile),JSON.stringify(c.focusBounds||c.bounds)],{encoding:'utf8'});
     if(result.status!==0)throw new Error(result.stderr||result.error?.message||'公共路网提取失败');console.log(result.stdout.trim());continue;
   }else if(c.contextProvider==='osm'){
     const file=join(cache,c.id+'-osm.json');let osm;
@@ -75,6 +78,6 @@ for(const c of configs.filter(c=>!selected.length||selected.includes(c.id))){
     }}));
     if(!features.length||failed>tasks.length*.1)throw new Error('公共地图瓦片不完整：'+failed+'个失败');context=features;
   }
-  await writeFile(join(ROOT,'data',c.contextFile),JSON.stringify({type:'FeatureCollection',features:context}));
+  await writeFile(join(resourceData,c.contextFile),JSON.stringify({type:'FeatureCollection',features:context}));
   console.log(c.name+'道路、河流、铁路：'+context.length+'条');
 }

@@ -13,7 +13,7 @@ test('可选城市背景缺失时保留边界与路线，缺边界给出安装�
   const config={id:'sample',name:'示例城',boundaryFile:'sample-boundary.geojson',contextFile:'sample-context.geojson',landMaskFile:'sample-land.geojson'};
   try{
     await mkdir(join(root,'data'));
-    await assert.rejects(loadCityMapResources(config,{root}),/sample-boundary\.geojson.*fetch-city-geography\.mjs sample/);
+    await assert.rejects(loadCityMapResources(config,{root}),/sample-boundary\.geojson.*city-geography sample/);
     const boundary={type:'FeatureCollection',features:[{type:'Feature',id:'TEST',geometry:{type:'Polygon',coordinates:[[[0,0],[1,0],[1,1],[0,1],[0,0]]]}}]};
     await writeFile(join(root,'data',config.boundaryFile),JSON.stringify(boundary));
     const missing=await loadCityMapResources(config,{root});

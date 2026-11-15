@@ -69,7 +69,7 @@ export async function main(argv = process.argv.slice(2)) {
     process.stdout.write(JSON.stringify({ package_id: 'travel-passport', display_name: 'Journey Atlas', version: manifest.version, runtime_root: packageRoot }) + '\n'); return;
   }
   if (['help', '--help'].includes(command)) {
-    process.stdout.write('Journey Atlas\n  node journey-atlas.mjs --workspace <directory> <init|import|status|check|trace|update|receipt|build|site|annual|verify> [options]\n  node journey-atlas.mjs setup [--browser]\n  node journey-atlas.mjs version\n\nThe selected package supplies code. The workspace supplies private configuration and data.\n'); return;
+    process.stdout.write('Journey Atlas\n  node journey-atlas.mjs --workspace <directory> <init|import|status|check|trace|update|receipt|build|site|annual|review|city-geography|verify> [options]\n  review --year <year> --theme life|travel|creation --style paper|night|blueprint --format single|story [--include-planned]\n  node journey-atlas.mjs setup [--browser]\n  node journey-atlas.mjs version\n\nThe selected package supplies code. The workspace supplies private configuration and data.\n'); return;
   }
   if (command === 'setup') {
     if (args.some(arg => arg !== '--browser')) throw new Error('setup accepts only --browser.');
@@ -81,7 +81,8 @@ export async function main(argv = process.argv.slice(2)) {
     status: ['scripts/passport.mjs', 'status'], check: ['scripts/passport.mjs', 'check'],
     trace: ['scripts/passport.mjs', 'trace'], update: ['scripts/passport.mjs', 'update'],
     receipt: ['scripts/passport.mjs', 'receipt'], build: ['scripts/passport.mjs', 'build'],
-    site: ['scripts/site.mjs'], annual: ['scripts/render-annual.mjs'], verify: ['scripts/verify-all.mjs'],
+    site: ['scripts/site.mjs'], annual: ['scripts/render-annual.mjs'], review: ['scripts/render-year-review.mjs'], verify: ['scripts/verify-all.mjs'],
+    'city-geography': ['scripts/fetch-city-geography.mjs'],
   }[command];
   if (!entry) throw new Error(`Unknown command: ${command}`);
   if (!workspace) throw new Error('Select a Journey Atlas workspace with --workspace or the OPL workspace binding.');
@@ -91,7 +92,7 @@ export async function main(argv = process.argv.slice(2)) {
   const config = join(workspace, 'data/atlas-config.json');
   if (!['init', 'import'].includes(command) && !existsSync(config)) throw new Error('The workspace is not configured. Initialize it or bind its existing Obsidian/source configuration.');
   if (args.includes('--root')) throw new Error('Use --workspace to select the data workspace.');
-  const needsBrowser = command === 'build' || command === 'annual' || command === 'verify'
+  const needsBrowser = command === 'build' || command === 'annual' || command === 'review' || command === 'verify'
     || command === 'update' && !args.includes('--dry-run') && !args.includes('--no-render')
     || command === 'site' && (args[0] === 'check' || args.includes('png'));
   await setupRuntime({ browser: needsBrowser });
