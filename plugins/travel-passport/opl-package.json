@@ -3,7 +3,7 @@
   "package_id": "travel-passport",
   "display_name": "Journey Atlas",
   "publisher": "gaofeng21cn",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "source": "first_party",
   "source_repo": "https://github.com/gaofeng21cn/journey-atlas.git",
   "package_role": "capability_package",
@@ -311,7 +311,7 @@
       "src/transport-time.mjs",
       "src/world-dots.js"
     ],
-    "digest": "sha256:eb65606cddaa58d9df012c8d9636d8e00b06fe9f4354551e4564a836d8acc2c1"
+    "digest": "sha256:7c66c751edc5355a7e6c30106dcbcb60848f4758aceaecfa2af5cdbc50cf9e1d"
   },
   "visibility": "public",
   "description": "Agent-native travel atlas using user-owned travel records and Obsidian sources.",
