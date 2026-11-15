@@ -137,7 +137,7 @@ export function buildAnnual(ownerRoot, status, requestedYear) {
     ]).filter(Boolean),
   }));
   return { state: 'ready', data: { items: [item,...editionItems], available_years: years, quality: status.quality?.state || 'unknown',
-    themes:['life','travel','creation'],styles:['paper','night','blueprint'],formats:['single','story'],max_story_pages:9,
+    themes:['life','travel','creation'],styles:['paper','night','blueprint'],formats:['single','story'],max_story_pages:9,story_page_count:9,
     action_ref:'travel.passport.v1#annual.generate' } };
 }
 

@@ -187,6 +187,10 @@
       "app-contribution-adapter.json",
       "app-contribution.mjs",
       "assets/branding/journey-atlas-logo.png",
+      "assets/fonts/dm-serif-display/DMSerifDisplay-Regular.ttf",
+      "assets/fonts/dm-serif-display/OFL.txt",
+      "assets/fonts/manrope/Manrope-Variable.ttf",
+      "assets/fonts/manrope/OFL.txt",
       "data/atlas-config.example.json",
       "data/china.geojson",
       "data/city-catalog.json",
@@ -297,6 +301,7 @@
       "scripts/verify-all.mjs",
       "scripts/visit-evidence.mjs",
       "scripts/visit-instances.mjs",
+      "scripts/year-review-assets.mjs",
       "scripts/year-review.mjs",
       "skills/travel-planning/SKILL.md",
       "src/annual.css",
@@ -326,11 +331,12 @@
       "src/transport-time.mjs",
       "src/world-dots.js",
       "src/year-review-app.mjs",
+      "src/year-review-story.mjs",
       "src/year-review.css",
       "src/year-review.html",
       "src/year-review.mjs"
     ],
-    "digest": "sha256:7cf62fb88d8cf1219151b6efb18210f4c48213b93390bcb517e78f18f32627a8"
+    "digest": "sha256:b0272d5414f585f317d97e5ee1c33ed05d9116bef0c1b4ee05fa31f619ecf9f1"
   },
   "visibility": "public",
   "description": "Agent-native travel atlas using user-owned travel records and Obsidian sources.",

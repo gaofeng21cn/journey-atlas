@@ -6,6 +6,9 @@ MIT 许可证只适用于本项目原创代码、字段规范、示例和测试�
 
 ## 当前公开发行随附的资源
 
+- `assets/fonts/manrope/`：Manrope，由 Mikhail Sharanda、Mirko Velimirovic 等设计；SIL Open Font License 1.1。来源：[Google Fonts / Manrope](https://github.com/google/fonts/tree/main/ofl/manrope)，完整许可随字体保留。
+- `assets/fonts/dm-serif-display/`：DM Serif Display，由 Colophon Foundry 设计；SIL Open Font License 1.1。来源：[Google Fonts / DM Serif Display](https://github.com/google/fonts/tree/main/ofl/dmserifdisplay)，完整许可随字体保留。
+
 - `data/geographic-context.json`：Natural Earth，Public Domain。来源：[naturalearthdata.com](https://www.naturalearthdata.com/about/terms-of-use/)。
 - `data/japan.topojson`、`data/swiss-cantons.topojson`、`data/switzerland.geojson`、`data/china.geojson`：由 `scripts/prepare-open-geography.mjs` 从仓库内 `data/geographic-context.json` 的 Natural Earth 行政区生成。生成文件标记 `Natural Earth · Public Domain`，仅保留公开行政区边界和本项目单元编号。
 - `data/europe-countries.topojson`、`data/europe.geojson`、`data/greece.geojson`、`data/greece-regions.geojson`、`data/southeast-asia.geojson`：Natural Earth，Public Domain。来源：[naturalearthdata.com](https://www.naturalearthdata.com/about/terms-of-use/)。

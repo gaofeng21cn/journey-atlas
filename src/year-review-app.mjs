@@ -1,5 +1,6 @@
 import {reviewThemes,reviewStyles,reviewFormats,selectYearReview,reviewPageSvg} from './year-review.mjs';
 const models=JSON.parse(document.getElementById('review-data').textContent);
+const assets=JSON.parse(document.getElementById('review-assets').textContent);
 const defaults=JSON.parse(document.getElementById('review-defaults').textContent);
 const $=id=>document.getElementById(id),form=$('review-options');
 for(const [name,choices,defaultValue]of [['theme',reviewThemes,'life'],['style',reviewStyles,'paper'],['format',reviewFormats,'single']]){
@@ -20,8 +21,8 @@ function preview(){
   const base=models.find(m=>m.year===year&&Boolean(m.travelPolicy.includePlanned)===planned);
   if(!base)throw new Error('这一年暂无所选待飞口径，请通过年度总结入口生成后再打开。');
   const model=selectYearReview(base,{theme:data.get('theme'),style:data.get('style'),format:data.get('format')});
-  $('review-pages').replaceChildren();$('page-count').textContent=`${model.pages.length} 张 · ${model.format==='single'?'一页总览':'朋友圈最多九张'}`;
-  model.pages.forEach((p,i)=>{const card=document.createElement('article');card.className='review-card';const svg=reviewPageSvg(model,i);card.innerHTML=svg;const heading=document.createElement('h3');heading.textContent=`${i+1}. ${p.title}`;card.append(heading);const footer=document.createElement('footer');const png=document.createElement('button');png.type='button';png.textContent='保存 PNG';const stem=`年度总结-${year}-${model.theme}-${model.style}-${String(i+1).padStart(2,'0')}`;
+  $('review-pages').replaceChildren();$('page-count').textContent=`${model.pages.length} 张 · ${model.format==='single'?'一页总览':'朋友圈九宫格'}`;
+  model.pages.forEach((p,i)=>{const card=document.createElement('article');card.className='review-card';const svg=reviewPageSvg(model,i,{assets});card.innerHTML=svg;const heading=document.createElement('h3');heading.textContent=`${i+1}. ${p.title}`;card.append(heading);const footer=document.createElement('footer');const png=document.createElement('button');png.type='button';png.textContent='保存 PNG';const stem=`年度总结-${year}-${model.theme}-${model.style}-${String(i+1).padStart(2,'0')}`;
     png.addEventListener('click',async()=>{png.disabled=true;try{await savePng(svg,stem+'.png');$('review-status').textContent='已生成图片，可在下载中查看。';}catch(e){$('review-status').textContent=e.message;}finally{png.disabled=false;}});
     const editable=document.createElement('button');editable.type='button';editable.textContent='保存可编辑 SVG';editable.addEventListener('click',()=>download(new Blob([svg],{type:'image/svg+xml;charset=utf-8'}),stem+'.svg'));footer.append(png,editable);card.append(footer);$('review-pages').append(card);});
   $('review-status').textContent='';

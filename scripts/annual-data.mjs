@@ -28,6 +28,8 @@ export function resolveAnnualMemory(view,memory){
   const render=value=>typeof value==='string'?value.replace(/\{(count|km|hours|departures)\}/g,(_,key)=>String(values[key])):value;
   return {...memory,label:render(memory.label),title:render(memory.title),body:(memory.body||[]).map(render),foot:render(memory.foot),
     ...(memory.lines?{lines:memory.lines.map(render)}:{}),
+    metrics:{count:values.count,km:routes.every(r=>Number.isFinite(r.km))?Math.round(routes.reduce((n,r)=>n+r.km,0)):null,hours:times.every(t=>t.minutes!==null)?values.hours:null,departures:routes.every(r=>r.cities?.[0])?values.departures:null},
+    timeline:routes.slice().sort((a,b)=>startOf(a).localeCompare(startOf(b))).map(r=>({date:startOf(r),departure:r.cities?.[0]===view.base.name})),
     selectedRoutes:routes.map(r=>r.id)};
 }
 

@@ -33,7 +33,7 @@ uninstall. Read [installation and shared foundation](../../docs/安装与共享�
 Use the shared `travel.passport.annual` view and `travel.passport.v1#annual.generate`
 action, or `review --year <year> --theme life|travel|creation --style
 paper|night|blueprint --format single|story`. This is the unified single-card and
-up-to-nine-card entry. The offline gallery offers the same theme/style choices
+fixed-nine-card entry. The offline gallery offers the same theme/style choices
 and PNG/SVG downloads. `annual` retains the existing map-style travel card.
 Read [year-in-review configuration](../../docs/年度总结.md) for optional GitHub,
 Tokscale and project snapshots in the private annual configuration. Reuse the

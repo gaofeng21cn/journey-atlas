@@ -64,8 +64,13 @@ test('旅程强度亮点从同一年度账本汇总航段、里程、时长及�
   const resolved=resolveAnnualMemory(project(a),memory);
   assert.deepEqual([resolved.title,...resolved.body,resolved.foot],['2 段飞行','2,200 公里 · 3 小时','1 次出发']);
   assert.deepEqual(resolved.selectedRoutes,['OUT','BACK']);
+  assert.deepEqual(resolved.metrics,{count:2,km:2200,hours:3,departures:1});
+  assert.deepEqual(resolved.timeline,[{date:'2026-10-01',departure:true},{date:'2026-10-02',departure:false}]);
   assert.equal(memory.title,'{count} 段飞行');
   assert.throws(()=>resolveAnnualMemory(project(a),{...memory,range:{...memory.range,from:'2026-10-04',to:'2026-10-05'}}),/没有计程移动/);
   a.routes[0].minutes=null;
   assert.throws(()=>resolveAnnualMemory(project(a),memory),/缺少移动时长/);
+  a.routes[0].cities=[];a.routes[0].km=null;
+  const incomplete=resolveAnnualMemory(project(a),{range:memory.range,title:'保留原片段'});
+  assert.deepEqual(incomplete.metrics,{count:2,km:null,hours:null,departures:null});
 });

@@ -70,7 +70,7 @@ npm test
 - `npm run build`：从当前源表生成静态护照、SVG、派生表和构建清单。
 - `npm run site:build`：生成离线动态地图；默认展示全球，可切换大区、国家、行政区和城市。
 - `npm run annual -- --year 2026`：生成地图式年度旅行卡。
-- `npm run review -- --year 2026 --theme life --style paper --format single`：从同一年度数据生成单卡或 `story` 多卡（最多九张）；支持旅行、创造与 AI、综合主题和三种风格。详见[年度总结](docs/年度总结.md)。
+- `npm run review -- --year 2026 --theme life --style paper --format single`：从同一年度数据生成单卡或 `story` 多卡（固定九张）；支持旅行、创造与 AI、综合主题和三种风格。详见[年度总结](docs/年度总结.md)。
 - `npm run status -- --json`：读取构建新鲜度、数据质量和主要统计。
 - `npm run verify`：运行源码、数据、连续性、边缘节点和离线网站检查。
 - `npm run package:check`：确认 OPL Package 与插件载体同步。

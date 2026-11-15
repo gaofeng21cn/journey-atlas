@@ -127,7 +127,7 @@
           },
           "format": {
             "type": "string",
-            "title": "形式：单卡／多卡（最多九张）",
+            "title": "形式：单卡／九张故事（朋友圈九宫格）",
             "enum": [
               "single",
               "story"
