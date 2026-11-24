@@ -16,12 +16,14 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
+          cache-dependency-path: plugins/travel-passport/package-lock.json
+      - run: npm --prefix plugins/travel-passport ci
+      - run: npm --prefix plugins/travel-passport exec -- playwright install --with-deps chromium
       - run: npm test
       - run: npm run package:check
       - run: npm run verify:installed
       - run: npm run init:data
-      - run: npm run import:data -- --input examples/import-bundle.json
+      - run: mkdir -p examples && cp plugins/travel-passport/examples/source-note.md examples/source-note.md
+      - run: npm run import:data -- --input plugins/travel-passport/examples/import-bundle.json
       - run: npm run build -- --variant social
       - run: npm run verify

@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {countryDisplay,circularBounds,geometryContains} from '../src/geographic-fit.mjs';
-import {frameProject,frameFor} from '../src/map-frames.mjs';
-import {fitProjection} from '../src/scope-model.mjs';
-import {displayGeometry} from '../scripts/display-geometry.mjs';
+import {countryDisplay,circularBounds,geometryContains} from '../plugins/travel-passport/src/geographic-fit.mjs';
+import {frameProject,frameFor} from '../plugins/travel-passport/src/map-frames.mjs';
+import {fitProjection} from '../plugins/travel-passport/src/scope-model.mjs';
+import {displayGeometry} from '../plugins/travel-passport/scripts/display-geometry.mjs';
 
 const box=(w,s,e,n)=>[[[w,s],[e,s],[e,n],[w,n],[w,s]]];
 test('日界线两侧属于一个国家窗口，正负经度不把本土压扁',()=>{

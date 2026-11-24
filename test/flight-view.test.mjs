@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { flightView } from '../scripts/flight-view.mjs';
-import { flightsFromArchive } from '../scripts/atlas-data.mjs';
-import { loadRenderData } from '../scripts/render.mjs';
+import { flightView } from '../plugins/travel-passport/scripts/flight-view.mjs';
+import { flightsFromArchive } from '../plugins/travel-passport/scripts/atlas-data.mjs';
+import { loadRenderData } from '../plugins/travel-passport/scripts/render.mjs';
 
 function atlas(){
   const route={id:'F',include:true,mode:'飞机',status:'已使用',date:'2020-01-01',startDate:'2020-01-01',endDate:'2020-01-01',

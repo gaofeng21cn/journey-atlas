@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,writeFile,readFile,readdir,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {retirePreviousReviewFiles} from '../scripts/render-year-review.mjs';
+import {retirePreviousReviewFiles} from '../plugins/travel-passport/scripts/render-year-review.mjs';
 
 test('页型变化后只移走上一清单中的旧生成页，保留当前页、自有文件及目录外资料',async()=>{
   const root=await mkdtemp(join(tmpdir(),'review-export-')),dir=join(root,'2026/life-night-story');

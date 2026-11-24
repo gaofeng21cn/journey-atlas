@@ -4,14 +4,14 @@ import {mkdtemp,mkdir,writeFile,readFile,readdir,rm,symlink,rename,realpath} fro
 import {tmpdir} from 'node:os';
 import {join,relative} from 'node:path';
 import {spawnSync} from 'node:child_process';
-import {ROOT} from '../scripts/data.mjs';
-import {TABLES,UPDATE_DEFINITIONS} from '../scripts/schema.mjs';
-import {csv,loadAtlas} from '../scripts/atlas-data.mjs';
-import {resolveSource,sourcePath} from '../scripts/source-data.mjs';
-import {validateLinks} from '../scripts/source-references.mjs';
-import {sourceManifest} from '../scripts/manifest.mjs';
-import {updateSourceSnapshot,applySourceUpdate,inspectUpdate} from '../scripts/update-operation.mjs';
-import {updateCities} from '../scripts/update-cities.mjs';
+import {ROOT} from '../plugins/travel-passport/scripts/data.mjs';
+import {TABLES,UPDATE_DEFINITIONS} from '../plugins/travel-passport/scripts/schema.mjs';
+import {csv,loadAtlas} from '../plugins/travel-passport/scripts/atlas-data.mjs';
+import {resolveSource,sourcePath} from '../plugins/travel-passport/scripts/source-data.mjs';
+import {validateLinks} from '../plugins/travel-passport/scripts/source-references.mjs';
+import {sourceManifest} from '../plugins/travel-passport/scripts/manifest.mjs';
+import {updateSourceSnapshot,applySourceUpdate,inspectUpdate} from '../plugins/travel-passport/scripts/update-operation.mjs';
+import {updateCities} from '../plugins/travel-passport/scripts/update-cities.mjs';
 
 async function fixture(t,{custom=false}={}){
   const root=await mkdtemp(join(tmpdir(),'travel-layout-'));

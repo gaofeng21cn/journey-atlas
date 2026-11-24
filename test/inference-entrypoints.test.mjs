@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {buildPlaceholderPatches} from '../scripts/infer-placeholders.mjs';
-import {inferLinks,privatePatchOutput} from '../scripts/infer-links.mjs';
+import {buildPlaceholderPatches} from '../plugins/travel-passport/scripts/infer-placeholders.mjs';
+import {inferLinks,privatePatchOutput} from '../plugins/travel-passport/scripts/infer-links.mjs';
 
 const evidence={核定结论:'合理重构',核定方式:'历史迁移',证据引用:'正文:旅程.md',核定记录:'沿用既有已登记移动'};
 const row=(id,extra={})=>({交通编号:id,交通方式:'公路',记录类型:'旅行航段',发生状态:'合理推定',发生依据:'既有明确维护交通',

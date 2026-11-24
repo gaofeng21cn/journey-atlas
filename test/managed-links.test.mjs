@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {buildManagedLinkRows} from '../scripts/managed-links.mjs';
+import {buildManagedLinkRows} from '../plugins/travel-passport/scripts/managed-links.mjs';
 
 const place=(id,name,point)=>({id,name,lat:point[0],lon:point[1],country:'日本',status:'已到访',include:true,first:'2001-01-01',last:'2013-01-01',source:'旅程.md'});
 const route=(id,names,points,nodeIds,date,extra={})=>({id,names,points,nodeIds,nodePlaceIds:nodeIds,recordType:'旅行航段',

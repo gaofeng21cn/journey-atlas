@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {gatewayIdentity} from '../src/city-gateways.mjs';
+import {gatewayIdentity} from '../plugins/travel-passport/src/city-gateways.mjs';
 
 const scope={id:'city:sample',cityId:'sample',name:'示例城市',bounds:[10.8,20.8,11.2,21.2]};
 

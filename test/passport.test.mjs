@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {passportSummary,traceAtlasRecord} from '../scripts/passport.mjs';
+import {passportSummary,traceAtlasRecord} from '../plugins/travel-passport/scripts/passport.mjs';
 
 function fixture(){
   const place={id:'P',name:'东京',country:'日本',include:true,status:'已到访'};

@@ -5,6 +5,7 @@ import iso from 'i18n-iso-countries';
 import {ROOT,WORKSPACE_ROOT,readJson} from './data.mjs';
 import {loadAtlas} from './atlas-data.mjs';
 import {pointInFeature} from './region-map.mjs';
+import {unwrapAntimeridianPolygons} from '../src/geo.mjs';
 import {boundsOf} from '../src/scope-model.mjs';
 import {displayGeometry} from './display-geometry.mjs';
 import {sampleMapDots} from '../src/map-dots.mjs';
@@ -123,9 +124,9 @@ export async function prepareSiteData({vault,atlas,onCityDetails}={}) {
     if(!isCountry)scopes.at(-1).units=c.units.map(u=>({...u,mapId:u.id,id:u.name}));
     if(!isCountry&&c.activeFromCoverage)scopes.at(-1).coverage=atlas.regions[id].units.filter(u=>u.active).map(u=>u.name);
     if(isCountry){configuredCountries.set(c.countries[0],id);
-      for(const u of c.units){const f=geometries[id].features.find(f=>f.id===u.id),pts=f?geometryPoints(f.geometry):[];
+      for(const u of c.units){const f=geometries[id].features.find(f=>f.id===u.id),pts=f?unwrapAntimeridianPolygons(f).flat(2):[];
         scopes.push({id:'unit:'+u.id,name:u.name,english:u.native||u.id,parent:id,level:'unit',unitId:u.id,countries:c.countries,units:[],
-          bounds:boundsOf(pts.map(([lon,lat])=>[lat,u.id==='US-AK'&&lon>0?lon-360:lon]),.025,0),geometryParent:id,unitLabel:'城市 / 地点',source:c.source});}}
+          bounds:boundsOf(pts.map(([lon,lat])=>[lat,lon]),.025,0),geometryParent:id,unitLabel:'城市 / 地点',source:c.source});}}
   }
   for(const country of countries){if(configuredCountries.has(country))continue;
     const id='country:'+country,parent=parentByCountry.get(country)||'world';

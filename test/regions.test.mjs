@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { readRegionPlaces,regionView } from '../scripts/region-data.mjs';
-import { mergeRows } from '../scripts/update-atlas.mjs';
-import { pointInFeature,renderRegionMap } from '../scripts/region-map.mjs';
-import { borderRouteEndpoints,renderEdgeLabels } from '../scripts/edge-labels.mjs';
-import { routeSegments,arcPath } from '../scripts/route-geometry.mjs';
-import { journeyLayer,locationLayer,journeySummaryRows } from '../scripts/travel-layers.mjs';
-const catalog=JSON.parse(await readFile(new URL('../data/region-catalog.json',import.meta.url)));
+import { readRegionPlaces,regionView } from '../plugins/travel-passport/scripts/region-data.mjs';
+import { mergeRows } from '../plugins/travel-passport/scripts/update-atlas.mjs';
+import { pointInFeature,renderRegionMap } from '../plugins/travel-passport/scripts/region-map.mjs';
+import { borderRouteEndpoints,renderEdgeLabels } from '../plugins/travel-passport/scripts/edge-labels.mjs';
+import { routeSegments,arcPath } from '../plugins/travel-passport/scripts/route-geometry.mjs';
+import { journeyLayer,locationLayer,journeySummaryRows } from '../plugins/travel-passport/scripts/travel-layers.mjs';
+const catalog=JSON.parse(await readFile(new URL('../plugins/travel-passport/data/region-catalog.json',import.meta.url)));
 const p=(id,name,status,code='US-NY',country='美国',countryCode='US')=>({'地点编号':id,'城市/地点':name,'国家地区':country,'国家代码':countryCode,'一级区域代码':code,'到访状态':status,'分享纳入':'纳入','核定依据':'本人确认地面旅行','关联正文':'旅行.md','最早线索日':'2017-01-01','最晚线索日':'2017-01-01'});
 
 test('机场及GPS候选不激活，美国DC单列，两座同州城市仍只算一州',()=>{

@@ -2,12 +2,10 @@ import { projector } from './japan-map.mjs';
 import { routeSegments,arcPath } from './route-geometry.mjs';
 import { renderEdgeLabels } from './edge-labels.mjs';
 import { isRecordedMovement } from '../src/route-semantics.mjs';
-import { pointInFeature,pointInRing } from '../src/scope-model.mjs';
+import { pointInFeature,pointInPolygon,polygonBbox,unwrapAntimeridianPolygons } from '../src/geo.mjs';
 import { placeLabels } from '../src/map-labels.mjs';
 export const escapeHtml=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 export { pointInFeature };
-const polygons=f=>f.geometry.type==='Polygon'?[f.geometry.coordinates]:f.geometry.type==='MultiPolygon'?f.geometry.coordinates:[];
-const boundsFor=poly=>{const r=poly[0],xs=r.map(p=>p[0]),ys=r.map(p=>p[1]);return[Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys)];};
 const intersects=(a,b)=>a[2]>=b[0]&&a[0]<=b[2]&&a[3]>=b[1]&&a[1]<=b[3];
 const inside=([lat,lon],b)=>lon>=b[0]&&lon<=b[2]&&lat>=b[1]&&lat<=b[3];
 export function renderRegionMap(config,geo,view,{aliases}={}){
@@ -26,16 +24,16 @@ export function renderRegionMap(config,geo,view,{aliases}={}){
     const f=geo.features.find(f=>f.id===unit.id),frame=frames.find(f=>f.ids.includes(unit.id));
     if(!frame)throw new Error('地图单元无绘制窗口：'+unit.id);
     const isActive=active.has(unit.id),id=frames.indexOf(frame);
-    // Normalize Alaska's islands before projection, clipping and point sampling.
-    const polys=f?polygons(f).map(p=>unit.id==='US-AK'?p.map(r=>r.map(([lon,lat])=>[lon>0?lon-360:lon,lat])):p).filter(p=>intersects(boundsFor(p),frame.bounds)):[];
+    // Normalize antimeridian-crossing features before projection, clipping and point sampling.
+    const polys=f?unwrapAntimeridianPolygons(f).filter(p=>intersects(polygonBbox(p),frame.bounds)):[];
     if(polys.length){
       represented.add(unit.id);
-      const path=polys.map(p=>p.map(r=>r.map(([lon,lat],i)=>{if(unit.id==='US-AK'&&lon>0)lon-=360;const [x,y]=frame.project([lat,lon]);return `${i?'L':'M'}${x.toFixed(1)},${y.toFixed(1)}`;}).join('')+'Z').join('')).join('');
+      const path=polys.map(p=>p.map(r=>r.map(([lon,lat],i)=>{const [x,y]=frame.project([lat,lon]);return `${i?'L':'M'}${x.toFixed(1)},${y.toFixed(1)}`;}).join('')+'Z').join('')).join('');
       parts.push(`<path class="prefecture${isActive?' visited':''}" data-unit="${unit.id}" clip-path="url(#frame${id})" d="${path}" fill-rule="evenodd"><title>${escapeHtml(unit.name)}</title></path>`);
       const scaleX=Math.abs(frame.project([frame.bounds[1],frame.bounds[0]+1])[0]-frame.project([frame.bounds[1],frame.bounds[0]])[0]);
       let dots=0;const step=id?Math.max(config.step,5/scaleX):config.step;
-      for(const p of polys){const b=boundsFor(p);const [w,s,e,n]=[Math.max(b[0],frame.bounds[0]),Math.max(b[1],frame.bounds[1]),Math.min(b[2],frame.bounds[2]),Math.min(b[3],frame.bounds[3])];
-        for(let lon=Math.ceil(w/step)*step;lon<=e;lon+=step)for(let lat=Math.ceil(s/step)*step;lat<=n;lat+=step){if(!pointInRing([lon,lat],p[0])||p.slice(1).some(r=>pointInRing([lon,lat],r)))continue;const [x,y]=frame.project([lat,lon]);dots++;parts.push(`<circle class="jp-dot${isActive?' visited':''}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.3"/>`);}
+      for(const p of polys){const b=polygonBbox(p);const [w,s,e,n]=[Math.max(b[0],frame.bounds[0]),Math.max(b[1],frame.bounds[1]),Math.min(b[2],frame.bounds[2]),Math.min(b[3],frame.bounds[3])];
+        for(let lon=Math.ceil(w/step)*step;lon<=e;lon+=step)for(let lat=Math.ceil(s/step)*step;lat<=n;lat+=step){if(!pointInPolygon([lon,lat],p))continue;const [x,y]=frame.project([lat,lon]);dots++;parts.push(`<circle class="jp-dot${isActive?' visited':''}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.3"/>`);}
       }
       if(isActive&&!dots){const anchor=unit.anchor||[polys[0][0][0][1],polys[0][0][0][0]];const [x,y]=frame.project(anchor);parts.push(`<circle class="jp-dot visited" cx="${x}" cy="${y}" r="2.4"/>`);}
     }else if(unit.anchor){represented.add(unit.id);const [x,y]=frame.project(unit.anchor);parts.push(`<circle data-unit="${unit.id}" class="prefecture${isActive?' visited':''} micro-unit" cx="${x}" cy="${y}" r="3"><title>${escapeHtml(unit.name)}</title></circle>`);}

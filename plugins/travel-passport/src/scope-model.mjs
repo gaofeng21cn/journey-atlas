@@ -2,12 +2,6 @@
 // Scope identity, hierarchy and statistics never depend on page layout.
 import {durationSummary} from './transport-time.mjs';
 import {isRecordedMovement,isStructuralRoute,countPassportMovement} from './route-semantics.mjs';
-// Shared point-in-polygon test: the batch map renderer and the city map both
-// need to decide whether a coordinate belongs to a boundary.
-const polygonsOf=f=>f.geometry.type==='Polygon'?[f.geometry.coordinates]:f.geometry.type==='MultiPolygon'?f.geometry.coordinates:[];
-const inRing=(x,y,ring)=>{let yes=false;for(let i=0,j=ring.length-1;i<ring.length;j=i++){const [xi,yi]=ring[i],[xj,yj]=ring[j];if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)yes=!yes;}return yes;};
-export const pointInRing=(p,ring)=>inRing(p[0],p[1],ring);
-export const pointInFeature=(p,f)=>polygonsOf(f).some(poly=>inRing(p[0],p[1],poly[0])&&!poly.slice(1).some(r=>inRing(p[0],p[1],r)));
 export function createScopeEngine(data) {
   const scopes=new Map(data.scopes.map(s=>[s.id,s])), cache=new Map(),childrenByParent=new Map();
   for(const scope of data.scopes){const siblings=childrenByParent.get(scope.parent)||[];siblings.push(scope);childrenByParent.set(scope.parent,siblings);}

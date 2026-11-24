@@ -7,11 +7,11 @@ import {gatewayIdentity} from './city-gateways.mjs';
 import {backgroundMarkup} from './map-background.mjs';
 import {isStructuralRoute,isRecordedMovement,orderedDisplayRoutes} from './route-semantics.mjs';
 import {cityPassportSummary} from './city-passport-summary.mjs';
+import {unwrapAntimeridianPolygons} from './geo.mjs';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const MAP_STYLE=`.land{fill:#b4cfdf;fill-opacity:.09;stroke:#8db5c1;stroke-width:.7;stroke-linejoin:round}.land.active{fill:#49aaa1;fill-opacity:.1;stroke:#70aaa6}.dot{fill:#a4c7d6;opacity:.8;pointer-events:none}.dot.active{fill:#3da69e;opacity:.94}.route{fill:none;stroke:#6b8e77;stroke-width:1.25;opacity:.7;stroke-linecap:round;pointer-events:none}.route.air{stroke:#aa682f;stroke-width:1.4;opacity:.7}.route.structural{stroke:#a0ab9c;stroke-width:.8;stroke-dasharray:2 5;opacity:.25}.route.edge{stroke:#b28768;stroke-dasharray:4 5;opacity:.48}.stop{fill:#dc6b58;stroke:#8b4838;stroke-width:.6;cursor:pointer}.transfer{fill:#83aabf;opacity:.8}.gateway{fill:#f7f8ef;stroke:#aa682f;stroke-width:1.4}.map-label{fill:#4b6574;font:14px 'Helvetica Neue',Arial,'PingFang SC',sans-serif;paint-order:stroke;stroke:#f7f8ef;stroke-width:3;stroke-linejoin:round;pointer-events:none}.edge-label{fill:#897765;font-size:12px;font-weight:600}.map-source{fill:#73898b;font:9px Arial,'PingFang SC',sans-serif}.inset-rule{fill:none;stroke:#b0c6c5;stroke-width:1;stroke-dasharray:4 5}.land:hover{stroke:#3da69e;stroke-width:1.5;cursor:pointer}`;
 const point=n=>[n.lat,n.lon];
 const inBounds=([lat,lon],[w,s,e,n])=>lon>=w&&lon<=e&&lat>=s&&lat<=n;
-const polygons=g=>g.type==='Polygon'?[g.coordinates]:g.coordinates;
 const caches=new WeakMap();
 
 export function mapMarkup(data,engine,view){
@@ -26,7 +26,7 @@ export function mapMarkup(data,engine,view){
     if(scope.unitId&&f.id!==scope.unitId)continue;
     if(!ownGeo&&scope.id!=='world'&&!scope.countries.includes(f.id))continue;
     const frame=frameFor(frames,{unitId:f.id}),fi=frames.indexOf(frame);
-    const poly=polygons(f.geometry).map(poly=>f.id==='US-AK'?poly.map(r=>r.map(([lon,lat])=>[lon>0?lon-360:lon,lat])):poly);
+    const poly=unwrapAntimeridianPolygons(f);
     const path=poly.filter(poly=>poly[0].some(([lon,lat])=>inBounds([lat,lon],frame.bounds))).map(poly=>poly.map(ring=>{
       let previous;return ring.map(([rawLon,lat],i)=>{
         let lon=rawLon;if(scope.id==='world'&&previous!==undefined){while(lon-previous>180)lon-=360;while(lon-previous< -180)lon+=360;}previous=lon;

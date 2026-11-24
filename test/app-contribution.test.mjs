@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { buildOverview, buildAnnual, buildRegions } from '../app-contribution.mjs';
+import { buildOverview, buildAnnual, buildRegions } from '../plugins/travel-passport/app-contribution.mjs';
 
 async function fixture() {
   const root = await mkdtemp(join(tmpdir(), 'travel-passport-contribution-'));

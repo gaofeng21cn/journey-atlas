@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {deriveVisitInstances,readVisitInstances,visitInstanceRows,visitInstanceSummary,VISIT_INSTANCE_HEADERS} from '../scripts/visit-instances.mjs';
+import {deriveVisitInstances,readVisitInstances,visitInstanceRows,visitInstanceSummary,VISIT_INSTANCE_HEADERS} from '../plugins/travel-passport/scripts/visit-instances.mjs';
 
 const places=['A','B','C'].map(id=>({id,name:id,country:'中国',status:'已到访',include:true,first:'2024-01-01',source:'旅行.md'}));
 const route=(id,nodes,date='2024-01-01',journeyId='J',extra={})=>({id,date,journeyId,include:true,evidence:'正文核定的移动',source:'旅行.md',

@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { initializeDataSource, importSourceBundle, resolveSource, readAtlasConfig } from '../scripts/source-data.mjs';
-import {loadAtlas} from '../scripts/atlas-data.mjs';
-import {sourceManifest} from '../scripts/manifest.mjs';
+import { initializeDataSource, importSourceBundle, resolveSource, readAtlasConfig } from '../plugins/travel-passport/scripts/source-data.mjs';
+import {loadAtlas} from '../plugins/travel-passport/scripts/atlas-data.mjs';
+import {sourceManifest} from '../plugins/travel-passport/scripts/manifest.mjs';
 import {execFileSync} from 'node:child_process';
-import {ROOT} from '../scripts/data.mjs';
-import {TABLES} from '../scripts/schema.mjs';
+import {ROOT} from '../plugins/travel-passport/scripts/data.mjs';
+import {TABLES} from '../plugins/travel-passport/scripts/schema.mjs';
 
 test('fresh checkout uses public defaults and explicit vault without a private config', async () => {
   const root=await mkdtemp(join(tmpdir(),'journey-config-'));

@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createScopeEngine} from '../src/scope-model.mjs';
-import {mapMarkup,passportSvg,passportLines} from '../src/site-map.mjs';
-import {simplifyRing} from '../scripts/display-geometry.mjs';
-import {placeLabels} from '../src/map-labels.mjs';
-import {mapFrames,frameProject,frameFor} from '../src/map-frames.mjs';
-import {travelTime,durationSummary} from '../src/transport-time.mjs';
-import {cityMapFrame} from '../src/city-map.mjs';
+import {createScopeEngine} from '../plugins/travel-passport/src/scope-model.mjs';
+import {mapMarkup,passportSvg,passportLines} from '../plugins/travel-passport/src/site-map.mjs';
+import {simplifyRing} from '../plugins/travel-passport/scripts/display-geometry.mjs';
+import {placeLabels} from '../plugins/travel-passport/src/map-labels.mjs';
+import {mapFrames,frameProject,frameFor} from '../plugins/travel-passport/src/map-frames.mjs';
+import {travelTime,durationSummary} from '../plugins/travel-passport/src/transport-time.mjs';
+import {cityMapFrame} from '../plugins/travel-passport/src/city-map.mjs';
 
 function fixture(){const a={id:'A',name:'甲城',country:'甲国',unitId:'A-1',lat:30,lon:110,active:true,visited:true},b={id:'B',name:'乙城',country:'甲国',unitId:'A-2',lat:31,lon:111,active:true,visited:true},c={id:'C',name:'海外枢纽',country:'乙国',unitId:'',lat:40,lon:120,active:false,visited:false};
   return {meta:{totalKm:1100,flightMinutes:120,nodes:3},geometries:{},dots:[],places:[a,b,c],

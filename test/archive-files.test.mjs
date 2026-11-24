@@ -4,7 +4,7 @@ import {mkdtemp,mkdir,writeFile,readFile,stat,rm} from 'node:fs/promises';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {execFileSync} from 'node:child_process';
-import {ROOT} from '../scripts/data.mjs';
+import {ROOT} from '../plugins/travel-passport/scripts/data.mjs';
 
 test('归档完整保存中文路径和原字节，逐项回读后才移除展开原件',async()=>{
   const root=await mkdtemp(join(tmpdir(),'travel-archive-'));

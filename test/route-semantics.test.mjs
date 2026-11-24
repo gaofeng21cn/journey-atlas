@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {describeMovement,movementExtent,movementSummary,countPassportMovement,isRecordedMovement} from '../src/route-semantics.mjs';
-import {durationSummary,travelTime} from '../src/transport-time.mjs';
-import {createScopeEngine} from '../src/scope-model.mjs';
+import {describeMovement,movementExtent,movementSummary,countPassportMovement,isRecordedMovement} from '../plugins/travel-passport/src/route-semantics.mjs';
+import {durationSummary,travelTime} from '../plugins/travel-passport/src/transport-time.mjs';
+import {createScopeEngine} from '../plugins/travel-passport/src/scope-model.mjs';
 
 test('范围取行政归属，不以30公里或车辆类型猜同城；缺归属不假定境内',()=>{
   const same={mode:'市内交通',km:80,countries:['示例国'],cityKeys:['Metro Alpha','Metro Alpha']};

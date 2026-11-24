@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { isRecordedMovement, isStructuralRoute, orderedDisplayRoutes } from '../src/route-semantics.mjs';
-import { routeSegments } from '../scripts/route-geometry.mjs';
-import { renderRegionMap } from '../scripts/region-map.mjs';
-import { japanMap } from '../scripts/japan-map.mjs';
+import { isRecordedMovement, isStructuralRoute, orderedDisplayRoutes } from '../plugins/travel-passport/src/route-semantics.mjs';
+import { routeSegments } from '../plugins/travel-passport/scripts/route-geometry.mjs';
+import { renderRegionMap } from '../plugins/travel-passport/scripts/region-map.mjs';
+import { japanMap } from '../plugins/travel-passport/scripts/japan-map.mjs';
 
 const route = (id, extra = {}) => ({
   id, mode: '公路', points: [[0, 0], [.2, .2]], names: ['甲', '乙'], countries: ['区域'], ...extra,

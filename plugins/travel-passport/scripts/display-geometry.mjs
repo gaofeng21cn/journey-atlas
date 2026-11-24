@@ -1,5 +1,6 @@
 // Simplify only the display projection. The original public boundaries and
 // point-in-polygon decisions continue to use the unsimplified geometry.
+import {bboxOf} from '../src/geo.mjs';
 function segmentDistanceSquared(p,a,b){
   const dx=b[0]-a[0],dy=b[1]-a[1],len=dx*dx+dy*dy;
   const t=len?Math.max(0,Math.min(1,((p[0]-a[0])*dx+(p[1]-a[1])*dy)/len)):0;
@@ -16,8 +17,8 @@ export function simplifyRing(ring,tolerance=.006){
   return simplified.length>=4?simplified:ring.map(p=>p.map(x=>+x.toFixed(4)));
 }
 export function displayGeometry(geo){return {type:'FeatureCollection',features:geo.features.map(f=>{
-  const points=f.geometry.type==='Polygon'?f.geometry.coordinates.flat():f.geometry.coordinates.flat(2),xs=points.map(p=>p[0]),ys=points.map(p=>p[1]);
-  const tolerance=Math.min(.006,Math.max(Math.max(...xs)-Math.min(...xs),Math.max(...ys)-Math.min(...ys))/160);
+  const [w,s,e,n]=bboxOf(f);
+  const tolerance=Math.min(.006,Math.max(e-w,n-s)/160);
   return {type:'Feature',id:f.id,geometry:{type:f.geometry.type,coordinates:f.geometry.type==='Polygon'?f.geometry.coordinates.map(r=>simplifyRing(r,tolerance)):
     f.geometry.coordinates.map(p=>p.map(r=>simplifyRing(r,tolerance)))}};
 })};}

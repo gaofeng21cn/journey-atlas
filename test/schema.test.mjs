@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   SCHEMA_VERSION, TABLES, GROUND_HEADERS, JAPAN_PLACE_HEADERS,
   REGION_PLACE_HEADERS, JOURNEY_HEADERS, CITY_PLACE_HEADERS, CITY_MOVE_HEADERS, UPDATE_DEFINITIONS, sourceHeaders,
-} from '../scripts/schema.mjs';
+} from '../plugins/travel-passport/scripts/schema.mjs';
 
 test('维护表 schema 是唯一且无重复字段', () => {
   assert.equal(SCHEMA_VERSION, 8);

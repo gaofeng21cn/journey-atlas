@@ -27,6 +27,6 @@ npm run verify
 
 ## 变更边界
 
-`scripts/schema.mjs` 拥有字段契约，`scripts/source-data.mjs` 拥有源表初始化和导入，`scripts/atlas-data.mjs` 负责只读装载，`scripts/update-atlas.mjs` 是唯一正式写入入口，`src/` 和 `scripts/render-*.mjs` 只负责呈现。不要在渲染器中写入维护源，也不要把个人适配写进通用模块。
+运行代码、公共地图、示例与载体清单唯一归属 `plugins/travel-passport/`（单源布局，不在仓库根目录维护复制副本）。`plugins/travel-passport/scripts/schema.mjs` 拥有字段契约，`plugins/travel-passport/scripts/source-data.mjs` 拥有源表初始化和导入，`plugins/travel-passport/scripts/atlas-data.mjs` 负责只读装载，`plugins/travel-passport/scripts/update-atlas.mjs` 是唯一正式写入入口，`plugins/travel-passport/src/` 和 `plugins/travel-passport/scripts/render-*.mjs` 只负责呈现。不要在渲染器中写入维护源，也不要把个人适配写进通用模块。
 
 提交前运行 `npm test`、`npm run package:check` 和与改动相关的站点检查。不要提交 `data/atlas-config.json`、`data/profile.json`、`inputs/`、`private/`、`outputs/`、`site-dist/` 或个人地图证据。

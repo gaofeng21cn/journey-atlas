@@ -5,9 +5,10 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { feature } from 'topojson-client';
-import { toTopology } from '../scripts/prepare-open-geography.mjs';
-import { ROOT } from '../scripts/data.mjs';
+import { createRequire } from 'node:module';
+const { feature } = createRequire(new URL('../plugins/travel-passport/package.json', import.meta.url))('topojson-client');
+import { toTopology } from '../plugins/travel-passport/scripts/prepare-open-geography.mjs';
+import { ROOT } from '../plugins/travel-passport/scripts/data.mjs';
 
 const exec = promisify(execFile);
 

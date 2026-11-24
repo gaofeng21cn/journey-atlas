@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {reconstructCity,movingWindows,validateCityReconstruction} from '../scripts/reconstruct-city.mjs';
-import {createScopeEngine} from '../src/scope-model.mjs';
+import {reconstructCity,movingWindows,validateCityReconstruction} from '../plugins/travel-passport/scripts/reconstruct-city.mjs';
+import {createScopeEngine} from '../plugins/travel-passport/src/scope-model.mjs';
 
 const start=Date.parse('2024-01-02T00:00:00Z')/1000;
 const config={id:'sample',country:'甲国',timeZone:'Asia/Tokyo'};

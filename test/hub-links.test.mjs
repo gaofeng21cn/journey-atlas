@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {hubConnectors, hubRows, HUB_HEADERS} from '../scripts/hub-links.mjs';
+import {hubConnectors, hubRows, HUB_HEADERS} from '../plugins/travel-passport/scripts/hub-links.mjs';
 
 const route = (id, names, points, date, ids) => ({id, names, points, date, nodeIds: ids, mode: '飞机'});
 const routes = [

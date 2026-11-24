@@ -1,3 +1,4 @@
+import {greatCircleKm,greatCircleRad} from './geo.mjs';
 (function(){
   'use strict';
   const data=window.ATLAS_DATA,NS='http://www.w3.org/2000/svg';
@@ -12,8 +13,6 @@
   // skeleton that actually reads as “行万里路”. Those short legs stay
   // visible in the regional and city passports.
   const GROUND_MIN_KM=150;
-  const greatCircleKm=(a,b)=>{const R=6371,d=Math.PI/180;const dp=(b[1]-a[1])*d,dl=(b[0]-a[0])*d;
-    const x=Math.sin(dp/2)**2+Math.cos(a[1]*d)*Math.cos(b[1]*d)*Math.sin(dl/2)**2;return 2*R*Math.asin(Math.sqrt(Math.min(1,x)));};
   // Arc height follows how far apart the two endpoints are drawn, matching the
   // flight passport: domestic hops stay almost straight while intercontinental
   // routes sweep. Ground legs stay deliberately low.
@@ -74,10 +73,9 @@
   // single metro area (二亲三州) paints five overlapping red dots that read as
   // false density.
   const max=Math.max(...data.nodes.map(p=>p.n));
-  const greatCircleDeg=(a,b)=>{const d=Math.PI/180;const x=Math.sin((b[1]-a[1])*d/2)**2+Math.cos(a[1]*d)*Math.cos(b[1]*d)*Math.sin((b[0]-a[0])*d/2)**2;return 2*Math.asin(Math.sqrt(Math.min(1,x)));};
   const nodeGroups=new Map();
   for(const p of [...data.nodes].sort((a,b)=>b.n-a.n)){
-    const key=data.nodes.find(q=>greatCircleDeg([q.lat,q.lon],[p.lat,p.lon])<.22)?.id;
+    const key=data.nodes.find(q=>greatCircleRad([q.lat,q.lon],[p.lat,p.lon])<.22)?.id;
     const k=key||p.id;if(!nodeGroups.has(k))nodeGroups.set(k,{lat:p.lat,lon:p.lon,n:0,label:p.name,weight:p.n});
     const g=nodeGroups.get(k);g.n+=p.n;g.weight=Math.max(g.weight,p.n);
   }

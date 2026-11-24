@@ -1,5 +1,7 @@
 // Gateway labels are a display projection of route endpoints. They must not
 // create a second place identity or expose reconstruction helper names.
+import {greatCircleKm as distanceKm} from './geo.mjs';
+
 const cleanName = value => String(value || '')
   .replace(/\s*[（(][^（）()]*[）)]/g, '')
   .replace(/·迪士尼海洋$/, '')
@@ -10,13 +12,6 @@ const locality = value => cleanName(value)
   .replace(/特别行政区$/, '')
   .replace(/市$/, '')
   .trim();
-
-const distanceKm = (a, b) => {
-  const rad = n => n * Math.PI / 180;
-  const [lat1, lon1] = a.map(rad), [lat2, lon2] = b.map(rad);
-  const h = Math.sin((lat2 - lat1) / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin((lon2 - lon1) / 2) ** 2;
-  return 6371.0088 * 2 * Math.asin(Math.sqrt(Math.min(1, h)));
-};
 
 const unknownName = name => !name || /位置记录$/.test(name) || /^(同日城市接续|区域接续)$/.test(name);
 

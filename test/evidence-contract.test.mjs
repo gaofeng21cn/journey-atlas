@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validatePlaceEvidence,validateMovementEvidence} from '../scripts/evidence-contract.mjs';
-import {promotionDecision} from '../scripts/visit-evidence.mjs';
+import {validatePlaceEvidence,validateMovementEvidence} from '../plugins/travel-passport/scripts/evidence-contract.mjs';
+import {promotionDecision} from '../plugins/travel-passport/scripts/visit-evidence.mjs';
 
 const decision={'核定结论':'地面到访','核定方式':'证据复核','证据引用':'uuid:photo-1；正文:旅行.md#活动','核定记录':'2030-10-11 复核活动内容与同时段定位，确认该次地面活动'};
 

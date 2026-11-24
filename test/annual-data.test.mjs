@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {annualView,resolveAnnualMemory} from '../scripts/annual-data.mjs';
-import {annualMap,resolveAnnualLabels} from '../scripts/annual-map.mjs';
+import {annualView,resolveAnnualMemory} from '../plugins/travel-passport/scripts/annual-data.mjs';
+import {annualMap,resolveAnnualLabels} from '../plugins/travel-passport/scripts/annual-map.mjs';
 
 const place=(id,name,country,first,extra={})=>({id,name,country,first,lat:10,lon:20,status:'已到访',include:true,level:'城市/城镇',source:'trip.md',...extra});
 const route=(id,date,km,extra={})=>({id,date,startDate:date,endDate:date,km,mode:'飞机',minutes:60,points:[[10,20],[30,40]],names:['基地','目的地'],include:true,...extra});

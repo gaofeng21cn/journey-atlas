@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {reconcileMobility,effectiveMobilityRoutes,projectMobility,trimFlightTrackFragments,unstableReconstructionDates} from '../scripts/global-mobility.mjs';
+import {reconcileMobility,effectiveMobilityRoutes,projectMobility,trimFlightTrackFragments,unstableReconstructionDates} from '../plugins/travel-passport/scripts/global-mobility.mjs';
 
 const node=(id,lat,lon)=>({id,name:id,lat,lon,country:'甲国'});
 const a=node('A',35,139),b=node('B',35,140),c=node('C',35.02,139.01);

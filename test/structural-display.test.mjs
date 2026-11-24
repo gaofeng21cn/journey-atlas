@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createScopeEngine} from '../src/scope-model.mjs';
-import {mapMarkup} from '../src/site-map.mjs';
-import {isRecordedMovement} from '../src/route-semantics.mjs';
+import {createScopeEngine} from '../plugins/travel-passport/src/scope-model.mjs';
+import {mapMarkup} from '../plugins/travel-passport/src/site-map.mjs';
+import {isRecordedMovement} from '../plugins/travel-passport/src/route-semantics.mjs';
 
 function fixture(city=false){
   const a={id:'A',name:'甲地点',country:'甲国',unitId:'U',lat:30,lon:110,active:true,visited:true},b={...a,id:'B',name:'乙地点',lat:31,lon:111},c={...a,id:'C',name:'只有结构的国内点',lat:30.5,lon:110.5,active:false,visited:false},outside={...a,id:'X',name:'不应显示的海外节点',country:'乙国',lat:40,lon:120,active:false,visited:false},candidate={...a,id:'Q',name:'只有候选的点',lat:30.8,lon:110.8,active:false,visited:false};

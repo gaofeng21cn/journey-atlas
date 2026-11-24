@@ -6,7 +6,7 @@ import {parseCsv,csv} from './csv.mjs';
 import { ROOT, readJson ,WORKSPACE_ROOT} from './data.mjs';
 import { TABLES, SCHEMA_VERSION } from './schema.mjs';
 import { REGION_PLACES, readRegionPlaces, regionView, regionRows } from './region-data.mjs';
-import { JOURNEYS,TRAJECTORY,TRAJECTORY_HEADERS,locationLayer,journeyLayer,journeySummaryRows,improvementRows,trajectoryRows,trajectorySummary,routeTime,routePoints,routeNames,canonicalName,journeyContinuityRows } from './travel-layers.mjs';
+import { JOURNEYS,TRAJECTORY,TRAJECTORY_HEADERS,locationLayer,journeyLayer,journeySummaryRows,improvementRows,trajectoryRows,trajectorySummary,routeTime,routePoints,routeNames,canonicalName,journeyContinuityRows,greatCircleKm } from './travel-layers.mjs';
 import { HUB_LINKS,HUB_HEADERS,hubConnectors,hubRows } from './hub-links.mjs';
 import {ACCESS,REFS,ACCESS_HEADERS,REF_HEADERS,transportNodeId,matchingPlaces,bindRouteNodes,attachAccess,accessRows,referenceRows} from './node-access.mjs';
 import {createContinuityAudit,AUDIT_HEADERS} from './continuity-audit.mjs';
@@ -46,9 +46,7 @@ export function distanceKm(points, method) {
   if (!points.every(validPoint)) throw new Error('交通坐标超出范围');
   let km = 0;
   for (let i = 1; i < points.length; i++) {
-    const [a, b] = [points[i - 1], points[i]].map(p => p.map(v => v * Math.PI / 180));
-    const h = Math.sin((b[0] - a[0]) / 2) ** 2 + Math.cos(a[0]) * Math.cos(b[0]) * Math.sin((b[1] - a[1]) / 2) ** 2;
-    km += 6371.0088 * 2 * Math.asin(Math.sqrt(Math.min(1, h)));
+    km += greatCircleKm(points[i - 1], points[i]);
   }
   return Math.round(km * factor);
 }

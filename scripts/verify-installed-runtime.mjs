@@ -4,8 +4,10 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { cp, mkdtemp, readFile, mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { ROOT } from './data.mjs';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 const temporary = await mkdtemp(join(tmpdir(), 'journey-release-acceptance-'));
 const installation = join(temporary, 'installed');
@@ -15,7 +17,7 @@ delete environment.TRAVEL_PASSPORT_CONFIG;
 const execute = args => execFileSync(process.execPath, [join(installation, 'journey-atlas.mjs'), '--workspace', workspace, ...args], { cwd: temporary, env: environment, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'], maxBuffer: 4 * 1024 * 1024 });
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 try {
-  const source = join(ROOT, 'plugins/travel-passport');
+  const source = join(REPO_ROOT, 'plugins/travel-passport');
   const manifest = JSON.parse(await readFile(join(source, 'opl-package.json'), 'utf8'));
   // Materialize exactly the published payload without any developer node_modules.
   for (const name of [...manifest.content_lock.paths, 'opl-package.json']) {
