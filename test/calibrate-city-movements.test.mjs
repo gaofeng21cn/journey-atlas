@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {calibrateCityRows} from '../scripts/calibrate-city-movements.mjs';
-import {mergeRows,validateEvidenceDelta} from '../scripts/update-atlas.mjs';
-import {CITY_MOVE_HEADERS} from '../scripts/schema.mjs';
+import {calibrateCityRows} from '../plugins/travel-passport/scripts/calibrate-city-movements.mjs';
+import {mergeRows,validateEvidenceDelta} from '../plugins/travel-passport/scripts/update-atlas.mjs';
+import {CITY_MOVE_HEADERS} from '../plugins/travel-passport/scripts/schema.mjs';
 
 const date='2030-04-10',start=Date.parse(date+'T01:00:00Z')/1000;
 const config={id:'sample',timeZone:'Asia/Tokyo'};

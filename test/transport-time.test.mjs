@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {travelTime,durationSummary} from '../src/transport-time.mjs';
+import {travelTime,durationSummary} from '../plugins/travel-passport/src/transport-time.mjs';
 
 test('保存的模型时长仍然是估算，凭据与实测来源才成为记录时长',()=>{
   const base={mode:'市内交通',km:4,travelMinutes:17,travelDurationBasis:'方式模型'};

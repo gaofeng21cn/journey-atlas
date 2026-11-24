@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { toTopology } from '../scripts/prepare-open-geography.mjs';
-import { japanMap } from '../scripts/japan-map.mjs';
+import { toTopology } from '../plugins/travel-passport/scripts/prepare-open-geography.mjs';
+import { japanMap } from '../plugins/travel-passport/scripts/japan-map.mjs';
 
 const square=(lon,lat,id)=>({type:'Feature',id,properties:{id},geometry:{type:'Polygon',coordinates:[[[lon,lat],[lon+.1,lat],[lon+.1,lat+.1],[lon,lat+.1],[lon,lat]]]}});
 const atlasFor=(names,routes=[])=>({

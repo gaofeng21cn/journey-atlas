@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {locationLayer} from '../scripts/travel-layers.mjs';
-import {bindRouteNodes,attachAccess,transportNodeId,displayPlaceName,matchingPlaces} from '../scripts/node-access.mjs';
-import {routeTime} from '../scripts/travel-layers.mjs';
+import {locationLayer} from '../plugins/travel-passport/scripts/travel-layers.mjs';
+import {bindRouteNodes,attachAccess,transportNodeId,displayPlaceName,matchingPlaces} from '../plugins/travel-passport/scripts/node-access.mjs';
+import {routeTime} from '../plugins/travel-passport/scripts/travel-layers.mjs';
 
 test('地点接入按显式地点引用统计，机场服务城市不抬高到访状态',()=>{
   const locations=locationLayer([{id:'JP-A',name:'City JP',prefectureId:'13',status:'已到访',lat:10,lon:20}],

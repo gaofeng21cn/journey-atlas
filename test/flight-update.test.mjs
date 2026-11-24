@@ -3,13 +3,13 @@ import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,readFile,writeFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {TABLES,UPDATE_DEFINITIONS,FLIGHT_ARCHIVE_HEADERS,EVIDENCE_HEADERS,MEASUREMENT_HEADERS} from '../scripts/schema.mjs';
-import {csv,flightsFromArchive,loadAtlas} from '../scripts/atlas-data.mjs';
-import {mergeRows,validateEvidenceDelta,updateAtlas} from '../scripts/update-atlas.mjs';
-import {flightView} from '../scripts/flight-view.mjs';
-import {transportNodeId} from '../scripts/node-access.mjs';
-import {durationSummary} from '../src/transport-time.mjs';
-import {prepareReconstruction} from '../scripts/reconstruct-connections.mjs';
+import {TABLES,UPDATE_DEFINITIONS,FLIGHT_ARCHIVE_HEADERS,EVIDENCE_HEADERS,MEASUREMENT_HEADERS} from '../plugins/travel-passport/scripts/schema.mjs';
+import {csv,flightsFromArchive,loadAtlas} from '../plugins/travel-passport/scripts/atlas-data.mjs';
+import {mergeRows,validateEvidenceDelta,updateAtlas} from '../plugins/travel-passport/scripts/update-atlas.mjs';
+import {flightView} from '../plugins/travel-passport/scripts/flight-view.mjs';
+import {transportNodeId} from '../plugins/travel-passport/scripts/node-access.mjs';
+import {durationSummary} from '../plugins/travel-passport/src/transport-time.mjs';
+import {prepareReconstruction} from '../plugins/travel-passport/scripts/reconstruct-connections.mjs';
 
 const source='50_🌍旅行记录/51_行程/2024/2024-05_航空测试.md';
 const flight=(id,date,reverse=false)=>({

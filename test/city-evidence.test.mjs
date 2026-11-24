@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import {mkdtemp,writeFile,rm} from 'node:fs/promises';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
-import {matchObservedPath,cityDate,collectCityEvidence,collectCitiesEvidence,cityEvidenceRecord} from '../scripts/city-evidence.mjs';
-import {greatCircleKm} from '../scripts/travel-layers.mjs';
+import {matchObservedPath,cityDate,collectCityEvidence,collectCitiesEvidence,cityEvidenceRecord} from '../plugins/travel-passport/scripts/city-evidence.mjs';
+import {greatCircleKm} from '../plugins/travel-passport/scripts/travel-layers.mjs';
 
 const date='2030-04-10',origin=Date.parse(date+'T03:00:00Z')/1000;
 function track(points,offsets=points.map((_,i)=>i*120)){

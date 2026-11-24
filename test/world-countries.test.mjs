@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readRegionPlaces,WORLD_COUNTRIES} from '../scripts/region-data.mjs';
+import {readRegionPlaces,WORLD_COUNTRIES} from '../plugins/travel-passport/scripts/region-data.mjs';
 
 test('国家校验支持完整ISO目录，不受原有旅行地区限制',()=>{
   const catalog={europe:{english:'EUROPE',units:[],countries:[]}};

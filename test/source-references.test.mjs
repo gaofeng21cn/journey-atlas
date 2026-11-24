@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,writeFile,rename,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {csv} from '../scripts/csv.mjs';
-import {validateLinks,referencedEvidenceFiles} from '../scripts/source-references.mjs';
-import {sourceManifest} from '../scripts/manifest.mjs';
-import {TABLES} from '../scripts/schema.mjs';
+import {csv} from '../plugins/travel-passport/scripts/csv.mjs';
+import {validateLinks,referencedEvidenceFiles} from '../plugins/travel-passport/scripts/source-references.mjs';
+import {sourceManifest} from '../plugins/travel-passport/scripts/manifest.mjs';
+import {TABLES} from '../plugins/travel-passport/scripts/schema.mjs';
 
 test('证据迁移断链会阻止更新，票据编号和照片UUID仍按原语义保留',async()=>{
   const root=await mkdtemp(join(tmpdir(),'travel-reference-'));

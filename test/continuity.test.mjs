@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {trajectoryRows,journeyDateViolations,journeyContinuityRows} from '../scripts/travel-layers.mjs';
-import {attachAccess} from '../scripts/node-access.mjs';
-import {validateContinuityDelta,createContinuityAudit} from '../scripts/continuity-audit.mjs';
+import {trajectoryRows,journeyDateViolations,journeyContinuityRows} from '../plugins/travel-passport/scripts/travel-layers.mjs';
+import {attachAccess} from '../plugins/travel-passport/scripts/node-access.mjs';
+import {validateContinuityDelta,createContinuityAudit} from '../plugins/travel-passport/scripts/continuity-audit.mjs';
 
 const leg=(id,names,points)=>({id,names,points,include:true,date:'2020-01-01',mode:'公路',km:100,status:'合理占位'});
 

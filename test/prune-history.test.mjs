@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdtemp, mkdir, writeFile, readdir, rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {pruneHistory} from '../scripts/prune-history.mjs';
+import {pruneHistory} from '../plugins/travel-passport/scripts/prune-history.mjs';
 
 // Backup folders are recovery aids, not maintained sources. The retention pass
 // must only ever touch folders that match the automatic writer pattern, and

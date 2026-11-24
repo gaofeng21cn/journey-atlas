@@ -1,20 +1,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validateEvidenceDelta} from '../scripts/update-atlas.mjs';
-import {displayCityDetails} from '../scripts/site-data.mjs';
+import {validateEvidenceDelta} from '../plugins/travel-passport/scripts/update-atlas.mjs';
+import {displayCityDetails} from '../plugins/travel-passport/scripts/site-data.mjs';
 import {readFile} from 'node:fs/promises';
-import {validatePlaceEvidence,validateMovementEvidence} from '../scripts/evidence-contract.mjs';
-import {readGround} from '../scripts/atlas-data.mjs';
-import {readRegionPlaces} from '../scripts/region-data.mjs';
+import {validatePlaceEvidence,validateMovementEvidence} from '../plugins/travel-passport/scripts/evidence-contract.mjs';
+import {readGround} from '../plugins/travel-passport/scripts/atlas-data.mjs';
+import {readRegionPlaces} from '../plugins/travel-passport/scripts/region-data.mjs';
 
 const review={'核定结论':'合理重构','核定方式':'证据复核','证据引用':'正文:旅行.md','核定记录':'2026-10-11 复核该次进入与离开的移动'};
 const movement=()=>({'移动编号':'M1','城市编号':'sample','行程编号':'trip','日期':'2020-01-01','段序':'1','出发地点编号':'A','到达地点编号':'B','交通方式':'公路','里程公里':'10','交通时长分钟':'20','发生依据':'活动先后支持该次公路移动','关联正文':'旅行.md',...review});
 
 test('公共虚构更新示例通过严格证据与计量合同，不携带个人核定',async()=>{
-  const example=JSON.parse(await readFile(new URL('../examples/atlas-update.json',import.meta.url),'utf8'));
+  const example=JSON.parse(await readFile(new URL('../plugins/travel-passport/examples/atlas-update.json',import.meta.url),'utf8'));
   for(const p of example.places){const result=validatePlaceEvidence(p);assert.equal(result.ok,true,result.errors.join('；'));}
   for(const r of example.ground){const result=validateMovementEvidence(r);assert.equal(result.ok,true,result.errors.join('；'));}
-  const catalog=JSON.parse(await readFile(new URL('../data/region-catalog.json',import.meta.url),'utf8'));
+  const catalog=JSON.parse(await readFile(new URL('../plugins/travel-passport/data/region-catalog.json',import.meta.url),'utf8'));
   const places=readRegionPlaces(example.places,catalog,{legacy:false}),index=new Map(places.map(p=>[p.id,p]));
   const [ground]=readGround(example.ground,index,{legacy:false,allowLegacyRefs:false});
   assert.equal(ground.distanceType,'model');assert.equal(ground.durationType,'reference');assert.equal(ground.geometryType,'display');

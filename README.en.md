@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/branding/journey-atlas-logo.png" alt="Journey Atlas logo" width="132" /></p>
+<p align="center"><img src="plugins/travel-passport/assets/branding/journey-atlas-logo.png" alt="Journey Atlas logo" width="132" /></p>
 
 <p align="center"><strong>English</strong> | <a href="./README.md">中文</a></p>
 
@@ -27,10 +27,10 @@ The first CLI invocation installs locked dependencies with `npm ci --ignore-scri
 Requires Node.js 22 or newer.
 
 ```sh
-npm ci
-npx playwright install chromium
+npm --prefix plugins/travel-passport ci
+npm --prefix plugins/travel-passport exec -- playwright install chromium
 npm run init:data -- --source data/source
-npm run import:data -- --input examples/import-bundle.json
+npm run import:data -- --input plugins/travel-passport/examples/import-bundle.json
 npm run check:data
 npm run build
 npm run site:build

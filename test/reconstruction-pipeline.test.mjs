@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {orderLegs,trajectoryRows} from '../scripts/travel-layers.mjs';
-import {localEpoch} from '../scripts/flight-time.mjs';
-import {archivalMovementCover,classifyObservationConflicts} from '../scripts/global-mobility.mjs';
-import {mergeReviewedVisitRows} from '../scripts/visit-instances.mjs';
-import {reconstructionProgress} from '../scripts/reconstruction-progress.mjs';
-import {orderedDisplayRoutes,isRecordedMovement} from '../src/route-semantics.mjs';
-import {reconstructConnection,retainReviewedConnection} from '../scripts/reconstruct-connections.mjs';
+import {orderLegs,trajectoryRows} from '../plugins/travel-passport/scripts/travel-layers.mjs';
+import {localEpoch} from '../plugins/travel-passport/scripts/flight-time.mjs';
+import {archivalMovementCover,classifyObservationConflicts} from '../plugins/travel-passport/scripts/global-mobility.mjs';
+import {mergeReviewedVisitRows} from '../plugins/travel-passport/scripts/visit-instances.mjs';
+import {reconstructionProgress} from '../plugins/travel-passport/scripts/reconstruction-progress.mjs';
+import {orderedDisplayRoutes,isRecordedMovement} from '../plugins/travel-passport/src/route-semantics.mjs';
+import {reconstructConnection,retainReviewedConnection} from '../plugins/travel-passport/scripts/reconstruct-connections.mjs';
 
 const route=(id,names,points,extra={})=>({id,names,points,mode:'公路',date:'2020-01-01',startDate:'2020-01-01',endDate:'2020-01-01',include:true,km:10,...extra});
 test('已登记的往返即便几何闭环，也不能覆盖客票时刻的真实先后',()=>{

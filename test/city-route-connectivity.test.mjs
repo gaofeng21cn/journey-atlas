@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createScopeEngine} from '../src/scope-model.mjs';
-import {cityMapMarkup,cityMapFrame} from '../src/city-map.mjs';
+import {createScopeEngine} from '../plugins/travel-passport/src/scope-model.mjs';
+import {cityMapMarkup,cityMapFrame} from '../plugins/travel-passport/src/city-map.mjs';
 
 function fixture(){
   const home={id:'H',name:'市内地点',country:'甲国',cityId:'sample',districtId:'D',lat:5,lon:5,active:true,visited:true};

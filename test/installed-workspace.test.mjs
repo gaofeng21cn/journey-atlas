@@ -5,7 +5,7 @@ import { mkdtemp, mkdir, readFile, rm, symlink, writeFile } from 'node:fs/promis
 import { join } from 'node:path';
 import { realpathSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { ROOT } from '../scripts/data.mjs';
+import { ROOT } from '../plugins/travel-passport/scripts/data.mjs';
 
 test('installed CLI and shared view execute their own runtime against an independent data workspace', async () => {
   const workspace = await mkdtemp(join(tmpdir(), 'journey-installed-workspace-'));

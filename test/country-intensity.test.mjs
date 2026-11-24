@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {countryIntensity} from '../scripts/atlas-data.mjs';
+import {countryIntensity} from '../plugins/travel-passport/scripts/atlas-data.mjs';
 
 test('国家强度采用境内移动、区分香港与内地，跨境与纯转机不增加覆盖或排序里程',()=>{
   const countries=[{name:'中国香港'},{name:'日本'},{name:'中国'}];

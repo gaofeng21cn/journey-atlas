@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {trajectoryRows, trajectorySummary, improvementRows} from '../scripts/travel-layers.mjs';
-import {TRAJECTORY_HEADERS} from '../scripts/schema.mjs';
+import {trajectoryRows, trajectorySummary, improvementRows} from '../plugins/travel-passport/scripts/travel-layers.mjs';
+import {TRAJECTORY_HEADERS} from '../plugins/travel-passport/scripts/schema.mjs';
 
 const route = (id, from, to, countDistance, km) => ({id, date: '2020-01-01', include: true,
   mode: countDistance ? '公路' : '交通方式待定', recordType: '旅行航段', status: '合理重构',

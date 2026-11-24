@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {locationLayer,journeyLayer,journeySummaryRows,seedJourneys,allocateMeters,allocateKm,trajectoryRows,trajectorySummary,journeyClosure,journeyDateViolations,routePoints,routeNames,orderLegs,routeTime,joinsChain} from '../scripts/travel-layers.mjs';
-import {hubConnectors} from '../scripts/hub-links.mjs';
-import {readGround} from '../scripts/atlas-data.mjs';
-import {splitPlacePatches} from '../scripts/update-atlas.mjs';
+import {locationLayer,journeyLayer,journeySummaryRows,seedJourneys,allocateMeters,allocateKm,trajectoryRows,trajectorySummary,journeyClosure,journeyDateViolations,routePoints,routeNames,orderLegs,routeTime,joinsChain} from '../plugins/travel-passport/scripts/travel-layers.mjs';
+import {hubConnectors} from '../plugins/travel-passport/scripts/hub-links.mjs';
+import {readGround} from '../plugins/travel-passport/scripts/atlas-data.mjs';
+import {splitPlacePatches} from '../plugins/travel-passport/scripts/update-atlas.mjs';
 const places=locationLayer([{id:'A',name:'Origin Point',prefectureId:'13',status:'已到访',lat:10,lon:10},{id:'B',name:'Candidate Point',prefectureId:'04',status:'待核',lat:20,lon:20}],[]);
 const transport={id:'GT1',date:'2031',include:true,mode:'铁路',names:['Origin Point','Candidate Point','Origin Point'],points:[[10,10],[20,20],[10,10]],km:780,countries:['日本'],source:'trip.md',status:'合理推定',nodePlaceIds:['A','B','A']};
 const journey={行程编号:'J1',行程名称:'Candidate Point往返',出发基地地点编号:'A',重构状态:'合理重构',行程依据:'出发点与活动顺序',关联正文:'trip.md',关联交通编号:'GT1',分享纳入:'纳入'};

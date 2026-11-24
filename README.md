@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/branding/journey-atlas-logo.png" alt="Journey Atlas logo" width="132" />
+  <img src="plugins/travel-passport/assets/branding/journey-atlas-logo.png" alt="Journey Atlas logo" width="132" />
 </p>
 
 <p align="center"><a href="./README.en.md">English</a> | <strong>中文</strong></p>
@@ -33,10 +33,10 @@ node <安装目录>/journey-atlas.mjs --workspace <私人工作区> site build
 需要 Node.js 22 或更新版本。首次使用先安装依赖与导出浏览器：
 
 ```sh
-npm ci
-npx playwright install chromium
+npm --prefix plugins/travel-passport ci
+npm --prefix plugins/travel-passport exec -- playwright install chromium
 npm run init:data -- --source data/source
-npm run import:data -- --input examples/import-bundle.json
+npm run import:data -- --input plugins/travel-passport/examples/import-bundle.json
 npm run site:build
 npm run site:check
 npm run build -- --scope world --variant social

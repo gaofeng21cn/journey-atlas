@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {migrationReview} from '../scripts/migrate-evidence.mjs';
-import {reconstructConnection} from '../scripts/reconstruct-connections.mjs';
+import {migrationReview} from '../plugins/travel-passport/scripts/migrate-evidence.mjs';
+import {reconstructConnection} from '../plugins/travel-passport/scripts/reconstruct-connections.mjs';
 
 const place={'地点编号':'EXAMPLE','到访状态':'已到访','核定依据':'示例来源核定','关联正文':'example.md'};
 const connection={'交通编号':'EXAMPLE-LINK','坐标序列纬经':'[[0,0],[0,0.1]]','途经节点':'Local Point；Transfer Point',

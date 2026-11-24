@@ -1,8 +1,10 @@
 import { createHash } from 'node:crypto';
 import { basename } from 'node:path';
 import { JOURNEYS, JOURNEY_HEADERS, TRAJECTORY, TRAJECTORY_HEADERS } from './schema.mjs';
+import { greatCircleKm } from '../src/geo.mjs';
 
 export { JOURNEYS, JOURNEY_HEADERS, TRAJECTORY, TRAJECTORY_HEADERS } from './schema.mjs';
+export { greatCircleKm } from '../src/geo.mjs';
 export const TIME_HEADERS=['开始日期','结束日期','时间精度','段序'];
 const sourceDateKeys=value=>{
   const text=String(value||''),dates=text.match(/\d{4}(?:-\d{2}(?:-\d{2})?)?/g)||[];
@@ -27,12 +29,6 @@ export function routeTime(row){
   const sequence=row['段序']??row.sequence;
   if(sequence!==undefined&&sequence!==null&&sequence!==''&&(!Number.isInteger(Number(sequence))||Number(sequence)<1))throw new Error('段序须为正整数');
   return {startDate:start,endDate:end,timePrecision:row['时间精度']||row.timePrecision||precision,sequence:sequence===''||sequence===undefined||sequence===null?null:Number(sequence)};
-}
-
-// Great-circle distance in km; kept local so the layer modules stay free of cycles.
-export function greatCircleKm([lat1,lon1],[lat2,lon2]){
-  const rad=v=>v*Math.PI/180,h=Math.sin((rad(lat2)-rad(lat1))/2)**2+Math.cos(rad(lat1))*Math.cos(rad(lat2))*Math.sin((rad(lon2)-rad(lon1))/2)**2;
-  return 6371.0088*2*Math.asin(Math.sqrt(Math.min(1,h)));
 }
 
 // Store and distribute integer metres; kilometres are a display/compatibility value.

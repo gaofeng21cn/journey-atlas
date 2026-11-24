@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readGround, readPlaces, aggregatePrefectures, buildAtlas, distanceKm } from '../scripts/atlas-data.mjs';
-import { projector } from '../scripts/japan-map.mjs';
-import {flightView} from '../scripts/flight-view.mjs';
-import {durationSummary} from '../src/transport-time.mjs';
+import { readGround, readPlaces, aggregatePrefectures, buildAtlas, distanceKm } from '../plugins/travel-passport/scripts/atlas-data.mjs';
+import { projector } from '../plugins/travel-passport/scripts/japan-map.mjs';
+import {flightView} from '../plugins/travel-passport/scripts/flight-view.mjs';
+import {durationSummary} from '../plugins/travel-passport/src/transport-time.mjs';
 
 const row = {
   '交通编号':'GT-1','日期或区间':'2026-10-01','交通方式':'铁路','途经节点':'甲；乙',

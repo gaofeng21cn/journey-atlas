@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createYearReview,selectYearReview,reviewPageSvg,reviewPageHtml} from '../src/year-review.mjs';
+import {createYearReview,selectYearReview,reviewPageSvg,reviewPageHtml} from '../plugins/travel-passport/src/year-review.mjs';
 const view={year:2026,asOf:'2026-10-01',dataThrough:'2026-09-30',base:{name:'示例基地'},metrics:{flightCount:12,flightKm:12345.6,totalKm:14000,flightHours:24,countries:2,cities:4},cities:[{name:'示例城市'}],policy:{includePlanned:true},plannedRouteIds:['PLANNED'],farthest:{name:'远方',km:5000}};
 const profile={title:'在创造中前进，在旅途中发现',github:{activeDays:180,commitContributions:2400,repositoriesWithCommits:6,longestStreakDays:42},tokscale:{totalTokens:1200000000,cacheReadPercent:80},memory:{lines:['十月，12 天内 2 次出发、4 段飞行','12,345 公里 · 飞行约 24 小时']}};
 test('同一年度快照生成单卡及固定九页故事，切换主题不混入未提供的数据',()=>{

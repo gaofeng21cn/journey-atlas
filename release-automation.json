@@ -3,6 +3,8 @@
   "prepare": [
     [
       "npm",
+      "--prefix",
+      "plugins/travel-passport",
       "ci",
       "--ignore-scripts",
       "--no-audit",
@@ -26,7 +28,11 @@
       "kind": "json"
     },
     {
-      "path": "package-lock.json",
+      "path": "plugins/travel-passport/package.json",
+      "kind": "json"
+    },
+    {
+      "path": "plugins/travel-passport/package-lock.json",
       "kind": "json"
     }
   ]

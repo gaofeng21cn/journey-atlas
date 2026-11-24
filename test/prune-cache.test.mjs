@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,writeFile,readdir,rm,symlink,readFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {pruneCache} from '../scripts/prune-cache.mjs';
+import {pruneCache} from '../plugins/travel-passport/scripts/prune-cache.mjs';
 
 test('公共地图缓存只清理已知可重建目录',async()=>{
   const root=await mkdtemp(join(tmpdir(),'travel-cache-')),cache=join(root,'data/site-cache');

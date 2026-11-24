@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
-import { chromium } from 'playwright';
-import { layoutMapLabels } from '../scripts/map-label-layout.mjs';
+import { createRequire } from 'node:module';
+const { chromium } = createRequire(new URL('../plugins/travel-passport/package.json', import.meta.url))('playwright');
+import { layoutMapLabels } from '../plugins/travel-passport/scripts/map-label-layout.mjs';
 
 test('实际字体下重叠标签外移，保留节点和引导线起点，静态HTML回读仍无碰撞',async()=>{
   const browser=await chromium.launch({headless:true,...(existsSync('/Applications/Google Chrome.app')?{channel:'chrome'}:{})});

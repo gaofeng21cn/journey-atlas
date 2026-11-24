@@ -4,6 +4,7 @@ import { existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
+import { build as esbuildBundle } from 'esbuild';
 import { chromium } from 'playwright';
 import { ROOT, WORKSPACE_ROOT, readJson } from './data.mjs';
 import { refreshAtlas } from './atlas-data.mjs';
@@ -54,10 +55,12 @@ export async function renderAtlas({vault,source,output,variant='all',scope='all'
   const atlas=await refreshAtlas({vault,source,output,syncVault});
   const htmlDir=join(output,'html'), checksDir=join(output,'checks');
   await Promise.all([mkdir(output,{recursive:true}),mkdir(htmlDir,{recursive:true}),mkdir(checksDir,{recursive:true})]);
-  const [css,extra,worldTemplate,japanTemplate,dots,worldScript,topology]=await Promise.all([
-    ...['poster.css','atlas.css','poster.html','japan.html','world-dots.js','atlas-world.js'].map(name=>readFile(join(ROOT,'src',name),'utf8')),
+  const [css,extra,worldTemplate,japanTemplate,dots,worldBundle,topology]=await Promise.all([
+    ...['poster.css','atlas.css','poster.html','japan.html','world-dots.js'].map(name=>readFile(join(ROOT,'src',name),'utf8')),
+    esbuildBundle({entryPoints:[join(ROOT,'src/atlas-world.js')],bundle:true,write:false,minify:true,format:'iife',target:'es2022'}),
     selected.includes('japan')?readJson(join(ROOT,'data/japan.topojson')):null,
   ]);
+  const worldScript=worldBundle.outputFiles[0].text.replace(/<\/script/gi,'<\\/script');
   const represented=new Set(JSON.parse(dots.split('=',2)[1].trim().replace(/;$/,'')).map(p=>p[2]));
   const missing=atlas.countries.filter(c=>!represented.has(c.name));
   if(selected.includes('world')&&missing.length)throw new Error(`地图缺国家点：${missing.map(c=>c.name).join('、')}`);

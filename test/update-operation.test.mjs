@@ -4,10 +4,10 @@ import {mkdtemp,mkdir,writeFile,readFile,readdir,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {spawnSync} from 'node:child_process';
-import {TABLES} from '../scripts/schema.mjs';
-import {ROOT} from '../scripts/data.mjs';
-import {reviewArtifact} from '../scripts/passport.mjs';
-import {updateSourceSnapshot,requireSourceRevision,applySourceUpdate,inspectUpdate,finishUpdate} from '../scripts/update-operation.mjs';
+import {TABLES} from '../plugins/travel-passport/scripts/schema.mjs';
+import {ROOT} from '../plugins/travel-passport/scripts/data.mjs';
+import {reviewArtifact} from '../plugins/travel-passport/scripts/passport.mjs';
+import {updateSourceSnapshot,requireSourceRevision,applySourceUpdate,inspectUpdate,finishUpdate} from '../plugins/travel-passport/scripts/update-operation.mjs';
 
 async function fixture(t){
   const root=await mkdtemp(join(tmpdir(),'passport-update-')),folder=join(root,'vault');

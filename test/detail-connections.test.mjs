@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {atlasConnections,mergeDetailConnections} from '../scripts/detail-connections.mjs';
+import {atlasConnections,mergeDetailConnections} from '../plugins/travel-passport/scripts/detail-connections.mjs';
 const config={id:'city',country:'甲国',unitId:'A'};
 const geo={features:[{id:'city-1',geometry:{type:'Polygon',coordinates:[[[10,10],[11,10],[11,11],[10,11],[10,10]]]}}]};
 const airport={id:'AIR',name:'机场',lat:10.2,lon:10.8,country:'甲国',cityId:'city',districtId:'city-1',active:false,visited:false,level:'交通接续'};
