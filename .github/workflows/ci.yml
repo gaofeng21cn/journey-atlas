@@ -23,6 +23,7 @@ jobs:
       - run: npm run package:check
       - run: npm run verify:installed
       - run: npm run init:data
+      - run: mkdir -p examples && cp plugins/travel-passport/examples/source-note.md examples/source-note.md
       - run: npm run import:data -- --input plugins/travel-passport/examples/import-bundle.json
       - run: npm run build -- --variant social
       - run: npm run verify
