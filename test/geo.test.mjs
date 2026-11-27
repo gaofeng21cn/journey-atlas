@@ -60,7 +60,24 @@ test('unwrapAntimeridianPolygons unwraps western antimeridian features without h
 test('single-source plugin layout keeps runtime files solely inside plugins/travel-passport', async () => {
   const repoRoot = resolve(ROOT, '../..');
   const inventory = JSON.parse(await readFile(join(repoRoot, 'package-runtime-files.json'), 'utf8'));
+  const manifest = JSON.parse(await readFile(join(ROOT, 'opl-package.json'), 'utf8'));
   assert.equal(existsSync(join(repoRoot, 'opl-package.json')), false);
+  assert.equal(manifest.schema_version, 'opl.package.v2');
+  assert.equal(manifest.identity.id, 'travel-passport');
+  assert.equal(manifest.identity.version, '0.2.4');
+  assert.deepEqual(manifest.ui.declarative.views.map(view => view.id), [
+    'travel.passport.status', 'travel.passport.overview', 'travel.passport.annual', 'travel.passport.regions',
+  ]);
+  assert.ok(manifest.ui.declarative.views.every(view => view.slot !== 'settings.section'
+    || ['models', 'resources', 'workspace', 'capabilities', 'services', 'preferences'].includes(view.settings_destination)));
+  assert.deepEqual(manifest.ui.declarative.views.flatMap(view => view.actions || []).map(action => action.action_ref), [
+    'travel.passport.v1#runtime.setup', 'travel.passport.v1#annual.generate',
+  ]);
+  assert.equal(Object.hasOwn(manifest, 'content_lock'), false);
+  assert.equal(existsSync(join(ROOT, 'app-contribution-adapter.json')), false);
+  assert.equal(existsSync(join(ROOT, 'plugin.json')), false);
+  assert.equal(existsSync(join(ROOT, '.codex-plugin/plugin.json')), false);
+  assert.equal(existsSync(join(repoRoot, '.agents')), false);
   for (const rel of inventory.paths) {
     assert.equal(existsSync(join(ROOT, rel)), true, `missing canonical carrier file: ${rel}`);
     if (rel !== 'package.json') {

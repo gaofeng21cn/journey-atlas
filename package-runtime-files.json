@@ -1,7 +1,6 @@
 {
   "schema_version": "journey-atlas.runtime-files.v1",
   "paths": [
-    "app-contribution-adapter.json",
     "app-contribution.mjs",
     "assets/branding/journey-atlas-logo.png",
     "assets/fonts/dm-serif-display/DMSerifDisplay-Regular.ttf",
@@ -31,6 +30,7 @@
     "examples/import-bundle.json",
     "examples/source-note.md",
     "journey-atlas.mjs",
+    "opl-package.json",
     "package-lock.json",
     "package.json",
     "scripts/annual-data.mjs",

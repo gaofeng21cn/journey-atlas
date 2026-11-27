@@ -44,9 +44,9 @@ ground visits. Keep query dates and provenance in the data and export manifest;
 the shareable cards prioritize phone readability. These reusable templates run
 inside Journey Atlas; a fresh RedCube production is a separate visual-design task.
 
-Use already authorized OPL knowledge sources first, especially Obsidian. Read a
-known source through `opl knowledge read-source` and use Framework dependency
-verification and action revalidation before consuming it. Bind source tables and
+Use already authorized OPL workspace sources first, especially Obsidian. Read an
+authorized source through Framework v2 `opl workspace sources` and `opl workspace snapshot`
+(plus action revalidation) before consuming it. Bind source tables and
 allowed reference roots in the private workspace configuration; do not clone the
 knowledge store. No account is required for local use. Future network import must
 use OPL Connect references rather than store credentials in this Package.

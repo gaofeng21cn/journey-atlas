@@ -46,6 +46,7 @@ test('年度投影按年度摘要和成品生成 artifact_view 项', async () =>
     assert.equal(result.data.items[0].km, 2400);
     assert.equal(result.data.items[0].data_through, '2026-06-30');
     assert.equal(result.data.items[0].artifacts.length, 2);
+    assert.deepEqual(result.data.command_inputs['travel.passport.v1#annual.generate'].input_schema.required, ['year']);
   } finally { await f.dispose(); }
 });
 
