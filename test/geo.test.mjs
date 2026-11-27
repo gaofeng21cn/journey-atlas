@@ -61,10 +61,12 @@ test('single-source plugin layout keeps runtime files solely inside plugins/trav
   const repoRoot = resolve(ROOT, '../..');
   const inventory = JSON.parse(await readFile(join(repoRoot, 'package-runtime-files.json'), 'utf8'));
   const manifest = JSON.parse(await readFile(join(ROOT, 'opl-package.json'), 'utf8'));
+  const carrierPackage = JSON.parse(await readFile(join(ROOT, 'package.json'), 'utf8'));
   assert.equal(existsSync(join(repoRoot, 'opl-package.json')), false);
   assert.equal(manifest.schema_version, 'opl.package.v2');
   assert.equal(manifest.identity.id, 'travel-passport');
-  assert.equal(manifest.identity.version, '0.2.4');
+  assert.match(carrierPackage.version, /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/);
+  assert.equal(manifest.identity.version, carrierPackage.version);
   assert.deepEqual(manifest.ui.declarative.views.map(view => view.id), [
     'travel.passport.status', 'travel.passport.overview', 'travel.passport.annual', 'travel.passport.regions',
   ]);
