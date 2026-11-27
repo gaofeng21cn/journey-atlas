@@ -1,6 +1,6 @@
 {
   "name": "travel-passport",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "type": "module",
   "description": "Agent-native travel atlas with a local CLI and shared OPL review views",
   "engines": {
