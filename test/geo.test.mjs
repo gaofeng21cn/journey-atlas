@@ -59,12 +59,14 @@ test('unwrapAntimeridianPolygons unwraps western antimeridian features without h
 
 test('single-source plugin layout keeps runtime files solely inside plugins/travel-passport', async () => {
   const repoRoot = resolve(ROOT, '../..');
+  const pkg = JSON.parse(await readFile(join(repoRoot, 'package.json'), 'utf8'));
+  assert.match(pkg.version, /^\d+\.\d+\.\d+/);
   const inventory = JSON.parse(await readFile(join(repoRoot, 'package-runtime-files.json'), 'utf8'));
   const manifest = JSON.parse(await readFile(join(ROOT, 'opl-package.json'), 'utf8'));
   assert.equal(existsSync(join(repoRoot, 'opl-package.json')), false);
   assert.equal(manifest.schema_version, 'opl.package.v2');
   assert.equal(manifest.identity.id, 'travel-passport');
-  assert.equal(manifest.identity.version, '0.2.4');
+  assert.equal(manifest.identity.version, pkg.version);
   assert.deepEqual(manifest.ui.declarative.views.map(view => view.id), [
     'travel.passport.status', 'travel.passport.overview', 'travel.passport.annual', 'travel.passport.regions',
   ]);
