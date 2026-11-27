@@ -8,7 +8,8 @@ import { fileURLToPath } from 'node:url';
 
 export const packageRoot = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
-const manifest = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8'));
+const runtimePackage = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8'));
+const packageManifest = JSON.parse(readFileSync(join(packageRoot, 'opl-package.json'), 'utf8'));
 
 function physicalTarget(target) {
   try { return realpathSync(target); }
@@ -28,7 +29,7 @@ function run(command, args, { env = process.env, setup = false } = {}) {
 
 export function dependenciesReady() {
   const lock = JSON.parse(readFileSync(join(packageRoot, 'package-lock.json'), 'utf8'));
-  return Object.keys(manifest.dependencies).every(name => {
+  return Object.keys(runtimePackage.dependencies).every(name => {
     try {
       const installed = JSON.parse(readFileSync(join(packageRoot, 'node_modules', name, 'package.json'), 'utf8'));
       return installed.version === lock.packages[`node_modules/${name}`]?.version;
@@ -66,7 +67,7 @@ export async function main(argv = process.argv.slice(2)) {
   }
   const command = args.shift() || 'help';
   if (['version', '--version'].includes(command)) {
-    process.stdout.write(JSON.stringify({ package_id: 'travel-passport', display_name: 'Journey Atlas', version: manifest.version, runtime_root: packageRoot }) + '\n'); return;
+    process.stdout.write(JSON.stringify({ package_id: packageManifest.identity.id, display_name: packageManifest.identity.name['en-US'], version: packageManifest.identity.version, runtime_root: packageRoot }) + '\n'); return;
   }
   if (['help', '--help'].includes(command)) {
     process.stdout.write('Journey Atlas\n  node journey-atlas.mjs --workspace <directory> <init|import|status|check|trace|update|receipt|build|site|annual|review|city-geography|verify> [options]\n  review --year <year> --theme life|travel|creation --style paper|night|blueprint --format single|story [--include-planned]\n  node journey-atlas.mjs setup [--browser]\n  node journey-atlas.mjs version\n\nThe selected package supplies code. The workspace supplies private configuration and data.\n'); return;
@@ -74,7 +75,7 @@ export async function main(argv = process.argv.slice(2)) {
   if (command === 'setup') {
     if (args.some(arg => arg !== '--browser')) throw new Error('setup accepts only --browser.');
     await setupRuntime({ browser: args.includes('--browser') });
-    process.stdout.write(JSON.stringify({ status: 'ready', version: manifest.version, dependencies: 'package-lock.json' }) + '\n'); return;
+    process.stdout.write(JSON.stringify({ status: 'ready', version: packageManifest.identity.version, dependencies: 'package-lock.json' }) + '\n'); return;
   }
   const entry = {
     init: ['scripts/source-data-cli.mjs', 'init'], import: ['scripts/source-data-cli.mjs', 'import'],

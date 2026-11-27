@@ -14,6 +14,19 @@ const REFS = new Set([
   'travel.passport.v1#annual',
   'travel.passport.v1#regions',
 ]);
+const SETUP_REF = 'travel.passport.v1#runtime.setup';
+const GENERATE_REF = 'travel.passport.v1#annual.generate';
+const ANNUAL_INPUT_SCHEMA = {
+  type: 'object',
+  required: ['year'],
+  properties: {
+    year: { type: 'integer', title: '年份', minimum: 1900, maximum: 2200 },
+    theme: { type: 'string', title: '主题', enum: ['life', 'travel', 'creation'], default: 'life' },
+    style: { type: 'string', title: '风格', enum: ['paper', 'night', 'blueprint'], default: 'paper' },
+    format: { type: 'string', title: '形式', enum: ['single', 'story'], default: 'single' },
+    include_planned: { type: 'boolean', title: '计入本年度待飞行程' },
+  },
+};
 const packageRoot = path.dirname(fileURLToPath(import.meta.url));
 
 function readStdin() {
@@ -138,7 +151,9 @@ export function buildAnnual(ownerRoot, status, requestedYear) {
   }));
   return { state: 'ready', data: { items: [item,...editionItems], available_years: years, quality: status.quality?.state || 'unknown',
     themes:['life','travel','creation'],styles:['paper','night','blueprint'],formats:['single','story'],max_story_pages:9,story_page_count:9,
-    action_ref:'travel.passport.v1#annual.generate' } };
+    action_ref: GENERATE_REF,
+    command_inputs: { [GENERATE_REF]: { input_schema: ANNUAL_INPUT_SCHEMA } },
+  } };
 }
 
 export function runAnnualReview(ownerRoot,input={}){
@@ -178,21 +193,25 @@ export function buildRegions(ownerRoot, status) {
 
 async function main() {
   const request = await readStdin();
-  const setup = request?.operation === 'execute' && request?.ref === 'travel.passport.v1#runtime.setup';
-  const generate=request?.operation==='execute'&&request?.ref==='travel.passport.v1#annual.generate';
+  const { schema_version, operation } = request ?? {};
+  const nativeAction = operation === 'execute' && request.ref === undefined && request.dry_run === false;
+  const ref = nativeAction ? request.action_id : request?.ref;
+  const input = (nativeAction ? request.payload : request?.input) ?? {};
+  const setup = operation === 'execute' && ref === SETUP_REF;
+  const generate = operation === 'execute' && ref === GENERATE_REF;
   if (
-    request?.schema_version !== REQUEST_SCHEMA
-    || !(setup || generate || request?.operation === 'read' && REFS.has(request?.ref))
+    schema_version !== REQUEST_SCHEMA
+    || !(setup || generate || operation === 'read' && REFS.has(ref))
   ) {
     throw new Error('unsupported app contribution request');
   }
   if (setup) {
     await setupRuntime();
-    process.stdout.write(JSON.stringify({ schema_version: RESPONSE_SCHEMA, ok: true, ref: request.ref, operation: 'execute', result: { state: 'ready', data: { status: 'ready', dependencies: 'package-lock.json' } } }));
+    process.stdout.write(JSON.stringify({ schema_version: RESPONSE_SCHEMA, ok: true, ref, operation, result: { state: 'ready', data: { status: 'ready', dependencies: 'package-lock.json' } } }));
     return;
   }
   if (!dependenciesReady()) {
-    process.stdout.write(JSON.stringify({ schema_version: RESPONSE_SCHEMA, ok: true, ref: request.ref, operation: request.operation, result: { state: 'input_required', reason: '首次使用请初始化 Journey Atlas 运行环境；此操作只安装锁定依赖，不改动旅行资料。', data: { action_ref: 'travel.passport.v1#runtime.setup' } } }));
+    process.stdout.write(JSON.stringify({ schema_version: RESPONSE_SCHEMA, ok: true, ref, operation, result: { state: 'input_required', reason: '首次使用请初始化 Journey Atlas 运行环境；此操作只安装锁定依赖，不改动旅行资料。', data: { action_ref: SETUP_REF } } }));
     return;
   }
   const ownerRoot = process.env.OPL_PROFILE_WORKSPACE || process.env.JOURNEY_ATLAS_WORKSPACE;
@@ -200,8 +219,8 @@ async function main() {
     process.stdout.write(JSON.stringify({
       schema_version: RESPONSE_SCHEMA,
       ok: true,
-      ref: request.ref,
-      operation: request.operation,
+      ref,
+      operation,
       result: {
         state: 'input_required',
         reason: '请选择已配置的 Journey Atlas 工作区；资料仍保存在原目录或 Obsidian 中。',
@@ -216,19 +235,21 @@ async function main() {
     return;
   }
   const status = await runStatus(ownerRoot);
-  if(generate){
-    const exported=await runAnnualReview(ownerRoot,request.input||{});
-    process.stdout.write(JSON.stringify({schema_version:RESPONSE_SCHEMA,ok:true,ref:request.ref,operation:'execute',result:{state:'ready',data:{...exported,...buildAnnual(ownerRoot,status,request.input.year).data}}}));return;
+  if (generate) {
+    const exported = await runAnnualReview(ownerRoot, input);
+    const data = { ...exported, ...buildAnnual(ownerRoot, status, input.year).data };
+    process.stdout.write(JSON.stringify({ schema_version: RESPONSE_SCHEMA, ok: true, ref, operation, result: { state: 'ready', data } }));
+    return;
   }
-  const result = request.ref === 'travel.passport.v1#overview' ? buildOverview(ownerRoot, status)
-    : request.ref === 'travel.passport.v1#annual' ? buildAnnual(ownerRoot, status, request.input?.year)
-      : request.ref === 'travel.passport.v1#regions' ? buildRegions(ownerRoot, status)
+  const result = ref === 'travel.passport.v1#overview' ? buildOverview(ownerRoot, status)
+    : ref === 'travel.passport.v1#annual' ? buildAnnual(ownerRoot, status, input.year)
+      : ref === 'travel.passport.v1#regions' ? buildRegions(ownerRoot, status)
         : { state: 'ready', data: { items: [statusItem(status)], status } };
   process.stdout.write(JSON.stringify({
     schema_version: RESPONSE_SCHEMA,
     ok: true,
-    ref: request.ref,
-    operation: 'read',
+    ref,
+    operation,
     result,
   }));
 }
