@@ -2,7 +2,7 @@
   "schema_version": "opl.package.v2",
   "identity": {
     "id": "travel-passport",
-    "version": "0.2.4",
+    "version": "0.2.5",
     "intent": "extension",
     "name": {
       "zh-CN": "Journey Atlas",
